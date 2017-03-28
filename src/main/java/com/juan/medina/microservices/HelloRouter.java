@@ -12,7 +12,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 @Component
 public class HelloRouter {
     @Bean
-    RouterFunction<?> hello() {
+    RouterFunction<?> helloRouterFunction() {
         HelloHandler handler = new HelloHandler();
 
         return nest(pathPrefix("/hello"),

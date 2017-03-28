@@ -5,13 +5,13 @@ import com.juan.medina.microservices.model.HelloResponse;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
-import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.reactive.server.FluxExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.BodyInserters;
+import org.springframework.web.reactive.function.server.RouterFunction;
 import reactor.test.StepVerifier;
 
 import static org.hamcrest.core.Is.is;
@@ -19,7 +19,7 @@ import static org.junit.Assert.assertThat;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@SpringBootTest
 public class ReactiveMsExampleApplicationTests {
 
     private static final String DEFAULT_VALUE = "world";
@@ -29,13 +29,12 @@ public class ReactiveMsExampleApplicationTests {
 
     private WebTestClient client;
 
-    @LocalServerPort
-    private
-    int port;
+    @Autowired
+    private RouterFunction<?> helloRouterFunction;
 
     @Before
     public void setup() {
-        client = WebTestClient.bindToServer().baseUrl("http://localhost:" + port).build();
+        client = WebTestClient.bindToRouterFunction(helloRouterFunction).build();
     }
 
     @Test
