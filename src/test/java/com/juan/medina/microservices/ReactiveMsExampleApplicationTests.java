@@ -51,8 +51,8 @@ public class ReactiveMsExampleApplicationTests {
                 .returnResult();
 
         StepVerifier.create(result.getResponseBody())
-                .consumeNextWith(p ->
-                        assertThat(p.getHello(), is(DEFAULT_VALUE)
+                .consumeNextWith(it ->
+                        assertThat(it.getHello(), is(DEFAULT_VALUE)
                         ))
                 .thenCancel()
                 .verify();
