@@ -9,10 +9,6 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.n
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 import static org.springframework.http.MediaType.APPLICATION_JSON;
 
-/**
- * Created by mail on 27/03/2017.
- */
-
 @Component
 public class HelloRouter {
     @Bean
@@ -21,8 +17,9 @@ public class HelloRouter {
 
         return nest(pathPrefix("/hello"),
                 nest(accept(APPLICATION_JSON),
-                        route(GET("/"), request -> handler.getHello()).
-                        andRoute(POST("/"), handler::postHello)
+                        route(GET("/"), handler::defaultHello)
+                        .andRoute(POST("/"), handler::postHello)
+                        .andRoute(GET("/{name}"), handler::getHello)
                 ));
     }
 }

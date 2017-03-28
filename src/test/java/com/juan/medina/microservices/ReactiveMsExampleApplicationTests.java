@@ -22,9 +22,8 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 public class ReactiveMsExampleApplicationTests {
 
-
-    private static final String GET_NAME = "world";
-    private static final String POST_NAME = "reactive";
+    private static final String DEFAULT_VALUE = "world";
+    private static final String CUSTOM_VALUE = "reactive";
     private static final String HELLO_PATH = "/hello/";
 
     private WebTestClient client;
@@ -39,7 +38,7 @@ public class ReactiveMsExampleApplicationTests {
     }
 
     @Test
-    public void getHelloTest() {
+    public void defaultHelloTest() {
 
         FluxExchangeResult<HelloResponse> result = client.get().uri(HELLO_PATH)
                 .accept(APPLICATION_JSON_UTF8)
@@ -51,7 +50,26 @@ public class ReactiveMsExampleApplicationTests {
 
         StepVerifier.create(result.getResponseBody())
                 .consumeNextWith(p ->
-                        assertThat(p.getResult(), is(GET_NAME)
+                        assertThat(p.getHello(), is(DEFAULT_VALUE)
+                        ))
+                .thenCancel()
+                .verify();
+    }
+
+    @Test
+    public void getHelloTest() {
+
+        FluxExchangeResult<HelloResponse> result = client.get().uri(HELLO_PATH + CUSTOM_VALUE)
+                .accept(APPLICATION_JSON_UTF8)
+                .exchange()
+                .expectStatus().isOk()
+                .expectHeader().contentType(APPLICATION_JSON_UTF8)
+                .expectBody(HelloResponse.class)
+                .returnResult();
+
+        StepVerifier.create(result.getResponseBody())
+                .consumeNextWith(it ->
+                        assertThat(it.getHello(), is(CUSTOM_VALUE)
                         ))
                 .thenCancel()
                 .verify();
@@ -62,15 +80,15 @@ public class ReactiveMsExampleApplicationTests {
 
         FluxExchangeResult<HelloResponse> result = client.post().uri(HELLO_PATH)
                 .accept(APPLICATION_JSON_UTF8)
-                .exchange(BodyInserters.fromObject(new HelloRequest(POST_NAME)))
+                .exchange(BodyInserters.fromObject(new HelloRequest(CUSTOM_VALUE)))
                 .expectStatus().isOk()
                 .expectHeader().contentType(APPLICATION_JSON_UTF8)
                 .expectBody(HelloResponse.class)
                 .returnResult();
 
         StepVerifier.create(result.getResponseBody())
-                .consumeNextWith(p ->
-                        assertThat(p.getResult(), is(POST_NAME)
+                .consumeNextWith(it ->
+                        assertThat(it.getHello(), is(CUSTOM_VALUE)
                         ))
                 .thenCancel()
                 .verify();

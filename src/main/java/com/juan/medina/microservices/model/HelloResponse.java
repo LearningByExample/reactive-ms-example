@@ -1,25 +1,22 @@
 package com.juan.medina.microservices.model;
 
-/**
- * Created by mail on 27/03/2017.
- */
 public class HelloResponse {
 
-    private String result;
+    private String hello;
 
     public HelloResponse() {
-        this.result = "KO";
+        this.hello = "";
     }
 
-    public HelloResponse(String result) {
-        this.result = result;
+    public HelloResponse(String hello) {
+        this.hello = hello;
     }
 
-    public String getResult() {
-        return result;
+    public String getHello() {
+        return hello;
     }
 
-    public void setResult(String result) {
-        this.result = result;
+    public void setHello(String hello) {
+        this.hello = hello;
     }
 }
