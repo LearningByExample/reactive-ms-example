@@ -24,7 +24,8 @@ public class ReactiveMsExampleApplicationTests {
 
     private static final String DEFAULT_VALUE = "world";
     private static final String CUSTOM_VALUE = "reactive";
-    private static final String HELLO_PATH = "/hello/";
+    private static final String HELLO_PATH = "/hello";
+    private static final String NAME_ARG = "{name}";
 
     private WebTestClient client;
 
@@ -40,7 +41,8 @@ public class ReactiveMsExampleApplicationTests {
     @Test
     public void defaultHelloTest() {
 
-        FluxExchangeResult<HelloResponse> result = client.get().uri(HELLO_PATH)
+        FluxExchangeResult<HelloResponse> result = client.get()
+                .uri(HELLO_PATH)
                 .accept(APPLICATION_JSON_UTF8)
                 .exchange()
                 .expectStatus().isOk()
@@ -59,7 +61,9 @@ public class ReactiveMsExampleApplicationTests {
     @Test
     public void getHelloTest() {
 
-        FluxExchangeResult<HelloResponse> result = client.get().uri(HELLO_PATH + CUSTOM_VALUE)
+        FluxExchangeResult<HelloResponse> result = client.get()
+                .uri(builder -> builder.path(HELLO_PATH)
+                .path("/").path(NAME_ARG).build(CUSTOM_VALUE))
                 .accept(APPLICATION_JSON_UTF8)
                 .exchange()
                 .expectStatus().isOk()
@@ -78,7 +82,8 @@ public class ReactiveMsExampleApplicationTests {
     @Test
     public void postHelloTest() {
 
-        FluxExchangeResult<HelloResponse> result = client.post().uri(HELLO_PATH)
+        FluxExchangeResult<HelloResponse> result = client.post()
+                .uri(HELLO_PATH)
                 .accept(APPLICATION_JSON_UTF8)
                 .exchange(BodyInserters.fromObject(new HelloRequest(CUSTOM_VALUE)))
                 .expectStatus().isOk()
