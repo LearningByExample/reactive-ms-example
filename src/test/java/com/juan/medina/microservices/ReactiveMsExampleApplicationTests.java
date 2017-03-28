@@ -53,7 +53,7 @@ public class ReactiveMsExampleApplicationTests {
                 .consumeNextWith(it ->
                         assertThat(it.getHello(), is(DEFAULT_VALUE)
                         ))
-                .thenCancel()
+                .expectComplete()
                 .verify();
     }
 
@@ -74,7 +74,7 @@ public class ReactiveMsExampleApplicationTests {
                 .consumeNextWith(it ->
                         assertThat(it.getHello(), is(CUSTOM_VALUE)
                         ))
-                .thenCancel()
+                .expectComplete()
                 .verify();
     }
 
@@ -94,7 +94,7 @@ public class ReactiveMsExampleApplicationTests {
                 .consumeNextWith(it ->
                         assertThat(it.getHello(), is(CUSTOM_VALUE)
                         ))
-                .thenCancel()
+                .expectComplete()
                 .verify();
 
     }
