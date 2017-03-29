@@ -11,6 +11,7 @@ import org.springframework.http.ReactiveHttpOutputMessage;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.reactive.server.FluxExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
+import org.springframework.test.web.reactive.server.WebTestClient.RequestBodySpec;
 import org.springframework.test.web.reactive.server.WebTestClient.UriSpec;
 import org.springframework.web.reactive.function.BodyInserter;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -46,19 +47,22 @@ public class ReactiveMsExampleApplicationTests {
         client = WebTestClient.bindToRouterFunction(helloRouterFunction).build();
     }
 
-    private FluxExchangeResult<HelloResponse> invoke(UriSpec spec, Function<UriBuilder, URI> url,
-                                                     BodyInserter<HelloRequest, ReactiveHttpOutputMessage> object) {
-        return spec.uri(url)
-                .accept(APPLICATION_JSON_UTF8)
-                .exchange(object)
+    private FluxExchangeResult<HelloResponse> completeInvoke(WebTestClient.RequestHeadersSpec<?> spec) {
+        return spec.accept(APPLICATION_JSON_UTF8).exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(APPLICATION_JSON_UTF8)
                 .expectBody(HelloResponse.class)
                 .returnResult();
     }
 
+    private FluxExchangeResult<HelloResponse> invoke(UriSpec<RequestBodySpec> spec, Function<UriBuilder, URI> url,
+                                                     BodyInserter<HelloRequest, ReactiveHttpOutputMessage> object) {
+        return completeInvoke(spec.uri(url).body(object));
+    }
+
     private FluxExchangeResult<HelloResponse> invoke(UriSpec spec, Function<UriBuilder, URI> url) {
-        return invoke(spec, url, null);
+
+        return completeInvoke(spec.uri(url));
     }
 
     private void verify(FluxExchangeResult<HelloResponse> result, Consumer<HelloResponse> check) {
