@@ -25,7 +25,7 @@ class HelloHandler {
     }
 
     Mono<ServerResponse> postHello(ServerRequest request) {
-        return request.bodyToMono(HelloRequest.class).then(
+        return request.bodyToMono(HelloRequest.class).flatMap(
                 it -> getResponse(Optional.ofNullable(it.getName()))
         );
     }
