@@ -1,6 +1,6 @@
 ## Reactive MicroServices Example
 
-[![Build Status](https://travis-ci.org/cecile/reactive-ms-example.svg?branch=master)](https://travis-ci.org/cecile/reactive-ms-example)
+[![Build Status](https://travis-ci.org/LearningByExample/reactive-ms-example.svg?branch=master)](https://travis-ci.org/LearningByExample/reactive-ms-example)
 
 ## info
 This is a small example of doing reactive MicroServices using spring 5 functional web framework and spring boot 2, includes integration test using WebTestClient.
