@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.ReactiveHttpOutputMessage;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.reactive.server.FluxExchangeResult;
+import org.springframework.test.web.reactive.server.EntityExchangeResult;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.test.web.reactive.server.WebTestClient.RequestBodySpec;
 import org.springframework.test.web.reactive.server.WebTestClient.UriSpec;
@@ -17,14 +17,13 @@ import org.springframework.web.reactive.function.BodyInserter;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.util.UriBuilder;
-import reactor.test.StepVerifier;
 
 import java.net.URI;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
-import static org.hamcrest.core.Is.is;
-import static org.junit.Assert.assertThat;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 
 @RunWith(SpringRunner.class)
@@ -47,7 +46,7 @@ public class ReactiveMsExampleApplicationTests {
         client = WebTestClient.bindToRouterFunction(helloRouterFunction).build();
     }
 
-    private FluxExchangeResult<HelloResponse> completeInvoke(WebTestClient.RequestHeadersSpec<?> spec) {
+    private EntityExchangeResult<HelloResponse> completeInvoke(WebTestClient.RequestHeadersSpec<?> spec) {
         return spec.accept(APPLICATION_JSON_UTF8).exchange()
                 .expectStatus().isOk()
                 .expectHeader().contentType(APPLICATION_JSON_UTF8)
@@ -55,26 +54,23 @@ public class ReactiveMsExampleApplicationTests {
                 .returnResult();
     }
 
-    private FluxExchangeResult<HelloResponse> invoke(UriSpec<RequestBodySpec> spec, Function<UriBuilder, URI> url,
+    private EntityExchangeResult<HelloResponse> invoke(UriSpec<RequestBodySpec> spec, Function<UriBuilder, URI> url,
                                                      BodyInserter<HelloRequest, ReactiveHttpOutputMessage> object) {
         return completeInvoke(spec.uri(url).body(object));
     }
 
-    private FluxExchangeResult<HelloResponse> invoke(UriSpec spec, Function<UriBuilder, URI> url) {
+    private EntityExchangeResult<HelloResponse> invoke(UriSpec spec, Function<UriBuilder, URI> url) {
 
         return completeInvoke(spec.uri(url));
     }
 
-    private void verify(FluxExchangeResult<HelloResponse> result, Consumer<HelloResponse> check) {
-        StepVerifier.create(result.getResponseBody())
-                .consumeNextWith(check)
-                .expectComplete()
-                .verify();
+    private void verify(EntityExchangeResult<HelloResponse> result, Consumer<HelloResponse> check) {
+        check.accept(result.getResponseBody());
     }
+
 
     @Test
     public void defaultHelloTest() {
-
         verify(
                 invoke(
                         client.get(),
