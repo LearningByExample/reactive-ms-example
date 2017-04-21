@@ -15,7 +15,7 @@ public class HelloRouter {
     RouterFunction<?> helloRouterFunction() {
         HelloHandler handler = new HelloHandler();
 
-        return nest(pathPrefix("/hello"),
+        return nest(path("/hello"),
                 nest(accept(APPLICATION_JSON),
                         route(GET("/"), handler::defaultHello)
                         .andRoute(POST("/"), handler::postHello)
