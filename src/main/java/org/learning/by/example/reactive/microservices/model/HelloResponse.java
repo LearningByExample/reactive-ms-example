@@ -1,4 +1,4 @@
-package com.juan.medina.microservices.model;
+package org.learning.by.example.reactive.microservices.model;
 
 public class HelloResponse {
 
