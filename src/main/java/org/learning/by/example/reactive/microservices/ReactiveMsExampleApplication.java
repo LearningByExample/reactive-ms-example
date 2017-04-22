@@ -1,4 +1,4 @@
-package com.juan.medina.microservices;
+package org.learning.by.example.reactive.microservices;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

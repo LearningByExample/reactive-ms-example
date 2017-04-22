@@ -1,4 +1,4 @@
-package com.juan.medina.microservices;
+package org.learning.by.example.reactive.microservices;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;

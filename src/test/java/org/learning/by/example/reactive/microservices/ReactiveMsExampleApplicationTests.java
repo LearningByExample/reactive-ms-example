@@ -1,7 +1,7 @@
-package com.juan.medina.microservices;
+package org.learning.by.example.reactive.microservices;
 
-import com.juan.medina.microservices.model.HelloRequest;
-import com.juan.medina.microservices.model.HelloResponse;
+import org.learning.by.example.reactive.microservices.model.HelloRequest;
+import org.learning.by.example.reactive.microservices.model.HelloResponse;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

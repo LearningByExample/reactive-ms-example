@@ -1,7 +1,7 @@
-package com.juan.medina.microservices;
+package org.learning.by.example.reactive.microservices;
 
-import com.juan.medina.microservices.model.HelloRequest;
-import com.juan.medina.microservices.model.HelloResponse;
+import org.learning.by.example.reactive.microservices.model.HelloRequest;
+import org.learning.by.example.reactive.microservices.model.HelloResponse;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
