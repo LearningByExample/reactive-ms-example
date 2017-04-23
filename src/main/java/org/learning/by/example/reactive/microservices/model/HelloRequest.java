@@ -1,6 +1,7 @@
 package org.learning.by.example.reactive.microservices.model;
 
 public class HelloRequest {
+
     private String name;
 
     public HelloRequest() {
