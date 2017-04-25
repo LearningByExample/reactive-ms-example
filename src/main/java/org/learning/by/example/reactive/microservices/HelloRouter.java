@@ -20,8 +20,8 @@ public class HelloRouter {
         return nest(path("/hello"),
                 nest(accept(APPLICATION_JSON),
                         route(GET("/"), handler::defaultHello)
-                        .andRoute(POST("/"), handler::postHello)
-                        .andRoute(GET("/{name}"), handler::getHello)
-                )).andOther(route(RequestPredicates.all(),error::notFound));
+                                .andRoute(POST("/"), handler::postHello)
+                                .andRoute(GET("/{name}"), handler::getHello)
+                )).andOther(route(RequestPredicates.all(), error::notFound));
     }
 }
