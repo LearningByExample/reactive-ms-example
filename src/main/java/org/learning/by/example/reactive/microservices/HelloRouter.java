@@ -21,8 +21,7 @@ public class HelloRouter {
                 nest(accept(APPLICATION_JSON),
                         route(GET("/"), handler::defaultHello)
                                 .andRoute(POST("/"), handler::postHello)
-                                .andRoute(GET("/resource/{name}"), handler::getHello)
-                                .andRoute(GET("/web/"), handler::getWebsite)
+                                .andRoute(GET("/{name}"), handler::getHello)
                 )).andOther(route(RequestPredicates.all(), error::notFound));
     }
 }
