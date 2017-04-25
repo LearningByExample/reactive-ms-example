@@ -9,6 +9,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import org.springframework.web.reactive.function.BodyInserters;
@@ -21,8 +22,10 @@ import java.util.function.Function;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isEmptyOrNullString;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.hamcrest.core.IsNot.not;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
+import static org.springframework.http.MediaType.TEXT_HTML;
 import static org.springframework.test.web.reactive.server.WebTestClient.bindToRouterFunction;
 
 @RunWith(SpringRunner.class)
@@ -47,20 +50,25 @@ public class ReactiveMsExampleApplicationTests {
     }
 
 
-    private <T> T get(Function<UriBuilder, URI> builder, HttpStatus status, Class<T> type) {
+    private <T> T get(Function<UriBuilder, URI> builder, MediaType mediaType, HttpStatus status, Class<T> type) {
 
         return client.get()
                 .uri(builder)
                 .accept(APPLICATION_JSON_UTF8).exchange()
                 .expectStatus().isEqualTo(status)
-                .expectHeader().contentType(APPLICATION_JSON_UTF8)
+                .expectHeader().contentType(mediaType)
                 .expectBody(type)
                 .returnResult().getResponseBody();
     }
 
     private <T> T get(Function<UriBuilder, URI> builder, Class<T> type) {
 
-        return get(builder, HttpStatus.OK, type);
+        return get(builder, APPLICATION_JSON_UTF8, HttpStatus.OK, type);
+    }
+
+    private <T> T getWeb(Function<UriBuilder, URI> builder, Class<T> type) {
+
+        return get(builder, TEXT_HTML, HttpStatus.OK, type);
     }
 
     private <T, K> T post(Function<UriBuilder,URI> builder, HttpStatus status, K object, Class<T> type) {
@@ -94,10 +102,20 @@ public class ReactiveMsExampleApplicationTests {
     public void getHelloTest() {
 
         HelloResponse response = get(
-                builder -> builder.path(HELLO_PATH).path("/").path(NAME_ARG).build(CUSTOM_VALUE),
+                builder -> builder.path(HELLO_PATH).path("/resource/").path(NAME_ARG).build(CUSTOM_VALUE),
                 HelloResponse.class);
 
         assertThat(response.getHello(), is(CUSTOM_VALUE));
+    }
+
+    @Test
+    public void getHelloWebTest() {
+
+        String response = getWeb(
+                builder -> builder.path(HELLO_PATH).path("/web/").build(),
+                String.class);
+
+        assertThat(response, is(notNullValue()));
     }
 
     @Test
@@ -116,6 +134,7 @@ public class ReactiveMsExampleApplicationTests {
 
         ErrorResponse response = get(
                 builder -> builder.path(WRONG_PATH).build(),
+                APPLICATION_JSON_UTF8,
                 HttpStatus.NOT_FOUND,
                 ErrorResponse.class);
 
