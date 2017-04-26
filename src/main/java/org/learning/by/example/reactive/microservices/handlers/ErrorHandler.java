@@ -1,5 +1,7 @@
-package org.learning.by.example.reactive.microservices;
+package org.learning.by.example.reactive.microservices.handlers;
 
+import org.learning.by.example.reactive.microservices.exceptions.InvalidParametersException;
+import org.learning.by.example.reactive.microservices.exceptions.PathNotFoundException;
 import org.learning.by.example.reactive.microservices.model.ErrorResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,13 +14,13 @@ import reactor.core.publisher.Mono;
 import java.util.function.Function;
 
 @Component
-class ErrorHandler {
+public class ErrorHandler {
 
     private static final String NOT_FOUND = "not found";
     private static final String ERROR_RAISED = "error raised";
     private static Logger logger = LoggerFactory.getLogger(ErrorHandler.class);
 
-    Mono<ServerResponse> notFound(ServerRequest request) {
+    public Mono<ServerResponse> notFound(ServerRequest request) {
         return Mono.just(new PathNotFoundException(NOT_FOUND)).publish(getResponse());}
 
     Mono<ServerResponse> throwableError(Throwable error) {

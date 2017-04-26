@@ -1,4 +1,4 @@
-package org.learning.by.example.reactive.microservices;
+package org.learning.by.example.reactive.microservices.model;
 
 /**
  * Created by mail on 23/04/2017.
