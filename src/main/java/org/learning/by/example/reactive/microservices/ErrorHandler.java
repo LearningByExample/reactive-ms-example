@@ -16,25 +16,27 @@ class ErrorHandler {
 
     private static Logger logger = LoggerFactory.getLogger(ErrorHandler.class);
 
-    private static BiFunction<HttpStatus, String, Mono<ServerResponse>> response =
-            (status, value) -> ServerResponse.status(status).body(Mono.just(new ErrorResponse(value)),
-                    ErrorResponse.class);
-
-    private static HttpStatus getStatus(Throwable error){
-        if(error.getClass().equals(InvalidParametersException.class)){
-            return HttpStatus.BAD_REQUEST;
-        }else{
-            return HttpStatus.INTERNAL_SERVER_ERROR;
-        }
-    };
-
     Mono<ServerResponse> notFound(ServerRequest request) {
-        return response.apply(HttpStatus.NOT_FOUND, "not found");
+        return getResponse().apply(HttpStatus.NOT_FOUND, "not found");
     }
 
     Mono<ServerResponse> throwableError(Throwable error) {
         logger.error("error raised", error);
 
-        return response.apply(getStatus(error), error.getMessage());
+        return getResponse().apply(getStatus(error), error.getMessage());
     }
+
+    private BiFunction<HttpStatus, String, Mono<ServerResponse>> getResponse() {
+        return (status, value) -> ServerResponse.status(status)
+                .body(Mono.just(new ErrorResponse(value)), ErrorResponse.class);
+    }
+
+    private HttpStatus getStatus(Throwable error) {
+        if (error.getClass().equals(InvalidParametersException.class)) {
+            return HttpStatus.BAD_REQUEST;
+        } else {
+            return HttpStatus.INTERNAL_SERVER_ERROR;
+        }
+    }
+
 }

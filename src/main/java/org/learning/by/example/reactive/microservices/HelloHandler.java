@@ -2,17 +2,17 @@ package org.learning.by.example.reactive.microservices;
 
 import org.learning.by.example.reactive.microservices.model.HelloRequest;
 import org.learning.by.example.reactive.microservices.model.HelloResponse;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
-import java.util.function.BiFunction;
 import java.util.function.Function;
 
 @Component
 class HelloHandler {
+
+    private static final String NAME = "name";
 
     private final ErrorHandler errorHandler;
     private final HelloService helloService;
@@ -24,24 +24,33 @@ class HelloHandler {
         this.helloService = helloService;
     }
 
-    private static BiFunction<HttpStatus, Mono<String>, Mono<ServerResponse>> response =
-            (status, value) -> value.flatMap(name -> ServerResponse.status(status).body(Mono.just(
-                    new HelloResponse(name)), HelloResponse.class));
-
-    private Function<Mono<String>, Mono<ServerResponse>> getResponse() {
-        return (value) -> response.apply(HttpStatus.OK, helloService.getGreetings().apply(value).onErrorResume(Mono::error));
-    }
-
     Mono<ServerResponse> defaultHello(ServerRequest request) {
-        return getResponse().apply(DEFAULT_VALUE).onErrorResume(errorHandler::throwableError);
+        return DEFAULT_VALUE
+                .publish(getResponse())
+                .onErrorResume(errorHandler::throwableError);
     }
 
     Mono<ServerResponse> getHello(ServerRequest request) {
-        return getResponse().apply(Mono.just(request.pathVariable("name"))).onErrorResume(errorHandler::throwableError);
+        return Mono.just(request.pathVariable(NAME))
+                .publish(getResponse())
+                .onErrorResume(errorHandler::throwableError);
     }
 
     Mono<ServerResponse> postHello(ServerRequest request) {
-        return request.bodyToMono(HelloRequest.class).flatMap(helloRequest -> getResponse().apply(Mono.just(helloRequest.getName())))
+        return request.bodyToMono(HelloRequest.class)
+                .flatMap(helloRequest -> Mono.just(helloRequest.getName()))
+                .publish(getResponse())
                 .onErrorResume(errorHandler::throwableError);
+    }
+
+    private Function<Mono<String>, Mono<ServerResponse>> getResponse() {
+        return (value) -> value
+                .publish(helloService.getGreetings())
+                .publish(buildResponse());
+    }
+
+    private Function<Mono<String>, Mono<ServerResponse>> buildResponse() {
+        return value -> value.flatMap(name -> ServerResponse.ok()
+                .body(Mono.just(new HelloResponse(name)), HelloResponse.class));
     }
 }
