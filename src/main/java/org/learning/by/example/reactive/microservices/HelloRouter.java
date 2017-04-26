@@ -12,16 +12,17 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 
 @Component
 public class HelloRouter {
-    @Bean
-    RouterFunction<?> helloRouterFunction() {
-        HelloHandler handler = new HelloHandler();
-        ErrorHandler error = new ErrorHandler();
 
-        return nest(path("/hello"),
+    private static final String HELLO_PATH = "/hello";
+    private static final String NAME_ARG = "{name}";
+
+    @Bean
+    RouterFunction<?> helloRouterFunction(HelloHandler handler, ErrorHandler errorHandler) {
+        return nest(path(HELLO_PATH),
                 nest(accept(APPLICATION_JSON),
                         route(GET("/"), handler::defaultHello)
                                 .andRoute(POST("/"), handler::postHello)
-                                .andRoute(GET("/{name}"), handler::getHello)
-                )).andOther(route(RequestPredicates.all(), error::notFound));
+                                .andRoute(GET("/"+NAME_ARG), handler::getHello)
+                )).andOther(route(RequestPredicates.all(), errorHandler::notFound));
     }
 }
