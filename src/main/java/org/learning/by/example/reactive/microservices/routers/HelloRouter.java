@@ -1,5 +1,7 @@
-package org.learning.by.example.reactive.microservices;
+package org.learning.by.example.reactive.microservices.routers;
 
+import org.learning.by.example.reactive.microservices.handlers.ErrorHandler;
+import org.learning.by.example.reactive.microservices.handlers.HelloHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.RequestPredicates;

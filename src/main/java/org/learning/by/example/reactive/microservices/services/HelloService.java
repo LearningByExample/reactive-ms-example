@@ -1,13 +1,14 @@
-package org.learning.by.example.reactive.microservices;
+package org.learning.by.example.reactive.microservices.services;
 
+import org.learning.by.example.reactive.microservices.exceptions.InvalidParametersException;
 import org.springframework.stereotype.Component;
 import reactor.core.publisher.Mono;
 
 import java.util.function.Function;
 
 @Component
-class HelloService {
-    Function<Mono<String>, Mono<String>> getGreetings() {
+public class HelloService {
+    public Function<Mono<String>, Mono<String>> getGreetings() {
         return value -> value.flatMap(name -> {
             if (name.equals("")) {
                 return Mono.error(new InvalidParametersException("bad parameters"));
