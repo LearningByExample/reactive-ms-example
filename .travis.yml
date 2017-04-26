@@ -3,3 +3,7 @@ jdk:
   - oraclejdk8
 before_install:
  - chmod +x mvnw
+branches:
+  only:
+  - master
+  - develop
