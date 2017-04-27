@@ -14,7 +14,7 @@ import static org.springframework.test.web.reactive.server.WebTestClient.bindToR
 
 class BasicRouterTest {
     private WebTestClient client;
-
+    
     void setup(RouterFunction<?> routerFunction) {
         client = bindToRouterFunction(routerFunction).build();
     }

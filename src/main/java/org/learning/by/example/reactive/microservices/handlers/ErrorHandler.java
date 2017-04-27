@@ -6,14 +6,12 @@ import org.learning.by.example.reactive.microservices.model.ErrorResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 import java.util.function.Function;
 
-@Component
 public class ErrorHandler {
 
     private static final String NOT_FOUND = "not found";
