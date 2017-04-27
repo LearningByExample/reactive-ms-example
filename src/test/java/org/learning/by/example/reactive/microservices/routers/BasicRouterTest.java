@@ -10,6 +10,7 @@ import java.net.URI;
 import java.util.function.Function;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
+import static org.springframework.http.MediaType.TEXT_HTML;
 import static org.springframework.test.web.reactive.server.WebTestClient.bindToRouterFunction;
 
 class BasicRouterTest {
@@ -17,6 +18,15 @@ class BasicRouterTest {
     
     void setup(RouterFunction<?> routerFunction) {
         client = bindToRouterFunction(routerFunction).build();
+    }
+
+    String get(final Function<UriBuilder, URI> builder, final HttpStatus status) {
+        return new String(client.get()
+                .uri(builder)
+                .accept(TEXT_HTML).exchange()
+                .expectStatus().isEqualTo(status)
+                .expectHeader().contentType(TEXT_HTML)
+                .expectBody().returnResult().getResponseBody());
     }
 
     <T> T get(final Function<UriBuilder, URI> builder, final HttpStatus status, final Class<T> type) {

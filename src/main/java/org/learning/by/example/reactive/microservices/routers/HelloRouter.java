@@ -16,6 +16,8 @@ public class HelloRouter {
 
     private static final String HELLO_PATH = "/hello";
     private static final String NAME_ARG = "{name}";
+    private static final String DOC_ROUTE = "/docs/**";
+    private static final String PUBLIC = "public/";
 
     public static RouterFunction<?> doRoute(final HelloHandler handler, final ErrorHandler errorHandler) {
         return nest(path(HELLO_PATH),
@@ -23,7 +25,7 @@ public class HelloRouter {
                         route(GET("/"), handler::defaultHello)
                                 .andRoute(POST("/"), handler::postHello)
                                 .andRoute(GET("/"+NAME_ARG), handler::getHello)
-                )).andOther( resources("/doc/**", new ClassPathResource("public/")))
+                )).andOther( resources(DOC_ROUTE, new ClassPathResource(PUBLIC)))
                 .andOther(route(RequestPredicates.all(), errorHandler::notFound));
     }
 }

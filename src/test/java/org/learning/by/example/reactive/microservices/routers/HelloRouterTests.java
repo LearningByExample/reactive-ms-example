@@ -1,5 +1,8 @@
 package org.learning.by.example.reactive.microservices.routers;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,6 +31,8 @@ public class HelloRouterTests extends BasicRouterTest {
     private static final String HELLO_PATH = "/hello";
     private static final String NAME_ARG = "{name}";
     private static final String WRONG_PATH = "/wrong";
+    private static final String STATIC_PATH = "/docs/index.html";
+    private static final String HELLO_WORLD_FROM_WEB_FLUX = "Hello World : From web-flux";
 
     @Autowired
     private RouterFunction<?> helloRouterFunction;
@@ -95,6 +100,23 @@ public class HelloRouterTests extends BasicRouterTest {
                 ErrorResponse.class);
 
         assertThat(response.getError(), not(isEmptyOrNullString()));
+    }
+
+    @Test
+    public void staticContent(){
+        String result = get(
+                builder -> builder.path(STATIC_PATH).build(),
+                HttpStatus.OK
+        );
+        assertThat(result, not(isEmptyOrNullString()));
+        verifyTitleIs(result, HELLO_WORLD_FROM_WEB_FLUX);
+    }
+
+    private void verifyTitleIs(final String html, final String title){
+        Document doc = Jsoup.parse(html);
+        Element element = doc.head().getElementsByTag("title").get(0);
+        String text = element.text();
+        assertThat(text, is(title));
     }
 
 }
