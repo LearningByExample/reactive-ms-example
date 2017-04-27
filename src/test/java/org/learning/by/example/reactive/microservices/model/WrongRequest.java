@@ -9,7 +9,7 @@ public class WrongRequest {
     public WrongRequest() {
         this.surname = "";
     }
-    public WrongRequest(String surname) {
+    public WrongRequest(final String surname) {
         this.surname = surname;
     }
 
@@ -17,7 +17,7 @@ public class WrongRequest {
         return surname;
     }
 
-    public void setSurname(String surname) {
+    public void setSurname(final String surname) {
         this.surname = surname;
     }
 }

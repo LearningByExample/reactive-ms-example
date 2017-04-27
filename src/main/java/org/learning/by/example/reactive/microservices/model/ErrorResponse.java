@@ -8,7 +8,7 @@ public class ErrorResponse {
         this.error = "";
     }
 
-    public ErrorResponse(String hello) {
+    public ErrorResponse(final String hello) {
         this.error = hello;
     }
 
@@ -16,7 +16,7 @@ public class ErrorResponse {
         return error;
     }
 
-    public void setError(String error) {
+    public void setError(final String error) {
         this.error = error;
     }
 }

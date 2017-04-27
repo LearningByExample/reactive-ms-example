@@ -8,7 +8,7 @@ public class HelloRequest {
         this.name = "";
     }
 
-    public HelloRequest(String name) {
+    public HelloRequest(final String name) {
         this.name = name;
     }
 
@@ -16,7 +16,7 @@ public class HelloRequest {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 }

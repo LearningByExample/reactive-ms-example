@@ -20,24 +20,24 @@ public class HelloHandler {
 
     private static final Mono<String> DEFAULT_VALUE = Mono.just("world");
 
-    public HelloHandler(HelloService helloService, ErrorHandler errorHandler) {
+    public HelloHandler(final HelloService helloService, final ErrorHandler errorHandler) {
         this.errorHandler = errorHandler;
         this.helloService = helloService;
     }
 
-    public Mono<ServerResponse> defaultHello(ServerRequest request) {
+    public Mono<ServerResponse> defaultHello(final ServerRequest request) {
         return DEFAULT_VALUE
                 .publish(getResponse())
                 .onErrorResume(errorHandler::throwableError);
     }
 
-    public Mono<ServerResponse> getHello(ServerRequest request) {
+    public Mono<ServerResponse> getHello(final ServerRequest request) {
         return Mono.just(request.pathVariable(NAME))
                 .publish(getResponse())
                 .onErrorResume(errorHandler::throwableError);
     }
 
-    public Mono<ServerResponse> postHello(ServerRequest request) {
+    public Mono<ServerResponse> postHello(final ServerRequest request) {
         return request.bodyToMono(HelloRequest.class)
                 .flatMap(helloRequest -> Mono.just(helloRequest.getName()))
                 .publish(getResponse())

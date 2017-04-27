@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import reactor.core.publisher.Mono;
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -16,7 +15,6 @@ import static org.hamcrest.Matchers.is;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class HelloServiceTests {
-
     @Autowired
     private HelloService helloService;
 
@@ -24,6 +22,7 @@ public class HelloServiceTests {
     private static final String EMPTY = "";
     private static final Mono<String> VALID_VALUE = Mono.just(VALID);
     private static final Mono<String> INVALID_VALUE = Mono.just(EMPTY);
+    private static final String SHOULD_NOT_RETURN_OBJECT = "Shouldn't get a object";
 
     @Test
     public void validValue() {
@@ -35,7 +34,7 @@ public class HelloServiceTests {
     @Test
     public void invalidValueTest() {
         INVALID_VALUE.publish(helloService.getGreetings()).subscribe(value -> {
-            throw new NotImplementedException();
+            throw new UnsupportedOperationException(SHOULD_NOT_RETURN_OBJECT);
         }, exception -> {
             assertThat(exception, instanceOf(InvalidParametersException.class));
         });

@@ -20,10 +20,10 @@ public class ErrorHandler {
     private static final String ERROR_RAISED = "error raised";
     private static Logger logger = LoggerFactory.getLogger(ErrorHandler.class);
 
-    public Mono<ServerResponse> notFound(ServerRequest request) {
+    public Mono<ServerResponse> notFound(final ServerRequest request) {
         return Mono.just(new PathNotFoundException(NOT_FOUND)).publish(getResponse());}
 
-    Mono<ServerResponse> throwableError(Throwable error) {
+    Mono<ServerResponse> throwableError(final Throwable error) {
         logger.error(ERROR_RAISED, error);
         return Mono.just(error).publish(getResponse());
     }
@@ -35,7 +35,7 @@ public class ErrorHandler {
                 .body(Mono.just(new ErrorResponse(throwable.getMessage())), ErrorResponse.class));
     }
 
-    private HttpStatus getStatus(Throwable error) {
+    private HttpStatus getStatus(final Throwable error) {
         if (error.getClass().equals(InvalidParametersException.class)) {
             return HttpStatus.BAD_REQUEST;
         } else if (error.getClass().equals(PathNotFoundException.class)) {
