@@ -9,7 +9,7 @@
 	<packaging>jar</packaging>
 
 	<name>reactive-ms-example</name>
-	<description>Demo project for Spring Boot</description>
+	<description>An educational project to learn reactive programming with Spring 5</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>

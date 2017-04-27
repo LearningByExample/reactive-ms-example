@@ -8,9 +8,12 @@ import java.util.function.Function;
 
 @Component
 public class HelloService {
+
+    private static final String EMPTY = "";
+
     public Function<Mono<String>, Mono<String>> getGreetings() {
         return value -> value.flatMap(name -> {
-            if (name.equals("")) {
+            if (name.equals(EMPTY)) {
                 return Mono.error(new InvalidParametersException("bad parameters"));
             }
             return Mono.just(name);

@@ -8,7 +8,7 @@ public class HelloResponse {
         this.hello = "";
     }
 
-    public HelloResponse(String hello) {
+    public HelloResponse(final String hello) {
         this.hello = hello;
     }
 
@@ -16,7 +16,7 @@ public class HelloResponse {
         return hello;
     }
 
-    public void setHello(String hello) {
+    public void setHello(final String hello) {
         this.hello = hello;
     }
 }

@@ -19,7 +19,7 @@ public class HelloRouter {
     private static final String NAME_ARG = "{name}";
 
     @Bean
-    RouterFunction<?> helloRouterFunction(HelloHandler handler, ErrorHandler errorHandler) {
+    RouterFunction<?> helloRouterFunction(final HelloHandler handler, final ErrorHandler errorHandler) {
         return nest(path(HELLO_PATH),
                 nest(accept(APPLICATION_JSON),
                         route(GET("/"), handler::defaultHello)

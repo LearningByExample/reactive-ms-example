@@ -1,7 +1,7 @@
 package org.learning.by.example.reactive.microservices.exceptions;
 
 public class PathNotFoundException extends Exception{
-    public PathNotFoundException(String message){
+    public PathNotFoundException(final String message){
         super(message);
     }
 }
