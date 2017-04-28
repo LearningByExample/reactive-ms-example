@@ -23,23 +23,23 @@ import static org.hamcrest.core.IsNot.not;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class HelloRouterTests extends BasicRouterTest {
+public class AppRouterTests extends BasicRouterTest {
 
     private static final String DEFAULT_VALUE = "world";
     private static final String CUSTOM_VALUE = "reactive";
     private static final String JSON_VALUE = "json";
-    private static final String HELLO_PATH = "/hello";
+    private static final String HELLO_PATH = "/api/hello";
     private static final String NAME_ARG = "{name}";
-    private static final String WRONG_PATH = "/wrong";
-    private static final String STATIC_PATH = "/docs/index.html";
+    private static final String WRONG_PATH = "/api/wrong";
+    private static final String STATIC_PATH = "/index.html";
     private static final String HELLO_WORLD_FROM_WEB_FLUX = "Hello World : From web-flux";
 
     @Autowired
-    private RouterFunction<?> helloRouterFunction;
+    private RouterFunction<?> appRouterFunction;
 
     @Before
     public void setup() {
-        super.setup(helloRouterFunction);
+        super.setup(appRouterFunction);
     }
 
     @Test

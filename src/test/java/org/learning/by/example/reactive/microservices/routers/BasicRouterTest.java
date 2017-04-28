@@ -13,7 +13,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.http.MediaType.TEXT_HTML;
 import static org.springframework.test.web.reactive.server.WebTestClient.bindToRouterFunction;
 
-class BasicRouterTest {
+abstract class BasicRouterTest {
     private WebTestClient client;
     
     void setup(RouterFunction<?> routerFunction) {
