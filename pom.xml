@@ -5,7 +5,7 @@
 
 	<groupId>org.learning.by.example.reactive.microservices</groupId>
 	<artifactId>reactive-ms-example</artifactId>
-	<version>1.0.2</version>
+	<version>1.0.3</version>
 	<packaging>jar</packaging>
 
 	<name>reactive-ms-example</name>

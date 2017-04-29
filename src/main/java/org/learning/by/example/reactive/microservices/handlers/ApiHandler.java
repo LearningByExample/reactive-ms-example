@@ -9,7 +9,7 @@ import reactor.core.publisher.Mono;
 
 import java.util.function.Function;
 
-public class HelloHandler {
+public class ApiHandler {
 
     private static final String NAME = "name";
 
@@ -18,7 +18,7 @@ public class HelloHandler {
 
     private static final Mono<String> DEFAULT_VALUE = Mono.just("world");
 
-    public HelloHandler(final HelloService helloService, final ErrorHandler errorHandler) {
+    public ApiHandler(final HelloService helloService, final ErrorHandler errorHandler) {
         this.errorHandler = errorHandler;
         this.helloService = helloService;
     }
