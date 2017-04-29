@@ -9,16 +9,21 @@ import org.learning.by.example.reactive.microservices.model.ErrorResponse;
 import org.learning.by.example.reactive.microservices.model.HelloRequest;
 import org.learning.by.example.reactive.microservices.model.HelloResponse;
 import org.learning.by.example.reactive.microservices.model.WrongRequest;
+import org.learning.by.example.reactive.microservices.services.HelloService;
 import org.learning.by.example.reactive.microservices.test.BasicRouterTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.junit4.SpringRunner;
+import reactor.core.publisher.Mono;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.hamcrest.core.IsNot.not;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.reset;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -30,12 +35,16 @@ public class ApiRouterTests extends BasicRouterTest {
     private static final String HELLO_PATH = "/api/hello";
     private static final String NAME_ARG = "{name}";
     private static final String WRONG_PATH = "/api/wrong";
+    private static final String SUPER_ERROR = "SUPER ERROR";
 
     @Autowired
     private ApiHandler apiHandler;
 
     @Autowired
     private ErrorHandler errorHandler;
+
+    @SpyBean
+    private HelloService helloService;
 
     @Before
     public void setup() {
@@ -100,6 +109,21 @@ public class ApiRouterTests extends BasicRouterTest {
                 ErrorResponse.class);
 
         assertThat(response.getError(), not(isEmptyOrNullString()));
+    }
+
+    @Test
+    public void mockServiceErrorTest() {
+
+        given(helloService.getGreetings()).willReturn(name -> Mono.error(new RuntimeException(SUPER_ERROR)));
+
+        final ErrorResponse response = get(
+                builder -> builder.path(HELLO_PATH).build(),
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                ErrorResponse.class);
+
+        assertThat(response.getError(), is(SUPER_ERROR));
+
+        reset(helloService);
     }
 
 }
