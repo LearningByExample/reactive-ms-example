@@ -2,7 +2,7 @@ package org.learning.by.example.reactive.microservices;
 
 import org.learning.by.example.reactive.microservices.handlers.ErrorHandler;
 import org.learning.by.example.reactive.microservices.handlers.ApiHandler;
-import org.learning.by.example.reactive.microservices.routers.AppRouter;
+import org.learning.by.example.reactive.microservices.routers.MainRouter;
 import org.learning.by.example.reactive.microservices.services.HelloService;
 import org.learning.by.example.reactive.microservices.services.HelloServiceImpl;
 import org.springframework.context.annotation.Bean;
@@ -30,7 +30,7 @@ public class ApplicationConfig {
     }
 
     @Bean
-    RouterFunction<?> appRouterFunction(final ApiHandler apiHandler, final ErrorHandler errorHandler) {
-        return AppRouter.doRoute(apiHandler, errorHandler);
+    RouterFunction<?> mainRouterFunction(final ApiHandler apiHandler, final ErrorHandler errorHandler) {
+        return MainRouter.doRoute(apiHandler, errorHandler);
     }
 }

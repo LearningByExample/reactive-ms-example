@@ -1,4 +1,4 @@
-package org.learning.by.example.reactive.microservices.routers;
+package org.learning.by.example.reactive.microservices.test;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.test.web.reactive.server.WebTestClient;
@@ -13,14 +13,18 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.http.MediaType.TEXT_HTML;
 import static org.springframework.test.web.reactive.server.WebTestClient.bindToRouterFunction;
 
-abstract class BasicRouterTest {
+public abstract class BasicRouterTest {
     private WebTestClient client;
-    
-    void setup(RouterFunction<?> routerFunction) {
+
+    protected void setup(RouterFunction<?> routerFunction) {
         client = bindToRouterFunction(routerFunction).build();
     }
 
-    String get(final Function<UriBuilder, URI> builder, final HttpStatus status) {
+    protected String get(final Function<UriBuilder, URI> builder) {
+        return get(builder, HttpStatus.OK);
+    }
+
+    protected String get(final Function<UriBuilder, URI> builder, final HttpStatus status) {
         return new String(client.get()
                 .uri(builder)
                 .accept(TEXT_HTML).exchange()
@@ -29,7 +33,7 @@ abstract class BasicRouterTest {
                 .expectBody().returnResult().getResponseBody());
     }
 
-    <T> T get(final Function<UriBuilder, URI> builder, final HttpStatus status, final Class<T> type) {
+    protected <T> T get(final Function<UriBuilder, URI> builder, final HttpStatus status, final Class<T> type) {
         return client.get()
                 .uri(builder)
                 .accept(APPLICATION_JSON_UTF8).exchange()
@@ -39,11 +43,11 @@ abstract class BasicRouterTest {
                 .returnResult().getResponseBody();
     }
 
-    <T> T get(final Function<UriBuilder, URI> builder, final Class<T> type) {
+    protected <T> T get(final Function<UriBuilder, URI> builder, final Class<T> type) {
         return get(builder, HttpStatus.OK, type);
     }
 
-    <T, K> T post(final Function<UriBuilder, URI> builder, final HttpStatus status, final K object, final Class<T> type) {
+    protected <T, K> T post(final Function<UriBuilder, URI> builder, final HttpStatus status, final K object, final Class<T> type) {
         return client.post()
                 .uri(builder)
                 .body(BodyInserters.fromObject(object))
@@ -54,7 +58,7 @@ abstract class BasicRouterTest {
                 .returnResult().getResponseBody();
     }
 
-    <T, K> T post(final Function<UriBuilder, URI> builder, final K object, final Class<T> type) {
-        return post(builder,HttpStatus.OK, object, type);
+    protected <T, K> T post(final Function<UriBuilder, URI> builder, final K object, final Class<T> type) {
+        return post(builder, HttpStatus.OK, object, type);
     }
 }
