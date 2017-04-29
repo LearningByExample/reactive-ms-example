@@ -20,8 +20,7 @@ import static org.hamcrest.core.IsNot.not;
 public class StaticRouterTests extends BasicRouterTest {
 
     private static final String STATIC_PATH = "/index.html";
-    private static final String STATIC_WRONG_PATH = "/index_wrong.html";
-    private static final String HELLO_WORLD_FROM_WEB_FLUX = "Hello World : From web-flux";
+    private static final String DEFAULT_TITLE = "Swagger UI";
     private static final String TITLE_TAG = "title";
 
     @Before
@@ -33,7 +32,7 @@ public class StaticRouterTests extends BasicRouterTest {
     public void staticContentTest() {
         String result = get(builder -> builder.path(STATIC_PATH).build());
         assertThat(result, not(isEmptyOrNullString()));
-        verifyTitleIs(result, HELLO_WORLD_FROM_WEB_FLUX);
+        verifyTitleIs(result, DEFAULT_TITLE);
     }
 
     private void verifyTitleIs(final String html, final String title) {

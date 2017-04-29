@@ -24,8 +24,8 @@ $ mvnw spring-boot:run
         "name" : "json"
     }
     ```
-
-[![Run in Postman](https://run.pstmn.io/button.svg)](https://app.getpostman.com/run-collection/498aea143dc572212f17)
+## API
+[Run API via Swagger UI](http://localhost:8080/index.html)
 
 ## References
 
