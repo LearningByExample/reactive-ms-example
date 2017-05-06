@@ -36,7 +36,7 @@ public class MainRouterTests extends BasicRouterTest {
     public void setup() {
         super.setup(mainRouterFunction);
 
-        given(quoteService.getQuote()).willReturn(
+        given(quoteService.getQuote()).willReturn( () ->
                 createMockedQuote(MOCK_QUOTE_CONTENT)
         );
     }

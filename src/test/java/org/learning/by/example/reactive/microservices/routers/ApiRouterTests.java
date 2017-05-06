@@ -52,7 +52,7 @@ public class ApiRouterTests extends BasicRouterTest {
     @Before
     public void setup() {
         super.setup(ApiRouter.doRoute(apiHandler, errorHandler));
-        given(quoteService.getQuote()).willReturn(
+        given(quoteService.getQuote()).willReturn( ()->
                 createMockedQuote(MOCK_QUOTE_CONTENT)
         );
     }
@@ -153,7 +153,7 @@ public class ApiRouterTests extends BasicRouterTest {
     @Test
     public void quoteServiceErrorTest() {
 
-        given(quoteService.getQuote()).willReturn(Mono.error(new RuntimeException(SUPER_ERROR)));
+        given(quoteService.getQuote()).willReturn( () -> Mono.error(new RuntimeException(SUPER_ERROR)));
 
         final ErrorResponse response = get(
                 builder -> builder.path(HELLO_PATH).build(),

@@ -14,6 +14,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -36,12 +38,16 @@ public class QuoteServiceImplTest {
                 createMockedResponse(MOCK_ID, MOCK_TITLE, MOCK_LINK, MOCK_CONTENT)
         );
 
-        quoteService.getQuote().subscribe(quote -> {
-            assertThat(quote.getID(), is(MOCK_ID));
-            assertThat(quote.getTitle(), is(MOCK_TITLE));
-            assertThat(quote.getLink(), is(MOCK_LINK));
-            assertThat(quote.getContent(), is(MOCK_CONTENT));
-        });
+        Quote quote = Mono.defer(quoteService.getQuote()).block();
+
+        assertThat(quote.getID(), is(MOCK_ID));
+        assertThat(quote.getTitle(), is(MOCK_TITLE));
+        assertThat(quote.getLink(), is(MOCK_LINK));
+        assertThat(quote.getContent(), is(MOCK_CONTENT));
+
+        verify(quoteService, times(1)).getQuote();
+        verify(quoteService, times(1)).requestQuotes();
+        verify(quoteService, times(1)).chooseFirst();
 
         reset(quoteService);
     }
@@ -62,12 +68,15 @@ public class QuoteServiceImplTest {
     public void requestErrorShouldBeHandle() {
         given(quoteService.requestQuotes()).willReturn(Mono.error(new RuntimeException(BAD_EXCEPTION)));
 
-        quoteService.getQuote().subscribe(quote -> {
+        Mono.defer(quoteService.getQuote()).subscribe(quote -> {
             throw new UnsupportedOperationException(SHOULD_NOT_RETURN_OBJECT);
         }, throwable -> {
             assertThat(throwable, instanceOf(GetQuoteException.class));
         });
 
+        verify(quoteService, times(1)).getQuote();
+        verify(quoteService, times(1)).requestQuotes();
+        verify(quoteService, times(1)).chooseFirst();
         reset(quoteService);
     }
 
@@ -75,11 +84,15 @@ public class QuoteServiceImplTest {
     public void chooseFirstErrorShouldBeHandle() {
         given(quoteService.chooseFirst()).willReturn(mono -> Mono.error(new RuntimeException(BAD_EXCEPTION)));
 
-        quoteService.getQuote().subscribe(quote -> {
+        Mono.defer(quoteService.getQuote()).subscribe(quote -> {
             throw new UnsupportedOperationException(SHOULD_NOT_RETURN_OBJECT);
         }, throwable -> {
             assertThat(throwable, instanceOf(GetQuoteException.class));
         });
+
+        verify(quoteService, times(1)).getQuote();
+        verify(quoteService, times(1)).requestQuotes();
+        verify(quoteService, times(1)).chooseFirst();
 
         reset(quoteService);
     }

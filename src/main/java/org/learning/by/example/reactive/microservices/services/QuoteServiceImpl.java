@@ -9,6 +9,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class QuoteServiceImpl implements QuoteService {
 
@@ -37,8 +38,11 @@ public class QuoteServiceImpl implements QuoteService {
     }
 
     @Override
-    public Mono<Quote> getQuote() {
-        return requestQuotes().publish(chooseFirst()).onErrorResume(throwable ->
-                Mono.error(new GetQuoteException(ERROR_GETTING_QUOTE, throwable)));
+    public Supplier<Mono<Quote>> getQuote() {
+        return () -> {
+            return requestQuotes().publish(chooseFirst()).onErrorResume(throwable ->
+                    Mono.error(new GetQuoteException(ERROR_GETTING_QUOTE, throwable)));
+        };
     }
+
 }
