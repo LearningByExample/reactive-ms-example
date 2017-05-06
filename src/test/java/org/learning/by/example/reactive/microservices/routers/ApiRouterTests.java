@@ -1,14 +1,12 @@
 package org.learning.by.example.reactive.microservices.routers;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.learning.by.example.reactive.microservices.handlers.ApiHandler;
 import org.learning.by.example.reactive.microservices.handlers.ErrorHandler;
-import org.learning.by.example.reactive.microservices.model.ErrorResponse;
-import org.learning.by.example.reactive.microservices.model.HelloRequest;
-import org.learning.by.example.reactive.microservices.model.HelloResponse;
-import org.learning.by.example.reactive.microservices.model.WrongRequest;
+import org.learning.by.example.reactive.microservices.model.*;
 import org.learning.by.example.reactive.microservices.services.HelloService;
 import org.learning.by.example.reactive.microservices.services.QuoteService;
 import org.learning.by.example.reactive.microservices.test.BasicRouterTest;
@@ -37,6 +35,7 @@ public class ApiRouterTests extends BasicRouterTest {
     private static final String NAME_ARG = "{name}";
     private static final String WRONG_PATH = "/api/wrong";
     private static final String SUPER_ERROR = "SUPER ERROR";
+    private static final String MOCK_QUOTE_CONTENT = "content";
 
     @Autowired
     private ApiHandler apiHandler;
@@ -53,6 +52,22 @@ public class ApiRouterTests extends BasicRouterTest {
     @Before
     public void setup() {
         super.setup(ApiRouter.doRoute(apiHandler, errorHandler));
+        given(quoteService.getQuote()).willReturn(
+                createMockedQuote(MOCK_QUOTE_CONTENT)
+        );
+    }
+
+    @After
+    public void tearDown(){
+        reset(quoteService);
+    }
+
+    private Mono<Quote> createMockedQuote(final String content) {
+        Quote quote = new Quote();
+
+        quote.setContent(content);
+
+        return Mono.just(quote);
     }
 
     @Test
@@ -62,6 +77,7 @@ public class ApiRouterTests extends BasicRouterTest {
                 HelloResponse.class);
 
         assertThat(response.getGreetings(), is(DEFAULT_VALUE));
+        assertThat(response.getQuote(), is(MOCK_QUOTE_CONTENT));
     }
 
     @Test
@@ -71,6 +87,8 @@ public class ApiRouterTests extends BasicRouterTest {
                 HelloResponse.class);
 
         assertThat(response.getGreetings(), is(CUSTOM_VALUE));
+        assertThat(response.getQuote(), is(MOCK_QUOTE_CONTENT));
+
     }
 
     @Test
@@ -81,6 +99,8 @@ public class ApiRouterTests extends BasicRouterTest {
                 HelloResponse.class);
 
         assertThat(response.getGreetings(), is(JSON_VALUE));
+        assertThat(response.getQuote(), is(MOCK_QUOTE_CONTENT));
+
     }
 
     @Test
@@ -116,7 +136,7 @@ public class ApiRouterTests extends BasicRouterTest {
     }
 
     @Test
-    public void mockServiceErrorTest() {
+    public void helloServiceErrorTest() {
 
         given(helloService.getGreetings()).willReturn(name -> Mono.error(new RuntimeException(SUPER_ERROR)));
 
@@ -131,7 +151,7 @@ public class ApiRouterTests extends BasicRouterTest {
     }
 
     @Test
-    public void mockServiceErrorTest2() {
+    public void quoteServiceErrorTest() {
 
         given(quoteService.getQuote()).willReturn(Mono.error(new RuntimeException(SUPER_ERROR)));
 

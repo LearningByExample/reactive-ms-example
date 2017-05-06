@@ -30,18 +30,6 @@ public class QuoteServiceImplTest {
     @SpyBean
     private QuoteServiceImpl quoteService;
 
-    private Mono<Quote[]> createMockedResponse(final Integer ID, final String title, final String link,
-                                               final String content) {
-        Quote quote = new Quote();
-
-        quote.setID(ID);
-        quote.setTitle(title);
-        quote.setLink(link);
-        quote.setContent(content);
-
-        return Mono.just(new Quote[]{quote});
-    }
-
     @Test
     public void mockedRequest() {
         given(quoteService.requestQuotes()).willReturn(
@@ -56,6 +44,18 @@ public class QuoteServiceImplTest {
         });
 
         reset(quoteService);
+    }
+
+    private Mono<Quote[]> createMockedResponse(final Integer ID, final String title, final String link,
+                                               final String content) {
+        Quote quote = new Quote();
+
+        quote.setID(ID);
+        quote.setTitle(title);
+        quote.setLink(link);
+        quote.setContent(content);
+
+        return Mono.just(new Quote[]{quote});
     }
 
     @Test
