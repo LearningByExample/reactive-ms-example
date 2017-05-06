@@ -10,6 +10,7 @@ import org.learning.by.example.reactive.microservices.model.HelloRequest;
 import org.learning.by.example.reactive.microservices.model.HelloResponse;
 import org.learning.by.example.reactive.microservices.model.WrongRequest;
 import org.learning.by.example.reactive.microservices.services.HelloService;
+import org.learning.by.example.reactive.microservices.services.QuoteService;
 import org.learning.by.example.reactive.microservices.test.BasicRouterTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -45,6 +46,9 @@ public class ApiRouterTests extends BasicRouterTest {
 
     @SpyBean
     private HelloService helloService;
+
+    @SpyBean
+    private QuoteService quoteService;
 
     @Before
     public void setup() {
@@ -115,6 +119,21 @@ public class ApiRouterTests extends BasicRouterTest {
     public void mockServiceErrorTest() {
 
         given(helloService.getGreetings()).willReturn(name -> Mono.error(new RuntimeException(SUPER_ERROR)));
+
+        final ErrorResponse response = get(
+                builder -> builder.path(HELLO_PATH).build(),
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                ErrorResponse.class);
+
+        assertThat(response.getError(), is(SUPER_ERROR));
+
+        reset(helloService);
+    }
+
+    @Test
+    public void mockServiceErrorTest2() {
+
+        given(quoteService.getQuote()).willReturn(Mono.error(new RuntimeException(SUPER_ERROR)));
 
         final ErrorResponse response = get(
                 builder -> builder.path(HELLO_PATH).build(),
