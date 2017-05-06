@@ -6,6 +6,7 @@ import org.learning.by.example.reactive.microservices.exceptions.GetQuoteExcepti
 import org.learning.by.example.reactive.microservices.model.Quote;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import reactor.core.publisher.Mono;
 
@@ -19,6 +20,7 @@ import static org.mockito.Mockito.verify;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@ActiveProfiles("test")
 public class QuoteServiceImplTest {
 
     private static final String BAD_EXCEPTION = "BAD_EXCEPTION";

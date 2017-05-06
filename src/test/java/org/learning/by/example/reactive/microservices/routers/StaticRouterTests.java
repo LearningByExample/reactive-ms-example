@@ -8,6 +8,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.learning.by.example.reactive.microservices.test.BasicRouterTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -17,6 +18,7 @@ import static org.hamcrest.core.IsNot.not;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@ActiveProfiles("test")
 public class StaticRouterTests extends BasicRouterTest {
 
     private static final String STATIC_PATH = "/index.html";
