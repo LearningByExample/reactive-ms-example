@@ -13,6 +13,7 @@ import java.util.function.Function;
 public class QuoteServiceImpl implements QuoteService {
 
     private static final String ERROR_GETTING_QUOTE = "ERROR GETTING_QUOTE";
+    private static final String REQUEST_CODE_ENDPOINT = "http://quotesondesign.com/wp-json/posts?filter[orderby]=rand&filter[posts_per_page]=1";
     private Logger logger = LoggerFactory.getLogger(QuoteService.class);
 
     private final WebClient webClient;
@@ -21,10 +22,10 @@ public class QuoteServiceImpl implements QuoteService {
         webClient = WebClient.create();
     }
 
-    Mono<Quote[]> request() {
+    Mono<Quote[]> requestQuotes() {
         return webClient
                 .get()
-                .uri("http://quotesondesign.com/wp-json/posts?filter[orderby]=rand&filter[posts_per_page]=1")
+                .uri(REQUEST_CODE_ENDPOINT)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .flatMap(clientResponse -> clientResponse.bodyToMono(Quote[].class));
@@ -37,7 +38,7 @@ public class QuoteServiceImpl implements QuoteService {
 
     @Override
     public Mono<Quote> getQuote() {
-        return request().publish(chooseFirst()).onErrorResume(throwable ->
+        return requestQuotes().publish(chooseFirst()).onErrorResume(throwable ->
                 Mono.error(new GetQuoteException(ERROR_GETTING_QUOTE, throwable)));
     }
 }

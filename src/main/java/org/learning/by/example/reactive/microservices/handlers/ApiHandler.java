@@ -3,6 +3,8 @@ package org.learning.by.example.reactive.microservices.handlers;
 import org.learning.by.example.reactive.microservices.model.HelloRequest;
 import org.learning.by.example.reactive.microservices.model.HelloResponse;
 import org.learning.by.example.reactive.microservices.services.HelloService;
+import org.learning.by.example.reactive.microservices.services.QuoteService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
@@ -15,6 +17,9 @@ public class ApiHandler {
 
     private final ErrorHandler errorHandler;
     private final HelloService helloService;
+
+    @Autowired
+    private QuoteService quoteService;
 
     private static final Mono<String> DEFAULT_VALUE = Mono.just("world");
 
@@ -45,11 +50,25 @@ public class ApiHandler {
     private Function<Mono<String>, Mono<ServerResponse>> getResponse() {
         return (value) -> value
                 .publish(helloService.getGreetings())
-                .publish(buildResponse());
+                .publish(createResponse())
+                .publish(send());
     }
 
-    private Function<Mono<String>, Mono<ServerResponse>> buildResponse() {
-        return value -> value.flatMap(name -> ServerResponse.ok()
-                .body(Mono.just(new HelloResponse(name)), HelloResponse.class));
+    private Function<Mono<String>, Mono<HelloResponse>> createResponse() {
+        return value -> value.flatMap(name -> {
+            return getQuote().flatMap(title -> {
+                return Mono.just(new HelloResponse(name, title));
+            });
+        });
+    }
+    
+    private Mono<String> getQuote(){
+        return quoteService.getQuote().flatMap(quote -> Mono.just(quote.getTitle()));
+    }
+
+    private Function<Mono<HelloResponse>, Mono<ServerResponse>> send() {
+        return value -> value.flatMap(helloResponse -> {
+            return ServerResponse.ok().body(Mono.just(helloResponse), HelloResponse.class);
+        });
     }
 }

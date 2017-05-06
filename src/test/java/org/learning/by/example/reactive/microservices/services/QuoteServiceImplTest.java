@@ -44,7 +44,7 @@ public class QuoteServiceImplTest {
 
     @Test
     public void mockedRequest() {
-        given(quoteService.request()).willReturn(
+        given(quoteService.requestQuotes()).willReturn(
                 createMockedResponse(MOCK_ID, MOCK_TITLE, MOCK_LINK, MOCK_CONTENT)
         );
 
@@ -60,7 +60,7 @@ public class QuoteServiceImplTest {
 
     @Test
     public void requestErrorShouldBeHandle() {
-        given(quoteService.request()).willReturn(Mono.error(new RuntimeException(BAD_EXCEPTION)));
+        given(quoteService.requestQuotes()).willReturn(Mono.error(new RuntimeException(BAD_EXCEPTION)));
 
         quoteService.getQuote().subscribe(quote -> {
             throw new UnsupportedOperationException(SHOULD_NOT_RETURN_OBJECT);
