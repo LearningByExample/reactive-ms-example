@@ -40,10 +40,8 @@ public class QuoteServiceImpl implements QuoteService {
 
     @Override
     public Supplier<Mono<Quote>> getQuote() {
-        return () -> {
-            return requestQuotes().publish(chooseFirst()).onErrorResume(throwable ->
-                    Mono.error(new GetQuoteException(ERROR_GETTING_QUOTE, throwable)));
-        };
+        return () -> requestQuotes().publish(chooseFirst())
+                .onErrorResume(throwable ->Mono.error(new GetQuoteException(ERROR_GETTING_QUOTE, throwable)));
     }
 
 }
