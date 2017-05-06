@@ -29,7 +29,7 @@ public class QuoteServiceImplTest {
     private static final String MOCK_LINK = "link";
     private static final String MOCK_CONTENT = "content";
 
-    @SpyBean
+    @SpyBean(QuoteService.class)
     private QuoteServiceImpl quoteService;
 
     @Test

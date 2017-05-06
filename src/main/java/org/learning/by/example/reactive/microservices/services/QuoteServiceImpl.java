@@ -14,19 +14,20 @@ import java.util.function.Supplier;
 public class QuoteServiceImpl implements QuoteService {
 
     private static final String ERROR_GETTING_QUOTE = "ERROR GETTING_QUOTE";
-    private static final String REQUEST_CODE_ENDPOINT = "http://quotesondesign.com/wp-json/posts?filter[orderby]=rand&filter[posts_per_page]=1";
+    private final String endPoint;
     private Logger logger = LoggerFactory.getLogger(QuoteService.class);
 
     private final WebClient webClient;
 
-    public QuoteServiceImpl() {
+    public QuoteServiceImpl(final String endPoint) {
+        this.endPoint = endPoint;
         webClient = WebClient.create();
     }
 
     Mono<Quote[]> requestQuotes() {
         return webClient
                 .get()
-                .uri(REQUEST_CODE_ENDPOINT)
+                .uri(this.endPoint)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .flatMap(clientResponse -> clientResponse.bodyToMono(Quote[].class));
