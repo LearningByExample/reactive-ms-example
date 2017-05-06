@@ -24,23 +24,23 @@ public class QuoteServiceImpl implements QuoteService {
         webClient = WebClient.create();
     }
 
-    Mono<Quote[]> requestQuotes() {
-        return webClient
+    Supplier<Mono<Quote[]>> request() {
+        return () -> webClient
                 .get()
-                .uri(this.endPoint)
+                .uri(endPoint)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
                 .flatMap(clientResponse -> clientResponse.bodyToMono(Quote[].class));
     }
 
     Function<Mono<Quote[]>, Mono<Quote>> chooseFirst() {
-        return mono -> mono.flatMap(quotes -> Mono.just(quotes[0])).onErrorResume(throwable ->
-                Mono.error(new GetQuoteException(ERROR_GETTING_QUOTE, throwable)));
+        return mono -> mono.flatMap(quotes -> Mono.just(quotes[0]))
+                .onErrorResume(throwable ->Mono.error(new GetQuoteException(ERROR_GETTING_QUOTE, throwable)));
     }
 
     @Override
     public Supplier<Mono<Quote>> getQuote() {
-        return () -> requestQuotes().publish(chooseFirst())
+        return () -> Mono.defer(request()).publish(chooseFirst())
                 .onErrorResume(throwable ->Mono.error(new GetQuoteException(ERROR_GETTING_QUOTE, throwable)));
     }
 

@@ -36,8 +36,8 @@ public class QuoteServiceImplTest {
 
     @Test
     public void mockedRequest() {
-        given(quoteService.requestQuotes()).willReturn(
-                createMockedResponse(MOCK_ID, MOCK_TITLE, MOCK_LINK, MOCK_CONTENT)
+        given(quoteService.request()).willReturn(
+                () -> createMockedResponse(MOCK_ID, MOCK_TITLE, MOCK_LINK, MOCK_CONTENT)
         );
 
         Quote quote = Mono.defer(quoteService.getQuote()).block();
@@ -48,7 +48,7 @@ public class QuoteServiceImplTest {
         assertThat(quote.getContent(), is(MOCK_CONTENT));
 
         verify(quoteService, times(1)).getQuote();
-        verify(quoteService, times(1)).requestQuotes();
+        verify(quoteService, times(1)).request();
         verify(quoteService, times(1)).chooseFirst();
 
         reset(quoteService);
@@ -68,7 +68,7 @@ public class QuoteServiceImplTest {
 
     @Test
     public void requestErrorShouldBeHandle() {
-        given(quoteService.requestQuotes()).willReturn(Mono.error(new RuntimeException(BAD_EXCEPTION)));
+        given(quoteService.request()).willReturn(() -> Mono.error(new RuntimeException(BAD_EXCEPTION)));
 
         Mono.defer(quoteService.getQuote()).subscribe(quote -> {
             throw new UnsupportedOperationException(SHOULD_NOT_RETURN_OBJECT);
@@ -77,8 +77,9 @@ public class QuoteServiceImplTest {
         });
 
         verify(quoteService, times(1)).getQuote();
-        verify(quoteService, times(1)).requestQuotes();
+        verify(quoteService, times(1)).request();
         verify(quoteService, times(1)).chooseFirst();
+
         reset(quoteService);
     }
 
@@ -93,7 +94,7 @@ public class QuoteServiceImplTest {
         });
 
         verify(quoteService, times(1)).getQuote();
-        verify(quoteService, times(1)).requestQuotes();
+        verify(quoteService, times(1)).request();
         verify(quoteService, times(1)).chooseFirst();
 
         reset(quoteService);
