@@ -13,15 +13,16 @@ $ mvnw spring-boot:run
 
 ## Sample requests
 
-- GET [http://localhost:8080/api/hello](http://localhost:8080/hello)
+- GET [http://localhost:8080/api/greetings](http://localhost:8080/greetings)
 
-- GET [http://localhost:8080/api/hello/reactive](http://localhost:8080/hello/reactive)
+- GET [http://localhost:8080/api/greetings/reactive](http://localhost:8080/greetings/reactive)
 
-- POST [http://localhost:8080/api/hello](http://localhost:8080/hello) 
+- POST [http://localhost:8080/api/greetings](http://localhost:8080/greetings) 
 
     ```json
     {
-        "name" : "json"
+        "greetings" : "json",
+        "quote" : "Every night I pray that clients with taste will get money and clients with money will get taste."
     }
     ```
 ## API

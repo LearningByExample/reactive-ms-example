@@ -57,7 +57,7 @@ public class ApiRouterTests extends BasicRouterTest {
                 builder -> builder.path(HELLO_PATH).build(),
                 HelloResponse.class);
 
-        assertThat(response.getHello(), is(DEFAULT_VALUE));
+        assertThat(response.getGreetings(), is(DEFAULT_VALUE));
     }
 
     @Test
@@ -66,7 +66,7 @@ public class ApiRouterTests extends BasicRouterTest {
                 builder -> builder.path(HELLO_PATH).path("/").path(NAME_ARG).build(CUSTOM_VALUE),
                 HelloResponse.class);
 
-        assertThat(response.getHello(), is(CUSTOM_VALUE));
+        assertThat(response.getGreetings(), is(CUSTOM_VALUE));
     }
 
     @Test
@@ -76,7 +76,7 @@ public class ApiRouterTests extends BasicRouterTest {
                 new HelloRequest(JSON_VALUE),
                 HelloResponse.class);
 
-        assertThat(response.getHello(), is(JSON_VALUE));
+        assertThat(response.getGreetings(), is(JSON_VALUE));
     }
 
     @Test

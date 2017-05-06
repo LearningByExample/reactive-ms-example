@@ -49,20 +49,18 @@ public class ApiHandler {
 
     private Function<Mono<String>, Mono<ServerResponse>> getResponse() {
         return (value) -> value
-                .publish(helloService.getGreetings())
                 .publish(createResponse())
                 .publish(send());
     }
 
     private Function<Mono<String>, Mono<HelloResponse>> createResponse() {
-        return value -> value.flatMap(name -> {
-            return getQuote().flatMap(title -> {
-                return Mono.just(new HelloResponse(name, title));
-            });
-        });
+        return name ->
+                name.publish(helloService.getGreetings()).flatMap(
+                        greetings -> getQuote().flatMap(
+                                title -> Mono.just(new HelloResponse(greetings, title))));
     }
 
-    private Mono<String> getQuote(){
+    private Mono<String> getQuote() {
         return quoteService.getQuote().flatMap(quote -> Mono.just(quote.getContent()));
     }
 
