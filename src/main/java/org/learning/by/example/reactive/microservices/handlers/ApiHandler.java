@@ -61,9 +61,9 @@ public class ApiHandler {
             });
         });
     }
-    
+
     private Mono<String> getQuote(){
-        return quoteService.getQuote().flatMap(quote -> Mono.just(quote.getTitle()));
+        return quoteService.getQuote().flatMap(quote -> Mono.just(quote.getContent()));
     }
 
     private Function<Mono<HelloResponse>, Mono<ServerResponse>> send() {
