@@ -71,5 +71,7 @@ definitions:
   HelloResult:
     type: "object"
     properties:
-      hello:
+      greetings:
         type: "string"
+      quote:
+         type: "string"

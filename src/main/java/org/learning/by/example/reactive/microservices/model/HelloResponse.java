@@ -2,21 +2,32 @@ package org.learning.by.example.reactive.microservices.model;
 
 public class HelloResponse {
 
-    private String hello;
+    private String greetings;
+    private String quote;
 
     public HelloResponse() {
-        this.hello = "";
+        this.greetings = "";
+        this.quote = "";
     }
 
-    public HelloResponse(final String hello) {
-        this.hello = hello;
+    public HelloResponse(final String greetings, final String quote) {
+        this.greetings = greetings;
+        this.quote = quote;
     }
 
-    public String getHello() {
-        return hello;
+    public String getGreetings() {
+        return greetings;
     }
 
-    public void setHello(final String hello) {
-        this.hello = hello;
+    public void setGreetings(final String greetings) {
+        this.greetings = greetings;
+    }
+
+    public String getQuote() {
+        return quote;
+    }
+
+    public void setQuote(String quote) {
+        this.quote = quote;
     }
 }

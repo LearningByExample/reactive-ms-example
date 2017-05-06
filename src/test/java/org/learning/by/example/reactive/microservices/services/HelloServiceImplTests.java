@@ -14,9 +14,9 @@ import static org.hamcrest.Matchers.is;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
-public class HelloServiceTests {
+public class HelloServiceImplTests {
     @Autowired
-    private HelloService helloService;
+    private HelloServiceImpl helloService;
 
     private static final String VALID = "VALID";
     private static final String EMPTY = "";

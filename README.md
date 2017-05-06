@@ -5,6 +5,23 @@
 ## info
 This is a small example of doing reactive MicroServices using spring 5 functional web framework and spring boot 2, includes integration test using WebTestClient.
 
+This service provide and API that will greet the user with a quote.
+
+This example cover several topics: 
+
+- Router Functions
+- Static Web-Content
+- Creation on Reactive Java Services/Components
+- Error handling in routes and services
+- Reactive Web Client to consume external REST Services
+- Unit testing of all components and layers
+- Mocking
+- Organizing your project in manageable packaging
+
+It use extensively functional programming and reactive types
+
+## usage
+
 To run this service:
 
 ```shell
@@ -13,15 +30,16 @@ $ mvnw spring-boot:run
 
 ## Sample requests
 
-- GET [http://localhost:8080/api/hello](http://localhost:8080/hello)
+- GET [http://localhost:8080/api/greetings](http://localhost:8080/greetings)
 
-- GET [http://localhost:8080/api/hello/reactive](http://localhost:8080/hello/reactive)
+- GET [http://localhost:8080/api/greetings/reactive](http://localhost:8080/greetings/reactive)
 
-- POST [http://localhost:8080/api/hello](http://localhost:8080/hello) 
+- POST [http://localhost:8080/api/greetings](http://localhost:8080/greetings) 
 
     ```json
     {
-        "name" : "json"
+        "greetings" : "json",
+        "quote" : "Every night I pray that clients with taste will get money and clients with money will get taste."
     }
     ```
 ## API
