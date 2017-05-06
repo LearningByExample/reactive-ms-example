@@ -10,6 +10,7 @@ import org.learning.by.example.reactive.microservices.test.BasicRouterTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import reactor.core.publisher.Mono;
@@ -19,6 +20,7 @@ import static org.mockito.Mockito.reset;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@ActiveProfiles("test")
 public class MainRouterTests extends BasicRouterTest {
 
     private static final String STATIC_ROUTE = "/index.html";
@@ -36,7 +38,7 @@ public class MainRouterTests extends BasicRouterTest {
     public void setup() {
         super.setup(mainRouterFunction);
 
-        given(quoteService.getQuote()).willReturn(
+        given(quoteService.getQuote()).willReturn( () ->
                 createMockedQuote(MOCK_QUOTE_CONTENT)
         );
     }

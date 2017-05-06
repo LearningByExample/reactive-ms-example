@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.HttpStatus;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 import reactor.core.publisher.Mono;
 
@@ -26,6 +27,7 @@ import static org.mockito.Mockito.reset;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
+@ActiveProfiles("test")
 public class ApiRouterTests extends BasicRouterTest {
 
     private static final String DEFAULT_VALUE = "world";
@@ -52,7 +54,7 @@ public class ApiRouterTests extends BasicRouterTest {
     @Before
     public void setup() {
         super.setup(ApiRouter.doRoute(apiHandler, errorHandler));
-        given(quoteService.getQuote()).willReturn(
+        given(quoteService.getQuote()).willReturn( ()->
                 createMockedQuote(MOCK_QUOTE_CONTENT)
         );
     }
@@ -153,7 +155,7 @@ public class ApiRouterTests extends BasicRouterTest {
     @Test
     public void quoteServiceErrorTest() {
 
-        given(quoteService.getQuote()).willReturn(Mono.error(new RuntimeException(SUPER_ERROR)));
+        given(quoteService.getQuote()).willReturn( () -> Mono.error(new RuntimeException(SUPER_ERROR)));
 
         final ErrorResponse response = get(
                 builder -> builder.path(HELLO_PATH).build(),

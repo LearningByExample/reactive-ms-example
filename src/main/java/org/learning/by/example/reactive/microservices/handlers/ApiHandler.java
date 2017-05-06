@@ -61,7 +61,8 @@ public class ApiHandler {
     }
 
     private Mono<String> getQuote() {
-        return quoteService.getQuote().flatMap(quote -> Mono.just(quote.getContent()));
+        return Mono.fromSupplier(quoteService.getQuote())
+                .flatMap(quoteMono -> quoteMono.flatMap(quote -> Mono.just(quote.getContent())));
     }
 
     private Function<Mono<HelloResponse>, Mono<ServerResponse>> send() {
