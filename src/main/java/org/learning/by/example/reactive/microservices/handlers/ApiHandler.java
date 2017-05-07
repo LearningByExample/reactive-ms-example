@@ -45,7 +45,7 @@ public class ApiHandler {
                 .onErrorResume(errorHandler::throwableError);
     }
 
-    private Function<Mono<String>, Mono<ServerResponse>> getServerResponse() {
+    Function<Mono<String>, Mono<ServerResponse>> getServerResponse() {
         return (name) -> name
                 .publish(createHelloResponse())
                 .publish(convertToServerResponse());
