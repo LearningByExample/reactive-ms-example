@@ -4,7 +4,6 @@ import org.learning.by.example.reactive.microservices.model.HelloRequest;
 import org.learning.by.example.reactive.microservices.model.HelloResponse;
 import org.learning.by.example.reactive.microservices.services.HelloService;
 import org.learning.by.example.reactive.microservices.services.QuoteService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
@@ -17,15 +16,14 @@ public class ApiHandler {
 
     private final ErrorHandler errorHandler;
     private final HelloService helloService;
-
-    @Autowired
-    private QuoteService quoteService;
+    private final QuoteService quoteService;
 
     private static final Mono<String> DEFAULT_VALUE = Mono.just("world");
 
-    public ApiHandler(final HelloService helloService, final ErrorHandler errorHandler) {
+    public ApiHandler(final HelloService helloService, final QuoteService quoteService, final ErrorHandler errorHandler) {
         this.errorHandler = errorHandler;
         this.helloService = helloService;
+        this.quoteService = quoteService;
     }
 
     public Mono<ServerResponse> defaultHello(final ServerRequest request) {

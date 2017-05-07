@@ -28,8 +28,9 @@ public class ApplicationConfig {
     }
 
     @Bean
-    ApiHandler apiHandler(final HelloService helloService, final ErrorHandler errorHandler) {
-        return new ApiHandler(helloService, errorHandler);
+    ApiHandler apiHandler(final HelloService helloService, final QuoteService quoteService,
+                          final ErrorHandler errorHandler) {
+        return new ApiHandler(helloService, quoteService, errorHandler);
     }
 
     @Bean
