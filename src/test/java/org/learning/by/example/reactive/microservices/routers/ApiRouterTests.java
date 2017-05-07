@@ -3,6 +3,7 @@ package org.learning.by.example.reactive.microservices.routers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.learning.by.example.reactive.microservices.handlers.ApiHandler;
 import org.learning.by.example.reactive.microservices.handlers.ErrorHandler;
@@ -10,6 +11,7 @@ import org.learning.by.example.reactive.microservices.model.*;
 import org.learning.by.example.reactive.microservices.services.HelloService;
 import org.learning.by.example.reactive.microservices.services.QuoteService;
 import org.learning.by.example.reactive.microservices.test.BasicRouterTest;
+import org.learning.by.example.reactive.microservices.test.IntegrationTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
@@ -28,6 +30,7 @@ import static org.mockito.Mockito.reset;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @ActiveProfiles("test")
+@Category(IntegrationTest.class)
 public class ApiRouterTests extends BasicRouterTest {
 
     private static final String DEFAULT_VALUE = "world";

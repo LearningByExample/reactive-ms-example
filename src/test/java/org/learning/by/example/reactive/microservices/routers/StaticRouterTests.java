@@ -5,8 +5,10 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.learning.by.example.reactive.microservices.test.BasicRouterTest;
+import org.learning.by.example.reactive.microservices.test.IntegrationTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -19,6 +21,7 @@ import static org.hamcrest.core.IsNot.not;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @ActiveProfiles("test")
+@Category(IntegrationTest.class)
 public class StaticRouterTests extends BasicRouterTest {
 
     private static final String STATIC_PATH = "/index.html";

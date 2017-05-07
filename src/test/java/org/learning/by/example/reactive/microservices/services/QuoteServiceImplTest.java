@@ -1,9 +1,11 @@
 package org.learning.by.example.reactive.microservices.services;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.learning.by.example.reactive.microservices.exceptions.GetQuoteException;
 import org.learning.by.example.reactive.microservices.model.Quote;
+import org.learning.by.example.reactive.microservices.test.UnitTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.ActiveProfiles;
@@ -21,6 +23,7 @@ import static org.mockito.Mockito.verify;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @ActiveProfiles("test")
+@Category(UnitTest.class)
 public class QuoteServiceImplTest {
 
     private static final String BAD_EXCEPTION = "BAD_EXCEPTION";
