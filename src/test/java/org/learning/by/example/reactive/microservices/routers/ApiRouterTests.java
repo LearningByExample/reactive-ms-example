@@ -59,17 +59,17 @@ public class ApiRouterTests extends BasicRouterTest {
         );
     }
 
-    @After
-    public void tearDown(){
-        reset(quoteService);
-    }
-
     private Mono<Quote> createMockedQuote(final String content) {
         Quote quote = new Quote();
 
         quote.setContent(content);
 
         return Mono.just(quote);
+    }
+
+    @After
+    public void tearDown(){
+        reset(quoteService);
     }
 
     @Test

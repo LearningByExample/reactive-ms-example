@@ -18,7 +18,7 @@ public class ApiHandler {
     private final HelloService helloService;
     private final QuoteService quoteService;
 
-    private static final Mono<String> DEFAULT_VALUE = Mono.just("world");
+    private static final Mono<String> DEFAULT_NAME = Mono.just("world");
 
     public ApiHandler(final HelloService helloService, final QuoteService quoteService, final ErrorHandler errorHandler) {
         this.errorHandler = errorHandler;
@@ -27,43 +27,43 @@ public class ApiHandler {
     }
 
     public Mono<ServerResponse> defaultHello(final ServerRequest request) {
-        return DEFAULT_VALUE
-                .publish(getResponse())
+        return DEFAULT_NAME
+                .publish(getServerResponse())
                 .onErrorResume(errorHandler::throwableError);
     }
 
     public Mono<ServerResponse> getHello(final ServerRequest request) {
         return Mono.just(request.pathVariable(NAME))
-                .publish(getResponse())
+                .publish(getServerResponse())
                 .onErrorResume(errorHandler::throwableError);
     }
 
     public Mono<ServerResponse> postHello(final ServerRequest request) {
         return request.bodyToMono(HelloRequest.class)
                 .flatMap(helloRequest -> Mono.just(helloRequest.getName()))
-                .publish(getResponse())
+                .publish(getServerResponse())
                 .onErrorResume(errorHandler::throwableError);
     }
 
-    private Function<Mono<String>, Mono<ServerResponse>> getResponse() {
-        return (value) -> value
-                .publish(createResponse())
-                .publish(send());
+    private Function<Mono<String>, Mono<ServerResponse>> getServerResponse() {
+        return (name) -> name
+                .publish(createHelloResponse())
+                .publish(convertToServerResponse());
     }
 
-    private Function<Mono<String>, Mono<HelloResponse>> createResponse() {
+    Function<Mono<String>, Mono<HelloResponse>> createHelloResponse() {
         return name ->
                 name.publish(helloService.getGreetings()).flatMap(
                         greetings -> getQuote().flatMap(
                                 title -> Mono.just(new HelloResponse(greetings, title))));
     }
 
-    private Mono<String> getQuote() {
+    Mono<String> getQuote() {
         return Mono.fromSupplier(quoteService.getQuote())
                 .flatMap(quoteMono -> quoteMono.flatMap(quote -> Mono.just(quote.getContent())));
     }
 
-    private Function<Mono<HelloResponse>, Mono<ServerResponse>> send() {
+    Function<Mono<HelloResponse>, Mono<ServerResponse>> convertToServerResponse() {
         return value -> value.flatMap(helloResponse -> {
             return ServerResponse.ok().body(Mono.just(helloResponse), HelloResponse.class);
         });
