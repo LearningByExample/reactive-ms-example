@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.org/LearningByExample/reactive-ms-example.svg?branch=master)](https://travis-ci.org/LearningByExample/reactive-ms-example)
 
 ## info
-This is a small example of doing reactive MicroServices using spring 5 functional web framework and spring boot 2, includes integration test using WebTestClient.
+This is an example of doing reactive MicroServices using spring 5 functional web framework and spring boot 2.
 
 This service provide and API that will greet the user with a quote.
 
@@ -15,7 +15,7 @@ This example cover several topics:
 - Error handling in routes and services
 - Reactive Web Client to consume external REST Services
 - Unit testing of all components and layers
-- Mocking
+- Mocking, including reactive functions
 - Organizing your project in manageable packaging
 
 It use extensively functional programming and reactive types
@@ -43,9 +43,10 @@ $ mvnw spring-boot:run
     }
     ```
 ## API
-[Run API via Swagger UI](http://localhost:8080/index.html)
+[Run the API via the embedded Swagger UI](http://localhost:8080/index.html)
 
 ## References
 
 - https://spring.io/blog/2016/09/22/new-in-spring-5-functional-web-framework
 - https://spring.io/blog/2017/02/23/spring-framework-5-0-m5-update
+- http://quotesondesign.com/
