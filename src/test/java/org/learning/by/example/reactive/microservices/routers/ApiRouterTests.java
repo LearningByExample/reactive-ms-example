@@ -94,7 +94,6 @@ public class ApiRouterTests extends BasicIntegrationTest {
 
         assertThat(response.getGreetings(), is(CUSTOM_VALUE));
         assertThat(response.getQuote(), is(MOCK_QUOTE_CONTENT));
-
     }
 
     @Test
@@ -106,7 +105,6 @@ public class ApiRouterTests extends BasicIntegrationTest {
 
         assertThat(response.getGreetings(), is(JSON_VALUE));
         assertThat(response.getQuote(), is(MOCK_QUOTE_CONTENT));
-
     }
 
     @Test
