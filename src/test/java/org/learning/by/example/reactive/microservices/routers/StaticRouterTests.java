@@ -28,6 +28,7 @@ public class StaticRouterTests extends BasicRouterTest {
     @Before
     public void setup() {
         super.setup(StaticRouter.doRoute());
+        final StaticRouter staticRouter = new StaticRouter();
     }
 
     @Test

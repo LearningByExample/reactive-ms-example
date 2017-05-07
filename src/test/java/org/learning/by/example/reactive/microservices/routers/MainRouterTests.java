@@ -41,6 +41,7 @@ public class MainRouterTests extends BasicRouterTest {
         given(quoteService.getQuote()).willReturn( () ->
                 createMockedQuote(MOCK_QUOTE_CONTENT)
         );
+        final MainRouter mainRouter = new MainRouter();
     }
 
     @After

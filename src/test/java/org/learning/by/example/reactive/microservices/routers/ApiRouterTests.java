@@ -57,6 +57,7 @@ public class ApiRouterTests extends BasicRouterTest {
         given(quoteService.getQuote()).willReturn( ()->
                 createMockedQuote(MOCK_QUOTE_CONTENT)
         );
+        final ApiRouter apiRouter = new ApiRouter();
     }
 
     private Mono<Quote> createMockedQuote(final String content) {
