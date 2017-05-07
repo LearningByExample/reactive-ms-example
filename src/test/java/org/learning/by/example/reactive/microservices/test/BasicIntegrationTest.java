@@ -11,13 +11,16 @@ import java.util.function.Function;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.http.MediaType.TEXT_HTML;
-import static org.springframework.test.web.reactive.server.WebTestClient.bindToRouterFunction;
 
-public abstract class BasicRouterTest {
-    private WebTestClient client;
+public abstract class BasicIntegrationTest {
+    protected WebTestClient client;
 
-    protected void setup(RouterFunction<?> routerFunction) {
-        client = bindToRouterFunction(routerFunction).build();
+    protected void bindToRouterFunction(RouterFunction<?> routerFunction) {
+        client = WebTestClient.bindToRouterFunction(routerFunction).build();
+    }
+
+    protected void bindToServerPort(int port) {
+        client = WebTestClient.bindToServer().baseUrl("http://localhost:" + port).build();
     }
 
     protected String get(final Function<UriBuilder, URI> builder) {

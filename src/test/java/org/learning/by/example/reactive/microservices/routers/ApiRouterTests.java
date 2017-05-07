@@ -10,8 +10,8 @@ import org.learning.by.example.reactive.microservices.handlers.ErrorHandler;
 import org.learning.by.example.reactive.microservices.model.*;
 import org.learning.by.example.reactive.microservices.services.HelloService;
 import org.learning.by.example.reactive.microservices.services.QuoteService;
-import org.learning.by.example.reactive.microservices.test.BasicRouterTest;
-import org.learning.by.example.reactive.microservices.test.IntegrationTest;
+import org.learning.by.example.reactive.microservices.test.BasicIntegrationTest;
+import org.learning.by.example.reactive.microservices.test.categories.IntegrationTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
@@ -31,7 +31,7 @@ import static org.mockito.Mockito.reset;
 @SpringBootTest
 @ActiveProfiles("test")
 @Category(IntegrationTest.class)
-public class ApiRouterTests extends BasicRouterTest {
+public class ApiRouterTests extends BasicIntegrationTest {
 
     private static final String DEFAULT_VALUE = "world";
     private static final String CUSTOM_VALUE = "reactive";
@@ -56,7 +56,7 @@ public class ApiRouterTests extends BasicRouterTest {
 
     @Before
     public void setup() {
-        super.setup(ApiRouter.doRoute(apiHandler, errorHandler));
+        super.bindToRouterFunction(ApiRouter.doRoute(apiHandler, errorHandler));
         given(quoteService.getQuote()).willReturn( ()->
                 createMockedQuote(MOCK_QUOTE_CONTENT)
         );

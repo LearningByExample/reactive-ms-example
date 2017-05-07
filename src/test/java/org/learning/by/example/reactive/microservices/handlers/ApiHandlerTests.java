@@ -10,7 +10,7 @@ import org.learning.by.example.reactive.microservices.model.HelloResponse;
 import org.learning.by.example.reactive.microservices.model.Quote;
 import org.learning.by.example.reactive.microservices.services.QuoteService;
 import org.learning.by.example.reactive.microservices.test.HandlersHelper;
-import org.learning.by.example.reactive.microservices.test.UnitTest;
+import org.learning.by.example.reactive.microservices.test.categories.UnitTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;

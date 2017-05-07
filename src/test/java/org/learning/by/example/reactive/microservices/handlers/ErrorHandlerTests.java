@@ -8,7 +8,7 @@ import org.learning.by.example.reactive.microservices.exceptions.InvalidParamete
 import org.learning.by.example.reactive.microservices.exceptions.PathNotFoundException;
 import org.learning.by.example.reactive.microservices.model.ErrorResponse;
 import org.learning.by.example.reactive.microservices.test.HandlersHelper;
-import org.learning.by.example.reactive.microservices.test.UnitTest;
+import org.learning.by.example.reactive.microservices.test.categories.UnitTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;

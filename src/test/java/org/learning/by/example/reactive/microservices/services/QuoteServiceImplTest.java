@@ -5,7 +5,7 @@ import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.learning.by.example.reactive.microservices.exceptions.GetQuoteException;
 import org.learning.by.example.reactive.microservices.model.Quote;
-import org.learning.by.example.reactive.microservices.test.UnitTest;
+import org.learning.by.example.reactive.microservices.test.categories.UnitTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.ActiveProfiles;

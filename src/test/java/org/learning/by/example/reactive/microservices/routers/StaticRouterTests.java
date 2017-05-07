@@ -7,8 +7,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
-import org.learning.by.example.reactive.microservices.test.BasicRouterTest;
-import org.learning.by.example.reactive.microservices.test.IntegrationTest;
+import org.learning.by.example.reactive.microservices.test.BasicIntegrationTest;
+import org.learning.by.example.reactive.microservices.test.categories.IntegrationTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -22,7 +22,7 @@ import static org.hamcrest.core.IsNot.not;
 @SpringBootTest
 @ActiveProfiles("test")
 @Category(IntegrationTest.class)
-public class StaticRouterTests extends BasicRouterTest {
+public class StaticRouterTests extends BasicIntegrationTest {
 
     private static final String STATIC_PATH = "/index.html";
     private static final String DEFAULT_TITLE = "Swagger UI";
@@ -30,7 +30,7 @@ public class StaticRouterTests extends BasicRouterTest {
 
     @Before
     public void setup() {
-        super.setup(StaticRouter.doRoute());
+        super.bindToRouterFunction(StaticRouter.doRoute());
         final StaticRouter staticRouter = new StaticRouter();
     }
 

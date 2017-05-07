@@ -7,8 +7,8 @@ import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.learning.by.example.reactive.microservices.model.Quote;
 import org.learning.by.example.reactive.microservices.services.QuoteService;
-import org.learning.by.example.reactive.microservices.test.BasicRouterTest;
-import org.learning.by.example.reactive.microservices.test.IntegrationTest;
+import org.learning.by.example.reactive.microservices.test.BasicIntegrationTest;
+import org.learning.by.example.reactive.microservices.test.categories.IntegrationTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
@@ -24,7 +24,7 @@ import static org.mockito.Mockito.reset;
 @SpringBootTest
 @ActiveProfiles("test")
 @Category(IntegrationTest.class)
-public class MainRouterTests extends BasicRouterTest {
+public class MainRouterTests extends BasicIntegrationTest {
 
     private static final String STATIC_ROUTE = "/index.html";
     private static final String API_ROUTE = "/api/hello";
@@ -39,7 +39,7 @@ public class MainRouterTests extends BasicRouterTest {
 
     @Before
     public void setup() {
-        super.setup(mainRouterFunction);
+        super.bindToRouterFunction(mainRouterFunction);
 
         given(quoteService.getQuote()).willReturn( () ->
                 createMockedQuote(MOCK_QUOTE_CONTENT)

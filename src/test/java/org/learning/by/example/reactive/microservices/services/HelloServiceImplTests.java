@@ -4,7 +4,7 @@ import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.learning.by.example.reactive.microservices.exceptions.InvalidParametersException;
-import org.learning.by.example.reactive.microservices.test.UnitTest;
+import org.learning.by.example.reactive.microservices.test.categories.UnitTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
