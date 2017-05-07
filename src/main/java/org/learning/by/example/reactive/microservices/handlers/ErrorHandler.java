@@ -26,14 +26,14 @@ public class ErrorHandler {
         return Mono.just(error).publish(getResponse());
     }
 
-    private <T extends Throwable> Function<Mono<T>, Mono<ServerResponse>> getResponse() {
+    <T extends Throwable> Function<Mono<T>, Mono<ServerResponse>> getResponse() {
         return (error) -> error.flatMap(throwable ->
             ServerResponse
                 .status(getStatus(throwable))
                 .body(Mono.just(new ErrorResponse(throwable.getMessage())), ErrorResponse.class));
     }
 
-    private HttpStatus getStatus(final Throwable error) {
+    HttpStatus getStatus(final Throwable error) {
         if (error.getClass().equals(InvalidParametersException.class)) {
             return HttpStatus.BAD_REQUEST;
         } else if (error.getClass().equals(PathNotFoundException.class)) {
