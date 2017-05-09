@@ -8,8 +8,6 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
-import java.util.function.Function;
-
 import static org.learning.by.example.reactive.microservices.handlers.ThrowableTranslator.translate;
 
 public class ErrorHandler {
@@ -19,16 +17,16 @@ public class ErrorHandler {
     private static Logger logger = LoggerFactory.getLogger(ErrorHandler.class);
 
     public Mono<ServerResponse> notFound(final ServerRequest request) {
-        return Mono.just(new PathNotFoundException(NOT_FOUND)).publish(getResponse());
+        return Mono.just(new PathNotFoundException(NOT_FOUND)).publish(this::getResponse);
     }
 
     Mono<ServerResponse> throwableError(final Throwable error) {
         logger.error(ERROR_RAISED, error);
-        return Mono.just(error).publish(getResponse());
+        return Mono.just(error).publish(this::getResponse);
     }
 
-    <T extends Throwable> Function<Mono<T>, Mono<ServerResponse>> getResponse() {
-        return (error) -> error.publish(translate())
+    <T extends Throwable> Mono<ServerResponse> getResponse(Mono<T> monoError) {
+        return monoError.publish(translate())
                 .flatMap(translation -> ServerResponse
                         .status(translation.getHttpStatus())
                         .body(Mono.just(new ErrorResponse(translation.getMessage())), ErrorResponse.class));
