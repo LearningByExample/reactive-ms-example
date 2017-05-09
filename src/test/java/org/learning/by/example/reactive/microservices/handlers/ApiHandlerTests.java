@@ -83,7 +83,7 @@ public class ApiHandlerTests {
                 .subscribe(this::checkResponse);
     }
 
-    public void checkResponse(ServerResponse serverResponse) {
+    public void checkResponse(final ServerResponse serverResponse) {
         assertThat(serverResponse.statusCode(), is(HttpStatus.OK));
 
         HelloResponse helloResponse = HandlersHelper.extractEntity(serverResponse, HelloResponse.class);

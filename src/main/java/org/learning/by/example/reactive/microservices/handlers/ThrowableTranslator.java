@@ -9,7 +9,7 @@ class ThrowableTranslator {
     private final HttpStatus httpStatus;
     private final String message;
 
-    private ThrowableTranslator(Throwable throwable) {
+    private ThrowableTranslator(final Throwable throwable) {
         this.httpStatus = getStatus(throwable);
         this.message = throwable.getMessage();
     }
@@ -32,7 +32,7 @@ class ThrowableTranslator {
         return message;
     }
 
-    static <T extends Throwable> Mono<ThrowableTranslator> translate(Mono<T> throwable) {
+    static <T extends Throwable> Mono<ThrowableTranslator> translate(final Mono<T> throwable) {
         return throwable.flatMap(error -> Mono.just(new ThrowableTranslator(error)));
     }
 }

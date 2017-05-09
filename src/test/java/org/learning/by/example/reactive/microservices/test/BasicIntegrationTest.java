@@ -13,13 +13,13 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.http.MediaType.TEXT_HTML;
 
 public abstract class BasicIntegrationTest {
-    protected WebTestClient client;
+    private WebTestClient client;
 
-    protected void bindToRouterFunction(RouterFunction<?> routerFunction) {
+    protected void bindToRouterFunction(final RouterFunction<?> routerFunction) {
         client = WebTestClient.bindToRouterFunction(routerFunction).build();
     }
 
-    protected void bindToServerPort(int port) {
+    protected void bindToServerPort(final int port) {
         client = WebTestClient.bindToServer().baseUrl("http://localhost:" + port).build();
     }
 
@@ -27,7 +27,7 @@ public abstract class BasicIntegrationTest {
         return get(builder, HttpStatus.OK);
     }
 
-    protected String get(final Function<UriBuilder, URI> builder, final HttpStatus status) {
+    private String get(final Function<UriBuilder, URI> builder, final HttpStatus status) {
         return new String(client.get()
                 .uri(builder)
                 .accept(TEXT_HTML).exchange()

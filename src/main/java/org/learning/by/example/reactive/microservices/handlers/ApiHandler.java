@@ -43,12 +43,12 @@ public class ApiHandler {
                 .onErrorResume(errorHandler::throwableError);
     }
 
-    Mono<ServerResponse> getServerResponse(Mono<String> monoName) {
+    Mono<ServerResponse> getServerResponse(final Mono<String> monoName) {
         return monoName.publish(this::createHelloResponse)
                 .publish(this::convertToServerResponse);
     }
 
-    Mono<HelloResponse> createHelloResponse(Mono<String> monoName) {
+    Mono<HelloResponse> createHelloResponse(final Mono<String> monoName) {
         return monoName.publish(helloService::greetings).flatMap(
                 greetings -> randomQuote().flatMap(
                         content -> Mono.just(new HelloResponse(greetings, content))));
@@ -59,7 +59,7 @@ public class ApiHandler {
                 .flatMap(quoteMono -> quoteMono.flatMap(quote -> Mono.just(quote.getContent())));
     }
 
-    Mono<ServerResponse> convertToServerResponse(Mono<HelloResponse> helloResponseMono) {
+    Mono<ServerResponse> convertToServerResponse(final Mono<HelloResponse> helloResponseMono) {
         return helloResponseMono.flatMap(helloResponse ->
                 ServerResponse.ok().body(Mono.just(helloResponse), HelloResponse.class));
     }

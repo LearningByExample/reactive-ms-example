@@ -34,12 +34,12 @@ public class ThrowableTranslatorTest {
             private static final String EXCEPTION = "EXCEPTION";
 
             @Override
-            public void describeTo(Description description) {
+            public void describeTo(final Description description) {
                 description.appendText("does not translate to ").appendText(status.toString());
             }
 
             @SuppressWarnings("unchecked")
-            protected boolean matches(Object item, Description mismatch) {
+            protected boolean matches(final Object item, final Description mismatch) {
 
                 if (item instanceof Class) {
                     if(((Class)item).getClass().isInstance(Throwable.class )){

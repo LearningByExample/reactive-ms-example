@@ -9,7 +9,7 @@ public class HelloServiceImpl implements HelloService{
     private static final String BAD_PARAMETERS = "bad parameters";
 
     @Override
-    public Mono<String> greetings(Mono<String> monoName) {
+    public Mono<String> greetings(final Mono<String> monoName) {
         return monoName.flatMap(name -> {
             if (name.equals(EMPTY)) {
                 return Mono.error(new InvalidParametersException(BAD_PARAMETERS));

@@ -6,7 +6,7 @@ import reactor.core.publisher.Mono;
 
 public class HandlersHelper {
     @SuppressWarnings("unchecked")
-    public static <T> T extractEntity(ServerResponse response, Class<T> type) {
+    public static <T> T extractEntity(final ServerResponse response, final Class<T> type) {
 
         EntityResponse<Mono<T>> entityResponse = (EntityResponse<Mono<T>>) response;
 

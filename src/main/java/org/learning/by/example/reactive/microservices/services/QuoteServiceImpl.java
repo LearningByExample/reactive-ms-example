@@ -30,7 +30,7 @@ public class QuoteServiceImpl implements QuoteService {
                 .flatMap(clientResponse -> clientResponse.bodyToMono(Quote[].class));
     }
 
-    Mono<Quote> chooseFirst(Mono<Quote[]> monoQuotes) {
+    Mono<Quote> chooseFirst(final Mono<Quote[]> monoQuotes) {
         return monoQuotes.flatMap(quotes -> Mono.just(quotes[0]))
                 .onErrorResume(throwable ->Mono.error(new GetQuoteException(ERROR_GETTING_QUOTE, throwable)));
     }
