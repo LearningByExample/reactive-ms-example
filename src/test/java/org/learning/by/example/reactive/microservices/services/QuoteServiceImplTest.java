@@ -17,9 +17,7 @@ import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.reset;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = ReactiveMsApplication.class)
@@ -40,9 +38,7 @@ public class QuoteServiceImplTest {
 
     @Test
     public void mockedRequest() {
-        given(quoteService.request()).willReturn(
-                () -> createMockedResponse(MOCK_ID, MOCK_TITLE, MOCK_LINK, MOCK_CONTENT)
-        );
+        doReturn(createMockedResponse(MOCK_ID, MOCK_TITLE, MOCK_LINK, MOCK_CONTENT)).when(quoteService).request();
 
         quoteService.get().subscribe(quote -> {
             assertThat(quote.getID(), is(MOCK_ID));
@@ -72,7 +68,8 @@ public class QuoteServiceImplTest {
 
     @Test
     public void requestErrorShouldBeHandle() {
-        given(quoteService.request()).willReturn(() -> Mono.error(new RuntimeException(BAD_EXCEPTION)));
+
+        doReturn(Mono.error(new RuntimeException(BAD_EXCEPTION))).when(quoteService).request();
 
         quoteService.get().subscribe(quote -> {
             throw new UnsupportedOperationException(SHOULD_NOT_RETURN_OBJECT);

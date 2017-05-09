@@ -9,7 +9,6 @@ import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 public class QuoteServiceImpl implements QuoteService {
 
@@ -24,8 +23,8 @@ public class QuoteServiceImpl implements QuoteService {
         webClient = WebClient.create();
     }
 
-    Supplier<Mono<Quote[]>> request() {
-        return () -> webClient
+    Mono<Quote[]> request() {
+        return webClient
                 .get()
                 .uri(endPoint)
                 .accept(MediaType.APPLICATION_JSON)
@@ -40,7 +39,7 @@ public class QuoteServiceImpl implements QuoteService {
 
     @Override
     public Mono<Quote> get() {
-        return Mono.defer(request()).publish(chooseFirst())
+        return Mono.defer(this::request).publish(chooseFirst())
                 .onErrorResume(throwable ->Mono.error(new GetQuoteException(ERROR_GETTING_QUOTE, throwable)));
     }
 
