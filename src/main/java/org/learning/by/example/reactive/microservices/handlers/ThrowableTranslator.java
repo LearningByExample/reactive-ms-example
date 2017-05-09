@@ -11,7 +11,7 @@ class ThrowableTranslator {
     private final HttpStatus httpStatus;
     private final String message;
 
-    ThrowableTranslator(Throwable throwable) {
+    private ThrowableTranslator(Throwable throwable) {
         this.httpStatus = getStatus(throwable);
         this.message = throwable.getMessage();
     }

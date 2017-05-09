@@ -1,5 +1,8 @@
 package org.learning.by.example.reactive.microservices.handlers;
 
+import org.hamcrest.Description;
+import org.hamcrest.DiagnosingMatcher;
+import org.hamcrest.Factory;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
@@ -25,40 +28,58 @@ import static org.learning.by.example.reactive.microservices.handlers.ThrowableT
 @Category(UnitTest.class)
 public class ThrowableTranslatorTest {
 
-    private static final String EXCEPTION = "EXCEPTION";
+    @Factory
+    public static DiagnosingMatcher<Object> translateTo(HttpStatus status) {
+        return new DiagnosingMatcher<Object>() {
+            private static final String EXCEPTION = "EXCEPTION";
+
+            @Override
+            public void describeTo(Description description) {
+                description.appendText("does not translate to ").appendText(status.toString());
+            }
+
+            @SuppressWarnings("unchecked")
+            protected boolean matches(Object item, Description mismatch) {
+
+                if (item instanceof Class) {
+                    if(((Class)item).getClass().isInstance(Throwable.class )){
+                        Class<? extends Throwable> type = (Class<? extends Throwable>) item;
+                        try {
+                            Throwable exception = type.getConstructor(String.class).newInstance(EXCEPTION);
+                            Mono.just(exception).publish(translate()).subscribe(translator -> {
+                                assertThat(translator.getMessage(), is(EXCEPTION));
+                                assertThat(translator.getHttpStatus(), is(status));
+                            });
+                        } catch (InstantiationException | IllegalAccessException |
+                                InvocationTargetException | NoSuchMethodException cause) {
+                            throw new AssertionError("This exception class has not constructor with a String", cause);
+                        }
+                        return true;
+                    }
+                }
+                mismatch.appendText(item.toString());
+                return false;
+            }
+        };
+    }
 
     @Test
     public void translateGetQuoteExceptionTest() throws Exception {
-        check(GetQuoteException.class, HttpStatus.INTERNAL_SERVER_ERROR);
+        assertThat(GetQuoteException.class, translateTo(HttpStatus.INTERNAL_SERVER_ERROR));
     }
 
     @Test
     public void translateInvalidParametersExceptionTest() throws Exception {
-        check(InvalidParametersException.class, HttpStatus.BAD_REQUEST);
+        assertThat(InvalidParametersException.class, translateTo(HttpStatus.BAD_REQUEST));
     }
 
     @Test
     public void translatePathNotFoundExceptionTest() throws Exception {
-        check(PathNotFoundException.class, HttpStatus.NOT_FOUND);
+        assertThat(PathNotFoundException.class, translateTo(HttpStatus.NOT_FOUND));
     }
 
     @Test
     public void translateGenericExceptionTest() throws Exception {
-        check(Exception.class, HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-
-    private static <T extends Throwable> void check(Class<T> type, HttpStatus status) {
-        try {
-            T exception = type.getConstructor(String.class).newInstance(EXCEPTION);
-            Mono.just(exception).publish(translate()).subscribe(translator -> {
-                assertThat(translator.getMessage(), is(EXCEPTION));
-                assertThat(translator.getHttpStatus(), is(status));
-            });
-        } catch (InstantiationException | IllegalAccessException |
-                InvocationTargetException | NoSuchMethodException cause) {
-            throw new AssertionError("This exception class has not constructor with a String", cause);
-        }
+        assertThat(Exception.class, translateTo(HttpStatus.INTERNAL_SERVER_ERROR));
     }
 }
-
-
