@@ -54,7 +54,7 @@ public class ApiHandler {
 
     Function<Mono<String>, Mono<HelloResponse>> createHelloResponse() {
         return name ->
-                name.publish(helloService.getGreetings()).flatMap(
+                name.publish(helloService::greetings).flatMap(
                         greetings -> randomQuote().get().flatMap(
                                 content -> Mono.just(new HelloResponse(greetings, content))));
     }

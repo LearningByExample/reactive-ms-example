@@ -32,14 +32,14 @@ public class HelloServiceImplTests {
 
     @Test
     public void validValue() {
-        VALID_VALUE.publish(helloService.getGreetings()).subscribe(value ->
+        VALID_VALUE.publish(helloService::greetings).subscribe(value ->
             assertThat(value, is(VALID))
         );
     }
 
     @Test
     public void invalidValueTest() {
-        INVALID_VALUE.publish(helloService.getGreetings()).subscribe(value -> {
+        INVALID_VALUE.publish(helloService::greetings).subscribe(value -> {
             throw new UnsupportedOperationException(SHOULD_NOT_RETURN_OBJECT);
         }, exception -> {
             assertThat(exception, instanceOf(InvalidParametersException.class));

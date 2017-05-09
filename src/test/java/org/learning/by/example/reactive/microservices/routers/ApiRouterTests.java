@@ -13,6 +13,7 @@ import org.learning.by.example.reactive.microservices.services.HelloService;
 import org.learning.by.example.reactive.microservices.services.QuoteService;
 import org.learning.by.example.reactive.microservices.test.BasicIntegrationTest;
 import org.learning.by.example.reactive.microservices.test.categories.IntegrationTest;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
@@ -26,6 +27,7 @@ import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.hamcrest.core.IsNot.not;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.reset;
 
 @RunWith(SpringRunner.class)
@@ -143,7 +145,7 @@ public class ApiRouterTests extends BasicIntegrationTest {
     @Test
     public void helloServiceErrorTest() {
 
-        given(helloService.getGreetings()).willReturn(name -> Mono.error(new RuntimeException(SUPER_ERROR)));
+        doReturn(Mono.error(new RuntimeException(SUPER_ERROR))).when(helloService).greetings(Mockito.any());
 
         final ErrorResponse response = get(
                 builder -> builder.path(HELLO_PATH).build(),
@@ -158,7 +160,7 @@ public class ApiRouterTests extends BasicIntegrationTest {
     @Test
     public void quoteServiceErrorTest() {
 
-        given(quoteService.getQuote()).willReturn( () -> Mono.error(new RuntimeException(SUPER_ERROR)));
+        given(quoteService.getQuote()).willReturn(() -> Mono.error(new RuntimeException(SUPER_ERROR)));
 
         final ErrorResponse response = get(
                 builder -> builder.path(HELLO_PATH).build(),
