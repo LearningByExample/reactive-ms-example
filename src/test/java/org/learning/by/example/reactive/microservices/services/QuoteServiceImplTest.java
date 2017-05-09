@@ -44,14 +44,14 @@ public class QuoteServiceImplTest {
                 () -> createMockedResponse(MOCK_ID, MOCK_TITLE, MOCK_LINK, MOCK_CONTENT)
         );
 
-        Quote quote = Mono.defer(quoteService.getQuote()).block();
+        quoteService.get().subscribe(quote -> {
+            assertThat(quote.getID(), is(MOCK_ID));
+            assertThat(quote.getTitle(), is(MOCK_TITLE));
+            assertThat(quote.getLink(), is(MOCK_LINK));
+            assertThat(quote.getContent(), is(MOCK_CONTENT));
+        });
 
-        assertThat(quote.getID(), is(MOCK_ID));
-        assertThat(quote.getTitle(), is(MOCK_TITLE));
-        assertThat(quote.getLink(), is(MOCK_LINK));
-        assertThat(quote.getContent(), is(MOCK_CONTENT));
-
-        verify(quoteService, times(1)).getQuote();
+        verify(quoteService, times(1)).get();
         verify(quoteService, times(1)).request();
         verify(quoteService, times(1)).chooseFirst();
 
@@ -74,13 +74,13 @@ public class QuoteServiceImplTest {
     public void requestErrorShouldBeHandle() {
         given(quoteService.request()).willReturn(() -> Mono.error(new RuntimeException(BAD_EXCEPTION)));
 
-        Mono.defer(quoteService.getQuote()).subscribe(quote -> {
+        quoteService.get().subscribe(quote -> {
             throw new UnsupportedOperationException(SHOULD_NOT_RETURN_OBJECT);
         }, throwable -> {
             assertThat(throwable, instanceOf(GetQuoteException.class));
         });
 
-        verify(quoteService, times(1)).getQuote();
+        verify(quoteService, times(1)).get();
         verify(quoteService, times(1)).request();
         verify(quoteService, times(1)).chooseFirst();
 
@@ -91,13 +91,13 @@ public class QuoteServiceImplTest {
     public void chooseFirstErrorShouldBeHandle() {
         given(quoteService.chooseFirst()).willReturn(mono -> Mono.error(new RuntimeException(BAD_EXCEPTION)));
 
-        Mono.defer(quoteService.getQuote()).subscribe(quote -> {
+        quoteService.get().subscribe(quote -> {
             throw new UnsupportedOperationException(SHOULD_NOT_RETURN_OBJECT);
         }, throwable -> {
             assertThat(throwable, instanceOf(GetQuoteException.class));
         });
 
-        verify(quoteService, times(1)).getQuote();
+        verify(quoteService, times(1)).get();
         verify(quoteService, times(1)).request();
         verify(quoteService, times(1)).chooseFirst();
 

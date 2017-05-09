@@ -60,7 +60,7 @@ public class ApiHandler {
     }
 
     Supplier<Mono<String>> randomQuote(){
-        return () -> Mono.fromSupplier(quoteService.getQuote())
+        return () -> Mono.fromSupplier(quoteService::get)
                 .flatMap(quoteMono -> quoteMono.flatMap(quote -> Mono.just(quote.getContent())));
     }
 

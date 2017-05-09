@@ -18,7 +18,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import reactor.core.publisher.Mono;
 
-import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.reset;
 
 @RunWith(SpringRunner.class)
@@ -42,9 +42,8 @@ public class MainRouterTests extends BasicIntegrationTest {
     public void setup() {
         super.bindToRouterFunction(mainRouterFunction);
 
-        given(quoteService.getQuote()).willReturn( () ->
-                createMockedQuote(MOCK_QUOTE_CONTENT)
-        );
+        doReturn(createMockedQuote(MOCK_QUOTE_CONTENT)).when(quoteService).get();
+
         final MainRouter mainRouter = new MainRouter();
     }
 

@@ -39,8 +39,8 @@ public class QuoteServiceImpl implements QuoteService {
     }
 
     @Override
-    public Supplier<Mono<Quote>> getQuote() {
-        return () -> Mono.defer(request()).publish(chooseFirst())
+    public Mono<Quote> get() {
+        return Mono.defer(request()).publish(chooseFirst())
                 .onErrorResume(throwable ->Mono.error(new GetQuoteException(ERROR_GETTING_QUOTE, throwable)));
     }
 

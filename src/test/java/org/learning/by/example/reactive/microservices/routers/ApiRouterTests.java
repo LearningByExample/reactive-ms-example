@@ -60,9 +60,9 @@ public class ApiRouterTests extends BasicIntegrationTest {
     @Before
     public void setup() {
         super.bindToRouterFunction(ApiRouter.doRoute(apiHandler, errorHandler));
-        given(quoteService.getQuote()).willReturn( ()->
-                createMockedQuote(MOCK_QUOTE_CONTENT)
-        );
+
+        doReturn(createMockedQuote(MOCK_QUOTE_CONTENT)).when(quoteService).get();
+
         final ApiRouter apiRouter = new ApiRouter();
     }
 
@@ -160,7 +160,7 @@ public class ApiRouterTests extends BasicIntegrationTest {
     @Test
     public void quoteServiceErrorTest() {
 
-        given(quoteService.getQuote()).willReturn(() -> Mono.error(new RuntimeException(SUPER_ERROR)));
+        doReturn(Mono.error(new RuntimeException(SUPER_ERROR))).when(quoteService).get();
 
         final ErrorResponse response = get(
                 builder -> builder.path(HELLO_PATH).build(),

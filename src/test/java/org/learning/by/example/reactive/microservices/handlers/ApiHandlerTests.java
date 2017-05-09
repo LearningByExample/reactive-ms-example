@@ -26,7 +26,6 @@ import java.util.function.Consumer;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 @RunWith(SpringRunner.class)
@@ -46,9 +45,7 @@ public class ApiHandlerTests {
 
     @Before
     public void setup() {
-        given(quoteService.getQuote()).willReturn(() ->
-                createMockedQuote(MOCK_QUOTE_CONTENT)
-        );
+        doReturn(createMockedQuote(MOCK_QUOTE_CONTENT)).when(quoteService).get();
     }
 
     private Mono<Quote> createMockedQuote(final String content) {
