@@ -64,8 +64,8 @@ public class ApiHandlerTests {
     }
 
     @Test
-    public void getQuoteTest() {
-        apiHandler.getQuote().subscribe(content -> {
+    public void randomQuoteTest() {
+        apiHandler.randomQuote().get().subscribe(content -> {
             assertThat(content, is(MOCK_QUOTE_CONTENT));
         });
     }

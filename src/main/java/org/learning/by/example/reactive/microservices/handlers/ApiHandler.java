@@ -9,6 +9,7 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 public class ApiHandler {
 
@@ -54,12 +55,12 @@ public class ApiHandler {
     Function<Mono<String>, Mono<HelloResponse>> createHelloResponse() {
         return name ->
                 name.publish(helloService.getGreetings()).flatMap(
-                        greetings -> getQuote().flatMap(
-                                title -> Mono.just(new HelloResponse(greetings, title))));
+                        greetings -> randomQuote().get().flatMap(
+                                content -> Mono.just(new HelloResponse(greetings, content))));
     }
 
-    Mono<String> getQuote() {
-        return Mono.fromSupplier(quoteService.getQuote())
+    Supplier<Mono<String>> randomQuote(){
+        return () -> Mono.fromSupplier(quoteService.getQuote())
                 .flatMap(quoteMono -> quoteMono.flatMap(quote -> Mono.just(quote.getContent())));
     }
 

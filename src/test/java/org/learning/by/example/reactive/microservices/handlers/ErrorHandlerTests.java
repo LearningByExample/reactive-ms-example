@@ -3,8 +3,6 @@ package org.learning.by.example.reactive.microservices.handlers;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
-import org.learning.by.example.reactive.microservices.exceptions.GetQuoteException;
-import org.learning.by.example.reactive.microservices.exceptions.InvalidParametersException;
 import org.learning.by.example.reactive.microservices.exceptions.PathNotFoundException;
 import org.learning.by.example.reactive.microservices.model.ErrorResponse;
 import org.learning.by.example.reactive.microservices.test.HandlersHelper;
@@ -56,13 +54,5 @@ public class ErrorHandlerTests {
             assertThat(serverResponse.statusCode(), is(httpStatus));
             assertThat(HandlersHelper.extractEntity(serverResponse, ErrorResponse.class).getError(), is(message));
         };
-    }
-
-    @Test
-    public void getStatusTest() {
-        assertThat(errorHandler.getStatus(new PathNotFoundException(NOT_FOUND)), is(HttpStatus.NOT_FOUND));
-        assertThat(errorHandler.getStatus(new InvalidParametersException(NOT_FOUND)), is(HttpStatus.BAD_REQUEST));
-        assertThat(errorHandler.getStatus(new GetQuoteException(NOT_FOUND)), is(HttpStatus.INTERNAL_SERVER_ERROR));
-        assertThat(errorHandler.getStatus(new RuntimeException(NOT_FOUND)), is(HttpStatus.INTERNAL_SERVER_ERROR));
     }
 }
