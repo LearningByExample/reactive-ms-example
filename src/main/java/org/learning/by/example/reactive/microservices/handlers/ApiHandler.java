@@ -8,9 +8,6 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
-import java.util.function.Function;
-import java.util.function.Supplier;
-
 public class ApiHandler {
 
     private static final String NAME = "name";
@@ -29,44 +26,41 @@ public class ApiHandler {
 
     public Mono<ServerResponse> defaultHello(final ServerRequest request) {
         return DEFAULT_NAME
-                .publish(getServerResponse())
+                .publish(this::getServerResponse)
                 .onErrorResume(errorHandler::throwableError);
     }
 
     public Mono<ServerResponse> getHello(final ServerRequest request) {
         return Mono.just(request.pathVariable(NAME))
-                .publish(getServerResponse())
+                .publish(this::getServerResponse)
                 .onErrorResume(errorHandler::throwableError);
     }
 
     public Mono<ServerResponse> postHello(final ServerRequest request) {
         return request.bodyToMono(HelloRequest.class)
                 .flatMap(helloRequest -> Mono.just(helloRequest.getName()))
-                .publish(getServerResponse())
+                .publish(this::getServerResponse)
                 .onErrorResume(errorHandler::throwableError);
     }
 
-    Function<Mono<String>, Mono<ServerResponse>> getServerResponse() {
-        return (name) -> name
-                .publish(createHelloResponse())
-                .publish(convertToServerResponse());
+    Mono<ServerResponse> getServerResponse(Mono<String> monoName) {
+        return monoName.publish(this::createHelloResponse)
+                .publish(this::convertToServerResponse);
     }
 
-    Function<Mono<String>, Mono<HelloResponse>> createHelloResponse() {
-        return name ->
-                name.publish(helloService::greetings).flatMap(
-                        greetings -> randomQuote().get().flatMap(
-                                content -> Mono.just(new HelloResponse(greetings, content))));
+    Mono<HelloResponse> createHelloResponse(Mono<String> monoName) {
+        return monoName.publish(helloService::greetings).flatMap(
+                greetings -> randomQuote().flatMap(
+                        content -> Mono.just(new HelloResponse(greetings, content))));
     }
 
-    Supplier<Mono<String>> randomQuote(){
-        return () -> Mono.fromSupplier(quoteService::get)
+    Mono<String> randomQuote() {
+        return Mono.fromSupplier(quoteService::get)
                 .flatMap(quoteMono -> quoteMono.flatMap(quote -> Mono.just(quote.getContent())));
     }
 
-    Function<Mono<HelloResponse>, Mono<ServerResponse>> convertToServerResponse() {
-        return value -> value.flatMap(helloResponse -> {
-            return ServerResponse.ok().body(Mono.just(helloResponse), HelloResponse.class);
-        });
+    Mono<ServerResponse> convertToServerResponse(Mono<HelloResponse> helloResponseMono) {
+        return helloResponseMono.flatMap(helloResponse ->
+                ServerResponse.ok().body(Mono.just(helloResponse), HelloResponse.class));
     }
 }

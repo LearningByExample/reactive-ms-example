@@ -22,8 +22,6 @@ import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
-import java.util.function.Consumer;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.*;
@@ -63,14 +61,14 @@ public class ApiHandlerTests {
 
     @Test
     public void randomQuoteTest() {
-        apiHandler.randomQuote().get().subscribe(content -> {
+        apiHandler.randomQuote().subscribe(content -> {
             assertThat(content, is(MOCK_QUOTE_CONTENT));
         });
     }
 
     @Test
     public void createHelloResponseTest() {
-        Mono.just(DEFAULT_NAME).publish(apiHandler.createHelloResponse())
+        Mono.just(DEFAULT_NAME).publish(apiHandler::createHelloResponse)
                 .subscribe(helloResponse -> {
                     assertThat(helloResponse.getQuote(), is(MOCK_QUOTE_CONTENT));
                     assertThat(helloResponse.getGreetings(), is(DEFAULT_NAME));
@@ -80,32 +78,29 @@ public class ApiHandlerTests {
 
     @Test
     public void convertToServerResponseTest() {
-        Mono.just(DEFAULT_NAME).publish(apiHandler.createHelloResponse())
-                .publish(apiHandler.convertToServerResponse())
-                .subscribe(checkResponse());
+        Mono.just(DEFAULT_NAME).publish(apiHandler::createHelloResponse)
+                .publish(apiHandler::convertToServerResponse)
+                .subscribe(this::checkResponse);
     }
 
-    public static Consumer<ServerResponse> checkResponse() {
-        return serverResponse -> {
-            assertThat(serverResponse.statusCode(), is(HttpStatus.OK));
+    public void checkResponse(ServerResponse serverResponse) {
+        assertThat(serverResponse.statusCode(), is(HttpStatus.OK));
 
-            HelloResponse helloResponse = HandlersHelper.extractEntity(serverResponse, HelloResponse.class);
-            assertThat(helloResponse.getQuote(), is(MOCK_QUOTE_CONTENT));
-            assertThat(helloResponse.getGreetings(), is(DEFAULT_NAME));
-        };
+        HelloResponse helloResponse = HandlersHelper.extractEntity(serverResponse, HelloResponse.class);
+        assertThat(helloResponse.getQuote(), is(MOCK_QUOTE_CONTENT));
+        assertThat(helloResponse.getGreetings(), is(DEFAULT_NAME));
     }
 
     @Test
     public void getServerResponseTest() {
-        Mono.just(DEFAULT_NAME).publish(apiHandler.getServerResponse())
-                .subscribe(checkResponse());
+        Mono.just(DEFAULT_NAME).publish(apiHandler::getServerResponse)
+                .subscribe(this::checkResponse);
     }
 
     @Test
     public void defaultHelloTest() {
         ServerRequest serverRequest = mock(ServerRequest.class);
-
-        apiHandler.defaultHello(serverRequest).subscribe(checkResponse());
+        apiHandler.defaultHello(serverRequest).subscribe(this::checkResponse);
     }
 
     @Test
@@ -113,15 +108,14 @@ public class ApiHandlerTests {
         ServerRequest serverRequest = mock(ServerRequest.class);
         when(serverRequest.pathVariable(NAME_VARIABLE)).thenReturn(DEFAULT_NAME);
 
-        apiHandler.getHello(serverRequest).subscribe(checkResponse());
+        apiHandler.getHello(serverRequest).subscribe(this::checkResponse);
     }
 
     @Test
     public void postHelloTest() {
         ServerRequest serverRequest = mock(ServerRequest.class);
-        when(serverRequest.bodyToMono(HelloRequest.class))
-                .thenReturn(Mono.just(new HelloRequest(DEFAULT_NAME)));
+        when(serverRequest.bodyToMono(HelloRequest.class)).thenReturn(Mono.just(new HelloRequest(DEFAULT_NAME)));
 
-        apiHandler.postHello(serverRequest).subscribe(checkResponse());
+        apiHandler.postHello(serverRequest).subscribe(this::checkResponse);
     }
 }
