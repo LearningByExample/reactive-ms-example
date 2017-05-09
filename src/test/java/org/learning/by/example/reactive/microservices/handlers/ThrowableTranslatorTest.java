@@ -21,7 +21,6 @@ import java.lang.reflect.InvocationTargetException;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.learning.by.example.reactive.microservices.handlers.ThrowableTranslator.translate;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = ReactiveMsApplication.class)
@@ -47,7 +46,7 @@ public class ThrowableTranslatorTest {
                         Class<? extends Throwable> type = (Class<? extends Throwable>) item;
                         try {
                             Throwable exception = type.getConstructor(String.class).newInstance(EXCEPTION);
-                            Mono.just(exception).publish(translate()).subscribe(translator -> {
+                            Mono.just(exception).publish(ThrowableTranslator::translate).subscribe(translator -> {
                                 assertThat(translator.getMessage(), is(EXCEPTION));
                                 assertThat(translator.getHttpStatus(), is(status));
                             });

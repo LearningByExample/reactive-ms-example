@@ -5,8 +5,6 @@ import org.learning.by.example.reactive.microservices.exceptions.PathNotFoundExc
 import org.springframework.http.HttpStatus;
 import reactor.core.publisher.Mono;
 
-import java.util.function.Function;
-
 class ThrowableTranslator {
     private final HttpStatus httpStatus;
     private final String message;
@@ -34,7 +32,7 @@ class ThrowableTranslator {
         return message;
     }
 
-    static <T extends Throwable> Function<Mono<T>, Mono<ThrowableTranslator>> translate() {
-        return throwable -> throwable.flatMap(error -> Mono.just(new ThrowableTranslator(error)));
+    static <T extends Throwable> Mono<ThrowableTranslator> translate(Mono<T> throwable) {
+        return throwable.flatMap(error -> Mono.just(new ThrowableTranslator(error)));
     }
 }
