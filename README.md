@@ -51,22 +51,20 @@ $ mvnw spring-boot:run
 ## Project Structure
 
 - main/java
-    - ReactiveMsApplication.java : Main Spring boot application.
-    - ApplicationConfig.java : Spring Application Configuration and Beams.
+    - /application : Main Spring boot application and context configuration.  
     - /routers : Reactive routing functions.
     - /handlers : Handlers used by the routers.
     - /services : Services for the business logic needed by handlers.
     - /exceptions : Businesses exceptions.
     - /model : POJOs.
 - test/java:
-    - ReactiveMsApplicationTest : System tests.
+    - /application : Application system tests.
     - /routers : Integration tests for routes.
     - /handlers : Unit tests for handlers.
     - /services : Unit tests for services.
     - /categories : Tests categories.
     - /model : POJOs used by the test.
-    - BasicIntegrationTest.java : Base class for integration testing
-    - HandlerHelper.java : Helper function for handlers
+    - /test : Helpers and base classes for testing.
 
 ## References
 

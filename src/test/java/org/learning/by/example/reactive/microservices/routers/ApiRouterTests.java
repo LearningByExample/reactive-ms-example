@@ -5,6 +5,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
+import org.learning.by.example.reactive.microservices.application.ReactiveMsApplication;
 import org.learning.by.example.reactive.microservices.handlers.ApiHandler;
 import org.learning.by.example.reactive.microservices.handlers.ErrorHandler;
 import org.learning.by.example.reactive.microservices.model.*;
@@ -28,7 +29,7 @@ import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.reset;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(classes = ReactiveMsApplication.class)
 @ActiveProfiles("test")
 @Category(IntegrationTest.class)
 public class ApiRouterTests extends BasicIntegrationTest {

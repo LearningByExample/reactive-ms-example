@@ -1,4 +1,4 @@
-package org.learning.by.example.reactive.microservices;
+package org.learning.by.example.reactive.microservices.application;
 
 import org.learning.by.example.reactive.microservices.handlers.ApiHandler;
 import org.learning.by.example.reactive.microservices.handlers.ErrorHandler;

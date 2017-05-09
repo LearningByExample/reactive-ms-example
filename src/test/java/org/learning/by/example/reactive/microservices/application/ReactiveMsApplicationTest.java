@@ -1,4 +1,4 @@
-package org.learning.by.example.reactive.microservices;
+package org.learning.by.example.reactive.microservices.application;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -20,7 +20,7 @@ import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.hamcrest.Matchers.not;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = ReactiveMsApplication.class)
 @ActiveProfiles("test")
 @Category(SystemTest.class)
 public class ReactiveMsApplicationTest extends BasicIntegrationTest {

@@ -6,6 +6,7 @@ import org.hamcrest.Factory;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
+import org.learning.by.example.reactive.microservices.application.ReactiveMsApplication;
 import org.learning.by.example.reactive.microservices.exceptions.GetQuoteException;
 import org.learning.by.example.reactive.microservices.exceptions.InvalidParametersException;
 import org.learning.by.example.reactive.microservices.exceptions.PathNotFoundException;
@@ -23,7 +24,7 @@ import static org.hamcrest.Matchers.is;
 import static org.learning.by.example.reactive.microservices.handlers.ThrowableTranslator.translate;
 
 @RunWith(SpringRunner.class)
-@SpringBootTest
+@SpringBootTest(classes = ReactiveMsApplication.class)
 @ActiveProfiles("test")
 @Category(UnitTest.class)
 public class ThrowableTranslatorTest {

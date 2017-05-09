@@ -1,8 +1,5 @@
 package org.learning.by.example.reactive.microservices.model;
 
-/**
- * Created by mail on 23/04/2017.
- */
 public class WrongRequest {
     private String surname;
 
