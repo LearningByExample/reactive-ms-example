@@ -7,6 +7,7 @@ import org.learning.by.example.reactive.microservices.application.ReactiveMsAppl
 import org.learning.by.example.reactive.microservices.exceptions.GetQuoteException;
 import org.learning.by.example.reactive.microservices.model.Quote;
 import org.learning.by.example.reactive.microservices.test.categories.UnitTest;
+import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.ActiveProfiles;
@@ -16,7 +17,6 @@ import reactor.core.publisher.Mono;
 import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 @RunWith(SpringRunner.class)
@@ -49,7 +49,7 @@ public class QuoteServiceImplTest {
 
         verify(quoteService, times(1)).get();
         verify(quoteService, times(1)).request();
-        verify(quoteService, times(1)).chooseFirst();
+        verify(quoteService, times(1)).chooseFirst(Mockito.any());
 
         reset(quoteService);
     }
@@ -68,7 +68,6 @@ public class QuoteServiceImplTest {
 
     @Test
     public void requestErrorShouldBeHandle() {
-
         doReturn(Mono.error(new RuntimeException(BAD_EXCEPTION))).when(quoteService).request();
 
         quoteService.get().subscribe(quote -> {
@@ -79,14 +78,14 @@ public class QuoteServiceImplTest {
 
         verify(quoteService, times(1)).get();
         verify(quoteService, times(1)).request();
-        verify(quoteService, times(1)).chooseFirst();
+        verify(quoteService, times(1)).chooseFirst(Mockito.any());
 
         reset(quoteService);
     }
 
     @Test
     public void chooseFirstErrorShouldBeHandle() {
-        given(quoteService.chooseFirst()).willReturn(mono -> Mono.error(new RuntimeException(BAD_EXCEPTION)));
+        doReturn(Mono.error(new RuntimeException(BAD_EXCEPTION))).when(quoteService).chooseFirst(Mockito.any());
 
         quoteService.get().subscribe(quote -> {
             throw new UnsupportedOperationException(SHOULD_NOT_RETURN_OBJECT);
@@ -96,7 +95,7 @@ public class QuoteServiceImplTest {
 
         verify(quoteService, times(1)).get();
         verify(quoteService, times(1)).request();
-        verify(quoteService, times(1)).chooseFirst();
+        verify(quoteService, times(1)).chooseFirst(Mockito.any());
 
         reset(quoteService);
     }

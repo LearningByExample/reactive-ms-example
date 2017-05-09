@@ -8,8 +8,6 @@ import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-import java.util.function.Function;
-
 public class QuoteServiceImpl implements QuoteService {
 
     private static final String ERROR_GETTING_QUOTE = "ERROR GETTING_QUOTE";
@@ -32,14 +30,14 @@ public class QuoteServiceImpl implements QuoteService {
                 .flatMap(clientResponse -> clientResponse.bodyToMono(Quote[].class));
     }
 
-    Function<Mono<Quote[]>, Mono<Quote>> chooseFirst() {
-        return mono -> mono.flatMap(quotes -> Mono.just(quotes[0]))
+    Mono<Quote> chooseFirst(Mono<Quote[]> monoQuotes) {
+        return monoQuotes.flatMap(quotes -> Mono.just(quotes[0]))
                 .onErrorResume(throwable ->Mono.error(new GetQuoteException(ERROR_GETTING_QUOTE, throwable)));
     }
 
     @Override
     public Mono<Quote> get() {
-        return Mono.defer(this::request).publish(chooseFirst())
+        return this.request().publish(this::chooseFirst)
                 .onErrorResume(throwable ->Mono.error(new GetQuoteException(ERROR_GETTING_QUOTE, throwable)));
     }
 
