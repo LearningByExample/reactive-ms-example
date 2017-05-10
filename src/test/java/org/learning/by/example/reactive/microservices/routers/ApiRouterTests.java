@@ -1,16 +1,17 @@
 package org.learning.by.example.reactive.microservices.routers;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.learning.by.example.reactive.microservices.application.ReactiveMsApplication;
 import org.learning.by.example.reactive.microservices.handlers.ApiHandler;
 import org.learning.by.example.reactive.microservices.handlers.ErrorHandler;
 import org.learning.by.example.reactive.microservices.model.*;
 import org.learning.by.example.reactive.microservices.services.HelloService;
 import org.learning.by.example.reactive.microservices.services.QuoteService;
-import org.learning.by.example.reactive.microservices.test.BasicIntegrationTest;
+import org.learning.by.example.reactive.microservices.test.BasicTest;
 import org.learning.by.example.reactive.microservices.test.categories.IntegrationTest;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import reactor.core.publisher.Mono;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -28,11 +29,12 @@ import static org.hamcrest.core.IsNot.not;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.reset;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = ReactiveMsApplication.class)
-@ActiveProfiles("test")
 @IntegrationTest
-public class ApiRouterTests extends BasicIntegrationTest {
+@DisplayName("ApiRouter Integration Tests")
+@SpringBootTest(classes = ReactiveMsApplication.class)
+@ExtendWith(SpringExtension.class)
+@ActiveProfiles("test")
+class ApiRouterTests extends BasicTest {
 
     private static final String DEFAULT_VALUE = "world";
     private static final String CUSTOM_VALUE = "reactive";
@@ -55,8 +57,8 @@ public class ApiRouterTests extends BasicIntegrationTest {
     @SpyBean
     private QuoteService quoteService;
 
-    @Before
-    public void setup() {
+    @BeforeEach
+    void setup() {
         super.bindToRouterFunction(ApiRouter.doRoute(apiHandler, errorHandler));
 
         doReturn(createMockedQuote(MOCK_QUOTE_CONTENT)).when(quoteService).get();
@@ -72,13 +74,13 @@ public class ApiRouterTests extends BasicIntegrationTest {
         return Mono.just(quote);
     }
 
-    @After
-    public void tearDown(){
+    @AfterEach
+    void tearDown() {
         reset(quoteService);
     }
 
     @Test
-    public void defaultHelloTest() {
+    void defaultHelloTest() {
         final HelloResponse response = get(
                 builder -> builder.path(HELLO_PATH).build(),
                 HelloResponse.class);
@@ -88,7 +90,7 @@ public class ApiRouterTests extends BasicIntegrationTest {
     }
 
     @Test
-    public void getHelloTest() {
+    void getHelloTest() {
         final HelloResponse response = get(
                 builder -> builder.path(HELLO_PATH).path("/").path(NAME_ARG).build(CUSTOM_VALUE),
                 HelloResponse.class);
@@ -98,7 +100,7 @@ public class ApiRouterTests extends BasicIntegrationTest {
     }
 
     @Test
-    public void postHelloTest() {
+    void postHelloTest() {
         final HelloResponse response = post(
                 builder -> builder.path(HELLO_PATH).build(),
                 new HelloRequest(JSON_VALUE),
@@ -109,7 +111,7 @@ public class ApiRouterTests extends BasicIntegrationTest {
     }
 
     @Test
-    public void getWrongPath() {
+    void getWrongPath() {
         final ErrorResponse response = get(
                 builder -> builder.path(WRONG_PATH).build(),
                 HttpStatus.NOT_FOUND,
@@ -119,7 +121,7 @@ public class ApiRouterTests extends BasicIntegrationTest {
     }
 
     @Test
-    public void postWrongPath() {
+    void postWrongPath() {
         final ErrorResponse response = post(
                 builder -> builder.path(WRONG_PATH).build(),
                 HttpStatus.NOT_FOUND,
@@ -130,7 +132,7 @@ public class ApiRouterTests extends BasicIntegrationTest {
     }
 
     @Test
-    public void postWrongObject() {
+    void postWrongObject() {
         final ErrorResponse response = post(
                 builder -> builder.path(HELLO_PATH).build(),
                 HttpStatus.BAD_REQUEST,
@@ -141,7 +143,7 @@ public class ApiRouterTests extends BasicIntegrationTest {
     }
 
     @Test
-    public void helloServiceErrorTest() {
+    void helloServiceErrorTest() {
 
         doReturn(Mono.error(new RuntimeException(SUPER_ERROR))).when(helloService).greetings(Mockito.any());
 
@@ -156,7 +158,7 @@ public class ApiRouterTests extends BasicIntegrationTest {
     }
 
     @Test
-    public void quoteServiceErrorTest() {
+    void quoteServiceErrorTest() {
 
         doReturn(Mono.error(new RuntimeException(SUPER_ERROR))).when(quoteService).get();
 

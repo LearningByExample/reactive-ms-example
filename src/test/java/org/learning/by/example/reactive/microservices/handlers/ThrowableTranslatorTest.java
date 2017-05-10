@@ -3,8 +3,9 @@ package org.learning.by.example.reactive.microservices.handlers;
 import org.hamcrest.Description;
 import org.hamcrest.DiagnosingMatcher;
 import org.hamcrest.Factory;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.learning.by.example.reactive.microservices.application.ReactiveMsApplication;
 import org.learning.by.example.reactive.microservices.exceptions.GetQuoteException;
 import org.learning.by.example.reactive.microservices.exceptions.InvalidParametersException;
@@ -13,7 +14,7 @@ import org.learning.by.example.reactive.microservices.test.categories.UnitTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import reactor.core.publisher.Mono;
 
 import java.lang.reflect.InvocationTargetException;
@@ -21,14 +22,15 @@ import java.lang.reflect.InvocationTargetException;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = ReactiveMsApplication.class)
-@ActiveProfiles("test")
 @UnitTest
-public class ThrowableTranslatorTest {
+@DisplayName("ThrowableTranslator Unit Tests")
+@SpringBootTest(classes = ReactiveMsApplication.class)
+@ExtendWith(SpringExtension.class)
+@ActiveProfiles("test")
+class ThrowableTranslatorTest {
 
     @Factory
-    public static DiagnosingMatcher<Object> translateTo(HttpStatus status) {
+    private static DiagnosingMatcher<Object> translateTo(HttpStatus status) {
         return new DiagnosingMatcher<Object>() {
             private static final String EXCEPTION = "EXCEPTION";
 
@@ -41,7 +43,7 @@ public class ThrowableTranslatorTest {
             protected boolean matches(final Object item, final Description mismatch) {
 
                 if (item instanceof Class) {
-                    if(((Class)item).getClass().isInstance(Throwable.class )){
+                    if (((Class) item).getClass().isInstance(Throwable.class)) {
                         Class<? extends Throwable> type = (Class<? extends Throwable>) item;
                         try {
                             Throwable exception = type.getConstructor(String.class).newInstance(EXCEPTION);
@@ -63,22 +65,22 @@ public class ThrowableTranslatorTest {
     }
 
     @Test
-    public void translateGetQuoteExceptionTest() throws Exception {
+    void translateGetQuoteExceptionTest() throws Exception {
         assertThat(GetQuoteException.class, translateTo(HttpStatus.INTERNAL_SERVER_ERROR));
     }
 
     @Test
-    public void translateInvalidParametersExceptionTest() throws Exception {
+    void translateInvalidParametersExceptionTest() throws Exception {
         assertThat(InvalidParametersException.class, translateTo(HttpStatus.BAD_REQUEST));
     }
 
     @Test
-    public void translatePathNotFoundExceptionTest() throws Exception {
+    void translatePathNotFoundExceptionTest() throws Exception {
         assertThat(PathNotFoundException.class, translateTo(HttpStatus.NOT_FOUND));
     }
 
     @Test
-    public void translateGenericExceptionTest() throws Exception {
+    void translateGenericExceptionTest() throws Exception {
         assertThat(Exception.class, translateTo(HttpStatus.INTERNAL_SERVER_ERROR));
     }
 }

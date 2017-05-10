@@ -1,30 +1,32 @@
 package org.learning.by.example.reactive.microservices.routers;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.learning.by.example.reactive.microservices.application.ReactiveMsApplication;
 import org.learning.by.example.reactive.microservices.model.Quote;
 import org.learning.by.example.reactive.microservices.services.QuoteService;
-import org.learning.by.example.reactive.microservices.test.BasicIntegrationTest;
+import org.learning.by.example.reactive.microservices.test.BasicTest;
 import org.learning.by.example.reactive.microservices.test.categories.IntegrationTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import reactor.core.publisher.Mono;
 
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.reset;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest(classes = ReactiveMsApplication.class)
-@ActiveProfiles("test")
 @IntegrationTest
-public class MainRouterTests extends BasicIntegrationTest {
+@DisplayName("MainRouter Integration Tests")
+@SpringBootTest(classes = ReactiveMsApplication.class)
+@ExtendWith(SpringExtension.class)
+@ActiveProfiles("test")
+class MainRouterTests extends BasicTest {
 
     private static final String STATIC_ROUTE = "/index.html";
     private static final String API_ROUTE = "/api/hello";
@@ -37,8 +39,8 @@ public class MainRouterTests extends BasicIntegrationTest {
     @SpyBean
     private QuoteService quoteService;
 
-    @Before
-    public void setup() {
+    @BeforeEach
+    void setup() {
         super.bindToRouterFunction(mainRouterFunction);
 
         doReturn(createMockedQuote(MOCK_QUOTE_CONTENT)).when(quoteService).get();
@@ -46,8 +48,8 @@ public class MainRouterTests extends BasicIntegrationTest {
         final MainRouter mainRouter = new MainRouter();
     }
 
-    @After
-    public void tearDown(){
+    @AfterEach
+    void tearDown(){
         reset(quoteService);
     }
 
@@ -60,12 +62,12 @@ public class MainRouterTests extends BasicIntegrationTest {
     }
 
     @Test
-    public void staticRouteTest() {
+    void staticRouteTest() {
         get(builder -> builder.path(STATIC_ROUTE).build());
     }
 
     @Test
-    public void apiRouteTest() {
+    void apiRouteTest() {
         get(
                 builder -> builder.path(API_ROUTE).build(),
                 String.class

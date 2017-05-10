@@ -1,9 +1,9 @@
 package org.learning.by.example.reactive.microservices.handlers;
 
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.learning.by.example.reactive.microservices.application.ReactiveMsApplication;
 import org.learning.by.example.reactive.microservices.model.HelloRequest;
@@ -26,11 +26,11 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(SpringExtension.class)
-@SpringBootTest(classes = ReactiveMsApplication.class)
-@ActiveProfiles("test")
 @UnitTest
-@DisplayName("ApiHandlerTests UnitTest Tests")
+@DisplayName("ApiHandler Unit Tests")
+@SpringBootTest(classes = ReactiveMsApplication.class)
+@ExtendWith(SpringExtension.class)
+@ActiveProfiles("test")
 class ApiHandlerTests {
     private static final String MOCK_QUOTE_CONTENT = "content";
     private static final String DEFAULT_NAME = "world";
