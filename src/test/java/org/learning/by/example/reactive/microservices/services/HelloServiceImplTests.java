@@ -1,7 +1,6 @@
 package org.learning.by.example.reactive.microservices.services;
 
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.learning.by.example.reactive.microservices.application.ReactiveMsApplication;
 import org.learning.by.example.reactive.microservices.exceptions.InvalidParametersException;
@@ -19,7 +18,7 @@ import static org.hamcrest.Matchers.is;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = ReactiveMsApplication.class)
 @ActiveProfiles("test")
-@Category(UnitTest.class)
+@UnitTest
 public class HelloServiceImplTests {
     @Autowired
     private HelloServiceImpl helloService;

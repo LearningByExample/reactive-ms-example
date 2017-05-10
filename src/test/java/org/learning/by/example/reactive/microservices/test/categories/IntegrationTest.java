@@ -1,4 +1,7 @@
 package org.learning.by.example.reactive.microservices.test.categories;
 
-public class IntegrationTest {
+import org.junit.jupiter.api.Tag;
+
+@Tag("IntegrationTest")
+public @interface IntegrationTest {
 }

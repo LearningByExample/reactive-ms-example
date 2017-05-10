@@ -1,9 +1,9 @@
 package org.learning.by.example.reactive.microservices.application;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.learning.by.example.reactive.microservices.model.HelloRequest;
 import org.learning.by.example.reactive.microservices.model.HelloResponse;
 import org.learning.by.example.reactive.microservices.test.BasicIntegrationTest;
@@ -12,18 +12,17 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.isEmptyOrNullString;
-import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.*;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT, classes = ReactiveMsApplication.class)
 @ActiveProfiles("test")
-@Category(SystemTest.class)
-public class ReactiveMsApplicationTest extends BasicIntegrationTest {
+@SystemTest
+@DisplayName("ApplicationTest System Tests")
+class ReactiveMsApplicationTest extends BasicIntegrationTest {
 
     private static final String DEFAULT_VALUE = "world";
     private static final String CUSTOM_VALUE = "reactive";
@@ -34,13 +33,14 @@ public class ReactiveMsApplicationTest extends BasicIntegrationTest {
     @LocalServerPort
     private int port;
 
-    @Before
-    public void setup(){
+    @BeforeEach
+    void setup(){
         bindToServerPort(port);
     }
 
     @Test
-    public void defaultHelloTest(){
+    @DisplayName("get default")
+    void defaultHelloTest(){
         final HelloResponse response = get(
                 builder -> builder.path(HELLO_PATH).build(),
                 HelloResponse.class);
@@ -50,7 +50,8 @@ public class ReactiveMsApplicationTest extends BasicIntegrationTest {
     }
 
     @Test
-    public void getHelloTest() {
+    @DisplayName("get variable")
+    void getHelloTest() {
         final HelloResponse response = get(
                 builder -> builder.path(HELLO_PATH).path("/").path(NAME_ARG).build(CUSTOM_VALUE),
                 HelloResponse.class);
@@ -60,7 +61,8 @@ public class ReactiveMsApplicationTest extends BasicIntegrationTest {
     }
 
     @Test
-    public void postHelloTest() {
+    @DisplayName("post json")
+    void postHelloTest() {
         final HelloResponse response = post(
                 builder -> builder.path(HELLO_PATH).build(),
                 new HelloRequest(JSON_VALUE),

@@ -3,7 +3,6 @@ package org.learning.by.example.reactive.microservices.routers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.learning.by.example.reactive.microservices.application.ReactiveMsApplication;
 import org.learning.by.example.reactive.microservices.model.Quote;
@@ -24,7 +23,7 @@ import static org.mockito.Mockito.reset;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = ReactiveMsApplication.class)
 @ActiveProfiles("test")
-@Category(IntegrationTest.class)
+@IntegrationTest
 public class MainRouterTests extends BasicIntegrationTest {
 
     private static final String STATIC_ROUTE = "/index.html";

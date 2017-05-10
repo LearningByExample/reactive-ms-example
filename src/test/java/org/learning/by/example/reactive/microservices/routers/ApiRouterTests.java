@@ -3,7 +3,6 @@ package org.learning.by.example.reactive.microservices.routers;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.learning.by.example.reactive.microservices.application.ReactiveMsApplication;
 import org.learning.by.example.reactive.microservices.handlers.ApiHandler;
@@ -26,14 +25,13 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.isEmptyOrNullString;
 import static org.hamcrest.core.IsNot.not;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.reset;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = ReactiveMsApplication.class)
 @ActiveProfiles("test")
-@Category(IntegrationTest.class)
+@IntegrationTest
 public class ApiRouterTests extends BasicIntegrationTest {
 
     private static final String DEFAULT_VALUE = "world";

@@ -1,10 +1,10 @@
 package org.learning.by.example.reactive.microservices.handlers;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.learning.by.example.reactive.microservices.application.ReactiveMsApplication;
 import org.learning.by.example.reactive.microservices.model.HelloRequest;
 import org.learning.by.example.reactive.microservices.model.HelloResponse;
@@ -17,7 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
@@ -26,11 +26,12 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.*;
 
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 @SpringBootTest(classes = ReactiveMsApplication.class)
 @ActiveProfiles("test")
-@Category(UnitTest.class)
-public class ApiHandlerTests {
+@UnitTest
+@DisplayName("ApiHandlerTests UnitTest Tests")
+class ApiHandlerTests {
     private static final String MOCK_QUOTE_CONTENT = "content";
     private static final String DEFAULT_NAME = "world";
     private static final String NAME_VARIABLE = "name";
@@ -41,8 +42,8 @@ public class ApiHandlerTests {
     @SpyBean
     private QuoteService quoteService;
 
-    @Before
-    public void setup() {
+    @BeforeEach
+    void setup() {
         doReturn(createMockedQuote(MOCK_QUOTE_CONTENT)).when(quoteService).get();
     }
 
@@ -54,20 +55,20 @@ public class ApiHandlerTests {
         return Mono.just(quote);
     }
 
-    @After
-    public void tearDown() {
+    @AfterEach
+    void tearDown() {
         reset(quoteService);
     }
 
     @Test
-    public void randomQuoteTest() {
+    void randomQuoteTest() {
         apiHandler.randomQuote().subscribe(content -> {
             assertThat(content, is(MOCK_QUOTE_CONTENT));
         });
     }
 
     @Test
-    public void createHelloResponseTest() {
+    void createHelloResponseTest() {
         Mono.just(DEFAULT_NAME).publish(apiHandler::createHelloResponse)
                 .subscribe(helloResponse -> {
                     assertThat(helloResponse.getQuote(), is(MOCK_QUOTE_CONTENT));
@@ -77,13 +78,13 @@ public class ApiHandlerTests {
     }
 
     @Test
-    public void convertToServerResponseTest() {
+    void convertToServerResponseTest() {
         Mono.just(DEFAULT_NAME).publish(apiHandler::createHelloResponse)
                 .publish(apiHandler::convertToServerResponse)
                 .subscribe(this::checkResponse);
     }
 
-    public void checkResponse(final ServerResponse serverResponse) {
+    private void checkResponse(final ServerResponse serverResponse) {
         assertThat(serverResponse.statusCode(), is(HttpStatus.OK));
 
         HelloResponse helloResponse = HandlersHelper.extractEntity(serverResponse, HelloResponse.class);
@@ -92,19 +93,19 @@ public class ApiHandlerTests {
     }
 
     @Test
-    public void getServerResponseTest() {
+    void getServerResponseTest() {
         Mono.just(DEFAULT_NAME).publish(apiHandler::getServerResponse)
                 .subscribe(this::checkResponse);
     }
 
     @Test
-    public void defaultHelloTest() {
+    void defaultHelloTest() {
         ServerRequest serverRequest = mock(ServerRequest.class);
         apiHandler.defaultHello(serverRequest).subscribe(this::checkResponse);
     }
 
     @Test
-    public void getHelloTest() {
+    void getHelloTest() {
         ServerRequest serverRequest = mock(ServerRequest.class);
         when(serverRequest.pathVariable(NAME_VARIABLE)).thenReturn(DEFAULT_NAME);
 
@@ -112,7 +113,7 @@ public class ApiHandlerTests {
     }
 
     @Test
-    public void postHelloTest() {
+    void postHelloTest() {
         ServerRequest serverRequest = mock(ServerRequest.class);
         when(serverRequest.bodyToMono(HelloRequest.class)).thenReturn(Mono.just(new HelloRequest(DEFAULT_NAME)));
 

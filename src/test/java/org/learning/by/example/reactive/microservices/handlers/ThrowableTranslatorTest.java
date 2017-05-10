@@ -4,7 +4,6 @@ import org.hamcrest.Description;
 import org.hamcrest.DiagnosingMatcher;
 import org.hamcrest.Factory;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.learning.by.example.reactive.microservices.application.ReactiveMsApplication;
 import org.learning.by.example.reactive.microservices.exceptions.GetQuoteException;
@@ -25,7 +24,7 @@ import static org.hamcrest.Matchers.is;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = ReactiveMsApplication.class)
 @ActiveProfiles("test")
-@Category(UnitTest.class)
+@UnitTest
 public class ThrowableTranslatorTest {
 
     @Factory

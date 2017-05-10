@@ -1,7 +1,6 @@
 package org.learning.by.example.reactive.microservices.handlers;
 
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.learning.by.example.reactive.microservices.application.ReactiveMsApplication;
 import org.learning.by.example.reactive.microservices.exceptions.PathNotFoundException;
@@ -25,7 +24,7 @@ import static org.hamcrest.Matchers.is;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = ReactiveMsApplication.class)
 @ActiveProfiles("test")
-@Category(UnitTest.class)
+@UnitTest
 public class ErrorHandlerTests {
     private static final String NOT_FOUND = "not found";
 

@@ -5,7 +5,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.learning.by.example.reactive.microservices.application.ReactiveMsApplication;
 import org.learning.by.example.reactive.microservices.test.BasicIntegrationTest;
@@ -22,7 +21,7 @@ import static org.hamcrest.core.IsNot.not;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = ReactiveMsApplication.class)
 @ActiveProfiles("test")
-@Category(IntegrationTest.class)
+@IntegrationTest
 public class StaticRouterTests extends BasicIntegrationTest {
 
     private static final String STATIC_PATH = "/index.html";
