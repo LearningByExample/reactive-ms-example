@@ -12,7 +12,7 @@ import java.util.function.Function;
 import static org.springframework.http.MediaType.APPLICATION_JSON_UTF8;
 import static org.springframework.http.MediaType.TEXT_HTML;
 
-public abstract class BasicIntegrationTest {
+public abstract class BasicTest {
     private WebTestClient client;
 
     protected void bindToRouterFunction(final RouterFunction<?> routerFunction) {

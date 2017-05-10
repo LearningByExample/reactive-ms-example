@@ -1,8 +1,8 @@
 package org.learning.by.example.reactive.microservices.services;
 
-import org.junit.Test;
-import org.junit.experimental.categories.Category;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.learning.by.example.reactive.microservices.application.ReactiveMsApplication;
 import org.learning.by.example.reactive.microservices.exceptions.GetQuoteException;
 import org.learning.by.example.reactive.microservices.model.Quote;
@@ -11,7 +11,7 @@ import org.mockito.Mockito;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import reactor.core.publisher.Mono;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -19,10 +19,11 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.mockito.Mockito.*;
 
-@RunWith(SpringRunner.class)
+@UnitTest
+@DisplayName("QuoteServiceImpl Unit Tests")
 @SpringBootTest(classes = ReactiveMsApplication.class)
+@ExtendWith(SpringExtension.class)
 @ActiveProfiles("test")
-@Category(UnitTest.class)
 public class QuoteServiceImplTest {
 
     private static final String BAD_EXCEPTION = "BAD_EXCEPTION";
@@ -37,7 +38,7 @@ public class QuoteServiceImplTest {
     private QuoteServiceImpl quoteService;
 
     @Test
-    public void mockedRequest() {
+    void mockedRequest() {
         doReturn(createMockedResponse(MOCK_ID, MOCK_TITLE, MOCK_LINK, MOCK_CONTENT)).when(quoteService).request();
 
         quoteService.get().subscribe(quote -> {
@@ -67,7 +68,7 @@ public class QuoteServiceImplTest {
     }
 
     @Test
-    public void requestErrorShouldBeHandle() {
+    void requestErrorShouldBeHandle() {
         doReturn(Mono.error(new RuntimeException(BAD_EXCEPTION))).when(quoteService).request();
 
         quoteService.get().subscribe(quote -> {
@@ -84,7 +85,7 @@ public class QuoteServiceImplTest {
     }
 
     @Test
-    public void chooseFirstErrorShouldBeHandle() {
+    void chooseFirstErrorShouldBeHandle() {
         doReturn(Mono.error(new RuntimeException(BAD_EXCEPTION))).when(quoteService).chooseFirst(Mockito.any());
 
         quoteService.get().subscribe(quote -> {

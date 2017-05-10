@@ -18,11 +18,11 @@ This example cover several topics:
 - Reactive Web Client to consume external REST Services.
 - Organizing your project in manageable packaging.
 
-Includes and in depth look to testing:
+Includes and in depth look to testing using JUnit5:
 - Unit, Integration and System tests.
 - Mocking, including reactive functions.
 - BDD style assertions.
-- Test categories and profiles.
+- Test tags with maven profiles.
 
 ## usage
 
@@ -70,4 +70,6 @@ $ mvnw spring-boot:run
 
 - https://spring.io/blog/2016/09/22/new-in-spring-5-functional-web-framework
 - https://spring.io/blog/2017/02/23/spring-framework-5-0-m5-update
+- http://junit.org/junit5/docs/current/user-guide/#running-tests-build-maven
+- https://github.com/junit-team/junit5-samples
 - http://quotesondesign.com/

@@ -1,4 +1,14 @@
 package org.learning.by.example.reactive.microservices.test.categories;
 
-public interface SystemTest {
+import org.junit.jupiter.api.Tag;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+@Target({ ElementType.TYPE, ElementType.METHOD })
+@Retention(RetentionPolicy.RUNTIME)
+@Tag("SystemTest")
+public @interface SystemTest {
 }
