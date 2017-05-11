@@ -4,8 +4,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.learning.by.example.reactive.microservices.application.ReactiveMsApplication;
 import org.learning.by.example.reactive.microservices.handlers.ApiHandler;
 import org.learning.by.example.reactive.microservices.handlers.ErrorHandler;
 import org.learning.by.example.reactive.microservices.model.*;
@@ -15,11 +13,8 @@ import org.learning.by.example.reactive.microservices.test.BasicTest;
 import org.learning.by.example.reactive.microservices.test.categories.IntegrationTest;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import reactor.core.publisher.Mono;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -31,9 +26,6 @@ import static org.mockito.Mockito.reset;
 
 @IntegrationTest
 @DisplayName("ApiRouter Integration Tests")
-@SpringBootTest(classes = ReactiveMsApplication.class)
-@ExtendWith(SpringExtension.class)
-@ActiveProfiles("test")
 class ApiRouterTests extends BasicTest {
 
     private static final String DEFAULT_VALUE = "world";

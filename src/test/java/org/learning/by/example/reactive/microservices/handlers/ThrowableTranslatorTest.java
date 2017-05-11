@@ -5,16 +5,11 @@ import org.hamcrest.DiagnosingMatcher;
 import org.hamcrest.Factory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.learning.by.example.reactive.microservices.application.ReactiveMsApplication;
 import org.learning.by.example.reactive.microservices.exceptions.GetQuoteException;
 import org.learning.by.example.reactive.microservices.exceptions.InvalidParametersException;
 import org.learning.by.example.reactive.microservices.exceptions.PathNotFoundException;
 import org.learning.by.example.reactive.microservices.test.categories.UnitTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import reactor.core.publisher.Mono;
 
 import java.lang.reflect.InvocationTargetException;
@@ -24,9 +19,6 @@ import static org.hamcrest.Matchers.is;
 
 @UnitTest
 @DisplayName("ThrowableTranslator Unit Tests")
-@SpringBootTest(classes = ReactiveMsApplication.class)
-@ExtendWith(SpringExtension.class)
-@ActiveProfiles("test")
 class ThrowableTranslatorTest {
 
     @Factory

@@ -2,17 +2,12 @@ package org.learning.by.example.reactive.microservices.handlers;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.learning.by.example.reactive.microservices.application.ReactiveMsApplication;
 import org.learning.by.example.reactive.microservices.exceptions.PathNotFoundException;
 import org.learning.by.example.reactive.microservices.model.ErrorResponse;
 import org.learning.by.example.reactive.microservices.test.HandlersHelper;
 import org.learning.by.example.reactive.microservices.test.categories.UnitTest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
@@ -24,9 +19,6 @@ import static org.hamcrest.Matchers.is;
 
 @UnitTest
 @DisplayName("ErrorHandler Unit Tests")
-@SpringBootTest(classes = ReactiveMsApplication.class)
-@ExtendWith(SpringExtension.class)
-@ActiveProfiles("test")
 class ErrorHandlerTests {
     private static final String NOT_FOUND = "not found";
 

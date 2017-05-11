@@ -4,17 +4,12 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.learning.by.example.reactive.microservices.application.ReactiveMsApplication;
 import org.learning.by.example.reactive.microservices.model.Quote;
 import org.learning.by.example.reactive.microservices.services.QuoteService;
 import org.learning.by.example.reactive.microservices.test.BasicTest;
 import org.learning.by.example.reactive.microservices.test.categories.IntegrationTest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import reactor.core.publisher.Mono;
 
@@ -23,9 +18,6 @@ import static org.mockito.Mockito.reset;
 
 @IntegrationTest
 @DisplayName("MainRouter Integration Tests")
-@SpringBootTest(classes = ReactiveMsApplication.class)
-@ExtendWith(SpringExtension.class)
-@ActiveProfiles("test")
 class MainRouterTests extends BasicTest {
 
     private static final String STATIC_ROUTE = "/index.html";

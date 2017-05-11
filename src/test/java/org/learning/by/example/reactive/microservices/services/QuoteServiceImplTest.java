@@ -1,17 +1,12 @@
 package org.learning.by.example.reactive.microservices.services;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.learning.by.example.reactive.microservices.application.ReactiveMsApplication;
+import org.junit.jupiter.api.Test;
 import org.learning.by.example.reactive.microservices.exceptions.GetQuoteException;
 import org.learning.by.example.reactive.microservices.model.Quote;
 import org.learning.by.example.reactive.microservices.test.categories.UnitTest;
 import org.mockito.Mockito;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import reactor.core.publisher.Mono;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -21,10 +16,7 @@ import static org.mockito.Mockito.*;
 
 @UnitTest
 @DisplayName("QuoteServiceImpl Unit Tests")
-@SpringBootTest(classes = ReactiveMsApplication.class)
-@ExtendWith(SpringExtension.class)
-@ActiveProfiles("test")
-public class QuoteServiceImplTest {
+class QuoteServiceImplTest {
 
     private static final String BAD_EXCEPTION = "BAD_EXCEPTION";
     private static final String SHOULD_NOT_RETURN_OBJECT = "Shouldn't get a object";

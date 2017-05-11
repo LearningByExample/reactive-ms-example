@@ -4,8 +4,6 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.learning.by.example.reactive.microservices.application.ReactiveMsApplication;
 import org.learning.by.example.reactive.microservices.model.HelloRequest;
 import org.learning.by.example.reactive.microservices.model.HelloResponse;
 import org.learning.by.example.reactive.microservices.model.Quote;
@@ -13,11 +11,8 @@ import org.learning.by.example.reactive.microservices.services.QuoteService;
 import org.learning.by.example.reactive.microservices.test.HandlersHelper;
 import org.learning.by.example.reactive.microservices.test.categories.UnitTest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
@@ -28,9 +23,6 @@ import static org.mockito.Mockito.*;
 
 @UnitTest
 @DisplayName("ApiHandler Unit Tests")
-@SpringBootTest(classes = ReactiveMsApplication.class)
-@ExtendWith(SpringExtension.class)
-@ActiveProfiles("test")
 class ApiHandlerTests {
     private static final String MOCK_QUOTE_CONTENT = "content";
     private static final String DEFAULT_NAME = "world";

@@ -6,13 +6,8 @@ import org.jsoup.nodes.Element;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.learning.by.example.reactive.microservices.application.ReactiveMsApplication;
 import org.learning.by.example.reactive.microservices.test.BasicTest;
 import org.learning.by.example.reactive.microservices.test.categories.IntegrationTest;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -21,9 +16,6 @@ import static org.hamcrest.core.IsNot.not;
 
 @IntegrationTest
 @DisplayName(" StaticRouter Integration Tests")
-@SpringBootTest(classes = ReactiveMsApplication.class)
-@ExtendWith(SpringExtension.class)
-@ActiveProfiles("test")
 class StaticRouterTests extends BasicTest {
 
     private static final String STATIC_PATH = "/index.html";

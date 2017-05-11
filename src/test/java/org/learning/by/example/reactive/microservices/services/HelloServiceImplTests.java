@@ -1,15 +1,10 @@
 package org.learning.by.example.reactive.microservices.services;
 
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.learning.by.example.reactive.microservices.application.ReactiveMsApplication;
+import org.junit.jupiter.api.Test;
 import org.learning.by.example.reactive.microservices.exceptions.InvalidParametersException;
 import org.learning.by.example.reactive.microservices.test.categories.UnitTest;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import reactor.core.publisher.Mono;
 
 import static org.hamcrest.CoreMatchers.instanceOf;
@@ -18,9 +13,6 @@ import static org.hamcrest.Matchers.is;
 
 @UnitTest
 @DisplayName("HelloServiceImpl Unit Tests")
-@SpringBootTest(classes = ReactiveMsApplication.class)
-@ExtendWith(SpringExtension.class)
-@ActiveProfiles("test")
 class HelloServiceImplTests {
     @Autowired
     private HelloServiceImpl helloService;

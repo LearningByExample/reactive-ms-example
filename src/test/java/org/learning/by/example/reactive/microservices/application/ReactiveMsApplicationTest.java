@@ -3,15 +3,11 @@ package org.learning.by.example.reactive.microservices.application;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.learning.by.example.reactive.microservices.model.HelloRequest;
 import org.learning.by.example.reactive.microservices.model.HelloResponse;
 import org.learning.by.example.reactive.microservices.test.BasicTest;
 import org.learning.by.example.reactive.microservices.test.categories.SystemTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.web.server.LocalServerPort;
-import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
@@ -19,9 +15,6 @@ import static org.hamcrest.Matchers.*;
 
 @SystemTest
 @DisplayName("ReactiveMsApplication System Tests")
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT, classes = ReactiveMsApplication.class)
-@ExtendWith(SpringExtension.class)
-@ActiveProfiles("test")
 class ReactiveMsApplicationTest extends BasicTest {
 
     private static final String DEFAULT_VALUE = "world";
