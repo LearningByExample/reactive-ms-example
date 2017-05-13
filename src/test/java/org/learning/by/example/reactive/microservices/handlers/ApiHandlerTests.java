@@ -36,15 +36,17 @@ class ApiHandlerTests {
 
     @BeforeEach
     void setup() {
-        doReturn(createMockedQuote(MOCK_QUOTE_CONTENT)).when(quoteService).get();
+        doReturn(createMockedQuoteMono(MOCK_QUOTE_CONTENT)).when(quoteService).get();
     }
 
-    private Mono<Quote> createMockedQuote(final String content) {
+    private Mono<Quote> createMockedQuoteMono(final String content) {
+        return Mono.just(createQuote(content));
+    }
+
+    private Quote createQuote(final String content) {
         Quote quote = new Quote();
-
         quote.setContent(content);
-
-        return Mono.just(quote);
+        return quote;
     }
 
     @AfterEach
@@ -55,14 +57,10 @@ class ApiHandlerTests {
     @Test
     void combineGreetingAndQuoteTest() {
 
-        Mono.just(DEFAULT_NAME).
-                and(this::createMockedQuote).
-                map(apiHandler::combineGreetingAndQuote)
-                .subscribe(helloResponse -> {
-                    assertThat(helloResponse.getGreetings(), is(DEFAULT_NAME));
-                    assertThat(helloResponse.getQuote(), is(DEFAULT_NAME));
-                }
-        );
+        HelloResponse helloResponse = apiHandler.combineGreetingAndQuote(DEFAULT_NAME, createQuote(MOCK_QUOTE_CONTENT));
+
+        assertThat(helloResponse.getGreetings(), is(DEFAULT_NAME));
+        assertThat(helloResponse.getQuote(), is(MOCK_QUOTE_CONTENT));
     }
 
     @Test

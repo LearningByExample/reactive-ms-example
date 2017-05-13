@@ -8,7 +8,6 @@ import org.learning.by.example.reactive.microservices.services.QuoteService;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
-import reactor.util.function.Tuple2;
 
 public class ApiHandler {
 
@@ -51,16 +50,11 @@ public class ApiHandler {
     }
 
     Mono<HelloResponse> createHelloResponse(final Mono<String> monoName) {
-        return monoName.
-                publish(helloService::greetings)
-                .and(name -> quoteService.get())
-                .map(this::combineGreetingAndQuote);
-
+        return monoName.publish(helloService::greetings)
+                .and(name -> quoteService.get(), this::combineGreetingAndQuote);
     }
 
-    HelloResponse combineGreetingAndQuote(Tuple2<String, Quote> greetingAndQuote) {
-        final String greeting = greetingAndQuote.getT1();
-        final Quote quote = greetingAndQuote.getT2();
+    HelloResponse combineGreetingAndQuote(final String greeting, final Quote quote) {
         return new HelloResponse(greeting, quote.getContent());
     }
 
