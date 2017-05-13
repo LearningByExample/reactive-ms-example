@@ -2,11 +2,13 @@ package org.learning.by.example.reactive.microservices.handlers;
 
 import org.learning.by.example.reactive.microservices.model.HelloRequest;
 import org.learning.by.example.reactive.microservices.model.HelloResponse;
+import org.learning.by.example.reactive.microservices.model.Quote;
 import org.learning.by.example.reactive.microservices.services.HelloService;
 import org.learning.by.example.reactive.microservices.services.QuoteService;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
+import reactor.util.function.Tuple2;
 
 public class ApiHandler {
 
@@ -49,14 +51,17 @@ public class ApiHandler {
     }
 
     Mono<HelloResponse> createHelloResponse(final Mono<String> monoName) {
-        return monoName.publish(helloService::greetings).flatMap(
-                greetings -> randomQuote().flatMap(
-                        content -> Mono.just(new HelloResponse(greetings, content))));
+        return monoName.
+                publish(helloService::greetings)
+                .and(name -> quoteService.get())
+                .map(this::combineGreetingAndQuote);
+
     }
 
-    Mono<String> randomQuote() {
-        return Mono.fromSupplier(quoteService::get)
-                .flatMap(quoteMono -> quoteMono.flatMap(quote -> Mono.just(quote.getContent())));
+    HelloResponse combineGreetingAndQuote(Tuple2<String, Quote> greetingAndQuote) {
+        final String greeting = greetingAndQuote.getT1();
+        final Quote quote = greetingAndQuote.getT2();
+        return new HelloResponse(greeting, quote.getContent());
     }
 
     Mono<ServerResponse> convertToServerResponse(final Mono<HelloResponse> helloResponseMono) {

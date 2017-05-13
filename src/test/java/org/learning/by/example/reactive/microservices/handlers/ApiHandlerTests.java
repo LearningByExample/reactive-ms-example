@@ -53,10 +53,16 @@ class ApiHandlerTests {
     }
 
     @Test
-    void randomQuoteTest() {
-        apiHandler.randomQuote().subscribe(content -> {
-            assertThat(content, is(MOCK_QUOTE_CONTENT));
-        });
+    void combineGreetingAndQuoteTest() {
+
+        Mono.just(DEFAULT_NAME).
+                and(this::createMockedQuote).
+                map(apiHandler::combineGreetingAndQuote)
+                .subscribe(helloResponse -> {
+                    assertThat(helloResponse.getGreetings(), is(DEFAULT_NAME));
+                    assertThat(helloResponse.getQuote(), is(DEFAULT_NAME));
+                }
+        );
     }
 
     @Test
