@@ -27,30 +27,30 @@ public class ApiHandler {
 
     public Mono<ServerResponse> defaultHello(final ServerRequest request) {
         return DEFAULT_NAME
-                .transform(this::getServerResponse)
+                .publish(this::getServerResponse)
                 .onErrorResume(errorHandler::throwableError);
     }
 
     public Mono<ServerResponse> getHello(final ServerRequest request) {
         return Mono.just(request.pathVariable(NAME))
-                .transform(this::getServerResponse)
+                .publish(this::getServerResponse)
                 .onErrorResume(errorHandler::throwableError);
     }
 
     public Mono<ServerResponse> postHello(final ServerRequest request) {
         return request.bodyToMono(HelloRequest.class)
                 .flatMap(helloRequest -> Mono.just(helloRequest.getName()))
-                .transform(this::getServerResponse)
+                .publish(this::getServerResponse)
                 .onErrorResume(errorHandler::throwableError);
     }
 
     Mono<ServerResponse> getServerResponse(final Mono<String> monoName) {
-        return monoName.transform(this::createHelloResponse)
-                .transform(this::convertToServerResponse);
+        return monoName.publish(this::createHelloResponse)
+                .publish(this::convertToServerResponse);
     }
 
     Mono<HelloResponse> createHelloResponse(final Mono<String> monoName) {
-        return monoName.transform(helloService::greetings)
+        return monoName.publish(helloService::greetings)
                 .and(Mono.defer(quoteService::get), this::combineGreetingAndQuote);
     }
 
@@ -58,7 +58,8 @@ public class ApiHandler {
         return new HelloResponse(greeting, quote.getContent());
     }
 
-    Mono<ServerResponse> convertToServerResponse(final Mono<HelloResponse> helloResponse) {
-        return ServerResponse.ok().body(helloResponse, HelloResponse.class);
+    Mono<ServerResponse> convertToServerResponse(final Mono<HelloResponse> helloResponseMono) {
+        return helloResponseMono.flatMap(helloResponse ->
+                ServerResponse.ok().body(Mono.just(helloResponse), HelloResponse.class));
     }
 }
