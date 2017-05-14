@@ -15,16 +15,16 @@ public class ErrorHandler {
     private static Logger logger = LoggerFactory.getLogger(ErrorHandler.class);
 
     public Mono<ServerResponse> notFound(final ServerRequest request) {
-        return Mono.just(new PathNotFoundException(NOT_FOUND)).publish(this::getResponse);
+        return Mono.just(new PathNotFoundException(NOT_FOUND)).transform(this::getResponse);
     }
 
     Mono<ServerResponse> throwableError(final Throwable error) {
         logger.error(ERROR_RAISED, error);
-        return Mono.just(error).publish(this::getResponse);
+        return Mono.just(error).transform(this::getResponse);
     }
 
     <T extends Throwable> Mono<ServerResponse> getResponse(final Mono<T> monoError) {
-        return monoError.publish(ThrowableTranslator::translate)
+        return monoError.transform(ThrowableTranslator::translate)
                 .flatMap(translation -> ServerResponse
                         .status(translation.getHttpStatus())
                         .body(Mono.just(new ErrorResponse(translation.getMessage())), ErrorResponse.class));

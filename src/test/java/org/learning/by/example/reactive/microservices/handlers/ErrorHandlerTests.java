@@ -39,7 +39,7 @@ class ErrorHandlerTests {
 
     @Test
     void getResponseTest() {
-        Mono.just(new PathNotFoundException(NOT_FOUND)).publish(errorHandler::getResponse)
+        Mono.just(new PathNotFoundException(NOT_FOUND)).transform(errorHandler::getResponse)
                 .subscribe(checkResponse(HttpStatus.NOT_FOUND, NOT_FOUND));
     }
 

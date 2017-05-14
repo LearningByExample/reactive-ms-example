@@ -25,14 +25,14 @@ class HelloServiceImplTests {
 
     @Test
     void validValue() {
-        VALID_VALUE.publish(helloService::greetings).subscribe(value ->
+        VALID_VALUE.transform(helloService::greetings).subscribe(value ->
             assertThat(value, is(VALID))
         );
     }
 
     @Test
     void invalidValueTest() {
-        INVALID_VALUE.publish(helloService::greetings).subscribe(value -> {
+        INVALID_VALUE.transform(helloService::greetings).subscribe(value -> {
             throw new UnsupportedOperationException(SHOULD_NOT_RETURN_OBJECT);
         }, exception -> {
             assertThat(exception, instanceOf(InvalidParametersException.class));

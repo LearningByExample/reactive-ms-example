@@ -27,30 +27,30 @@ public class ApiHandler {
 
     public Mono<ServerResponse> defaultHello(final ServerRequest request) {
         return DEFAULT_NAME
-                .publish(this::getServerResponse)
+                .transform(this::getServerResponse)
                 .onErrorResume(errorHandler::throwableError);
     }
 
     public Mono<ServerResponse> getHello(final ServerRequest request) {
         return Mono.just(request.pathVariable(NAME))
-                .publish(this::getServerResponse)
+                .transform(this::getServerResponse)
                 .onErrorResume(errorHandler::throwableError);
     }
 
     public Mono<ServerResponse> postHello(final ServerRequest request) {
         return request.bodyToMono(HelloRequest.class)
                 .flatMap(helloRequest -> Mono.just(helloRequest.getName()))
-                .publish(this::getServerResponse)
+                .transform(this::getServerResponse)
                 .onErrorResume(errorHandler::throwableError);
     }
 
     Mono<ServerResponse> getServerResponse(final Mono<String> monoName) {
-        return monoName.publish(this::createHelloResponse)
-                .publish(this::convertToServerResponse);
+        return monoName.transform(this::createHelloResponse)
+                .transform(this::convertToServerResponse);
     }
 
     Mono<HelloResponse> createHelloResponse(final Mono<String> monoName) {
-        return monoName.publish(helloService::greetings)
+        return monoName.transform(helloService::greetings)
                 .and(Mono.defer(quoteService::get), this::combineGreetingAndQuote);
     }
 

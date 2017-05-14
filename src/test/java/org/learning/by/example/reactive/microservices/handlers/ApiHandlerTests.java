@@ -65,7 +65,7 @@ class ApiHandlerTests {
 
     @Test
     void createHelloResponseTest() {
-        Mono.just(DEFAULT_NAME).publish(apiHandler::createHelloResponse)
+        Mono.just(DEFAULT_NAME).transform(apiHandler::createHelloResponse)
                 .subscribe(helloResponse -> {
                     assertThat(helloResponse.getQuote(), is(MOCK_QUOTE_CONTENT));
                     assertThat(helloResponse.getGreetings(), is(DEFAULT_NAME));
@@ -75,8 +75,8 @@ class ApiHandlerTests {
 
     @Test
     void convertToServerResponseTest() {
-        Mono.just(DEFAULT_NAME).publish(apiHandler::createHelloResponse)
-                .publish(apiHandler::convertToServerResponse)
+        Mono.just(DEFAULT_NAME).transform(apiHandler::createHelloResponse)
+                .transform(apiHandler::convertToServerResponse)
                 .subscribe(this::checkResponse);
     }
 
@@ -90,7 +90,7 @@ class ApiHandlerTests {
 
     @Test
     void getServerResponseTest() {
-        Mono.just(DEFAULT_NAME).publish(apiHandler::getServerResponse)
+        Mono.just(DEFAULT_NAME).transform(apiHandler::getServerResponse)
                 .subscribe(this::checkResponse);
     }
 

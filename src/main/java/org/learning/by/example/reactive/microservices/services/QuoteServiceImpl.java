@@ -37,7 +37,7 @@ public class QuoteServiceImpl implements QuoteService {
 
     @Override
     public Mono<Quote> get() {
-        return this.request().publish(this::chooseFirst)
+        return this.request().transform(this::chooseFirst)
                 .onErrorResume(throwable ->Mono.error(new GetQuoteException(ERROR_GETTING_QUOTE, throwable)));
     }
 

@@ -39,7 +39,7 @@ class ThrowableTranslatorTest {
                         Class<? extends Throwable> type = (Class<? extends Throwable>) item;
                         try {
                             Throwable exception = type.getConstructor(String.class).newInstance(EXCEPTION);
-                            Mono.just(exception).publish(ThrowableTranslator::translate).subscribe(translator -> {
+                            Mono.just(exception).transform(ThrowableTranslator::translate).subscribe(translator -> {
                                 assertThat(translator.getMessage(), is(EXCEPTION));
                                 assertThat(translator.getHttpStatus(), is(status));
                             });

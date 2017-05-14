@@ -33,7 +33,7 @@ class QuoteServiceImplTest {
     void mockedRequest() {
         doReturn(createMockedResponse(MOCK_ID, MOCK_TITLE, MOCK_LINK, MOCK_CONTENT)).when(quoteService).request();
 
-        quoteService.get().subscribe(quote -> {
+        Mono.defer(quoteService::get).subscribe(quote -> {
             assertThat(quote.getID(), is(MOCK_ID));
             assertThat(quote.getTitle(), is(MOCK_TITLE));
             assertThat(quote.getLink(), is(MOCK_LINK));
@@ -63,7 +63,7 @@ class QuoteServiceImplTest {
     void requestErrorShouldBeHandle() {
         doReturn(Mono.error(new RuntimeException(BAD_EXCEPTION))).when(quoteService).request();
 
-        quoteService.get().subscribe(quote -> {
+        Mono.defer(quoteService::get).subscribe(quote -> {
             throw new UnsupportedOperationException(SHOULD_NOT_RETURN_OBJECT);
         }, throwable -> {
             assertThat(throwable, instanceOf(GetQuoteException.class));
@@ -80,7 +80,7 @@ class QuoteServiceImplTest {
     void chooseFirstErrorShouldBeHandle() {
         doReturn(Mono.error(new RuntimeException(BAD_EXCEPTION))).when(quoteService).chooseFirst(Mockito.any());
 
-        quoteService.get().subscribe(quote -> {
+        Mono.defer(quoteService::get).subscribe(quote -> {
             throw new UnsupportedOperationException(SHOULD_NOT_RETURN_OBJECT);
         }, throwable -> {
             assertThat(throwable, instanceOf(GetQuoteException.class));
