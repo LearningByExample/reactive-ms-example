@@ -1,2 +1,4 @@
 QuoteServiceImpl:
   endPoint: "http://quotesondesign.com/wp-json/posts?filter[orderby]=rand&filter[posts_per_page]=1"
+LocationServiceImpl:
+  endPoint: "https://maps.googleapis.com/maps/api/geocode/json"
