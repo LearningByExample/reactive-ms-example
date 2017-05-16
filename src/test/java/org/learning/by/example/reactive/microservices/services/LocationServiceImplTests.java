@@ -56,7 +56,7 @@ return Mono.just(locationResult);*/
 
     @Test
     void requestTest(){
-        LocationResult location = GOOGLE_ADDRESS_MONO.publish(locationService::request).block();
+        LocationResult location = GOOGLE_ADDRESS_MONO.transform(locationService::request).block();
 
         assertThat(location, is(notNullValue()));
         assertThat(location.getStatus(), is(OK_STATUS));
@@ -64,7 +64,7 @@ return Mono.just(locationResult);*/
 
     @Test
     void requestNotFoundTest(){
-        LocationResult location = BAD_ADDRESS_MONO.publish(locationService::request).block();
+        LocationResult location = BAD_ADDRESS_MONO.transform(locationService::request).block();
 
         assertThat(location, is(notNullValue()));
         assertThat(location.getStatus(), is(ZERO_RESULTS));
@@ -72,7 +72,7 @@ return Mono.just(locationResult);*/
 
     @Test
     void fromAddressTest() {
-        Location location = GOOGLE_ADDRESS_MONO.publish(locationService::fromAddress).block();
+        Location location = GOOGLE_ADDRESS_MONO.transform(locationService::fromAddress).block();
 
         assertThat(location, is(notNullValue()));
         assertThat(location.getLat(), is(GOOGLE_LAT));
@@ -81,7 +81,7 @@ return Mono.just(locationResult);*/
 
     @Test
     void fromAddressNotFoundTest() {
-        Location location = BAD_ADDRESS_MONO.publish(locationService::fromAddress)
+        Location location = BAD_ADDRESS_MONO.transform(locationService::fromAddress)
             .onErrorResume(throwable -> {
                 assertThat(throwable, instanceOf(LocationNotFoundException.class));
                 return Mono.empty();
