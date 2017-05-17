@@ -25,7 +25,7 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public Mono<Location> fromAddress(Mono<String> addressMono) {
+    public Mono<Location> fromAddress(final Mono<String> addressMono) {
         return addressMono
                 .transform(this::buildUrl)
                 .transform(this::get)
@@ -46,7 +46,7 @@ public class LocationServiceImpl implements LocationService {
                 .flatMap(clientResponse -> clientResponse.bodyToMono(LocationResult.class)));
     }
 
-    Mono<Location> geometryLocation(Mono<LocationResult> location) {
+    Mono<Location> geometryLocation(final Mono<LocationResult> location) {
         return location.flatMap(locationResult -> {
                     if (locationResult.getStatus() != null) {
                         switch (locationResult.getStatus()) {

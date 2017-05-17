@@ -1,6 +1,5 @@
 package org.learning.by.example.reactive.microservices.test;
 
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.mockito.Mockito;
 import org.springframework.web.reactive.function.client.ClientResponse;
@@ -37,7 +36,7 @@ public class BasicRestConsumerTest {
         }
     }
 
-    protected static WebClient mockWebClient(WebClient originalClient, Mono<?> mono){
+    protected static WebClient mockWebClient(final WebClient originalClient, final Mono<?> mono){
         WebClient client = spy(originalClient);
 
         WebClient.UriSpec uriSpec = mock(WebClient.UriSpec.class);
