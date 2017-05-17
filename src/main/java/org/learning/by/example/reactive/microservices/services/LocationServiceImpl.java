@@ -14,7 +14,7 @@ public class LocationServiceImpl implements LocationService {
     private static final String ZERO_RESULTS = "ZERO_RESULTS";
     private static final String ERROR_GETTING_LOCATION = "error getting location";
     private static final String ERROR_LOCATION_WAS_NULL = "error location was null";
-    private static final String LOCATION_NOT_FOUND = "location not found";
+    private static final String ADDRESS_NOT_FOUND = "address not found";
     private static final String ADDRESS_PARAMETER = "?address=";
     WebClient webClient;
     private final String endPoint;
@@ -25,7 +25,7 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    public Mono<Location> fromAddress(Mono<String> addressMono) {
+    public Mono<Location> fromAddress(final Mono<String> addressMono) {
         return addressMono
                 .transform(this::buildUrl)
                 .transform(this::get)
@@ -46,7 +46,7 @@ public class LocationServiceImpl implements LocationService {
                 .flatMap(clientResponse -> clientResponse.bodyToMono(LocationResult.class)));
     }
 
-    Mono<Location> geometryLocation(Mono<LocationResult> location) {
+    Mono<Location> geometryLocation(final Mono<LocationResult> location) {
         return location.flatMap(locationResult -> {
                     if (locationResult.getStatus() != null) {
                         switch (locationResult.getStatus()) {
@@ -55,7 +55,7 @@ public class LocationServiceImpl implements LocationService {
                                         new Location(locationResult.getResults()[0].getGeometry().getLocation().getLat(),
                                                 locationResult.getResults()[0].getGeometry().getLocation().getLng()));
                             case ZERO_RESULTS:
-                                return Mono.error(new LocationNotFoundException(LOCATION_NOT_FOUND));
+                                return Mono.error(new LocationNotFoundException(ADDRESS_NOT_FOUND));
                             default:
                                 return Mono.error(new GetLocationException(ERROR_GETTING_LOCATION));
                         }

@@ -2,8 +2,10 @@ package org.learning.by.example.reactive.microservices.handlers;
 
 import org.learning.by.example.reactive.microservices.model.HelloRequest;
 import org.learning.by.example.reactive.microservices.model.HelloResponse;
+import org.learning.by.example.reactive.microservices.model.Location;
 import org.learning.by.example.reactive.microservices.model.Quote;
 import org.learning.by.example.reactive.microservices.services.HelloService;
+import org.learning.by.example.reactive.microservices.services.LocationService;
 import org.learning.by.example.reactive.microservices.services.QuoteService;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
@@ -12,17 +14,21 @@ import reactor.core.publisher.Mono;
 public class ApiHandler {
 
     private static final String NAME = "name";
+    private static final String ADDRESS = "address";
 
     private final ErrorHandler errorHandler;
     private final HelloService helloService;
     private final QuoteService quoteService;
+    private final LocationService locationService;
 
     private static final Mono<String> DEFAULT_NAME = Mono.just("world");
 
-    public ApiHandler(final HelloService helloService, final QuoteService quoteService, final ErrorHandler errorHandler) {
+    public ApiHandler(final HelloService helloService, final QuoteService quoteService,
+                      final LocationService locationService, final ErrorHandler errorHandler) {
         this.errorHandler = errorHandler;
         this.helloService = helloService;
         this.quoteService = quoteService;
+        this.locationService = locationService;
     }
 
     public Mono<ServerResponse> defaultHello(final ServerRequest request) {
@@ -61,5 +67,12 @@ public class ApiHandler {
     Mono<ServerResponse> convertToServerResponse(final Mono<HelloResponse> helloResponseMono) {
         return helloResponseMono.flatMap(helloResponse ->
                 ServerResponse.ok().body(Mono.just(helloResponse), HelloResponse.class));
+    }
+
+    public Mono<ServerResponse> getLocation(final ServerRequest request){
+        return Mono.just(request.pathVariable(ADDRESS))
+                .transform(locationService::fromAddress)
+                .flatMap(location -> ServerResponse.ok().body(Mono.just(location), Location.class))
+                .onErrorResume(errorHandler::throwableError);
     }
 }

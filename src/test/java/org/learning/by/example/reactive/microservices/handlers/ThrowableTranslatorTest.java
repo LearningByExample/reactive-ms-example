@@ -7,6 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.learning.by.example.reactive.microservices.exceptions.GetQuoteException;
 import org.learning.by.example.reactive.microservices.exceptions.InvalidParametersException;
+import org.learning.by.example.reactive.microservices.exceptions.LocationNotFoundException;
 import org.learning.by.example.reactive.microservices.exceptions.PathNotFoundException;
 import org.learning.by.example.reactive.microservices.test.categories.UnitTest;
 import org.springframework.http.HttpStatus;
@@ -69,6 +70,11 @@ class ThrowableTranslatorTest {
     @Test
     void translatePathNotFoundExceptionTest() throws Exception {
         assertThat(PathNotFoundException.class, translateTo(HttpStatus.NOT_FOUND));
+    }
+
+    @Test
+    void translateLocationNotFoundExceptionTest() throws Exception {
+        assertThat(LocationNotFoundException.class, translateTo(HttpStatus.NOT_FOUND));
     }
 
     @Test

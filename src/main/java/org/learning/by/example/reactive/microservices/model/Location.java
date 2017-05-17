@@ -5,20 +5,20 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 
 public final class Location {
-    public double getLat() {
-        return lat;
+    public double getLatitude() {
+        return latitude;
     }
 
-    public double getLng() {
-        return lng;
+    public double getLongitude() {
+        return longitude;
     }
 
-    final double lat;
-    final double lng;
+    private final double latitude;
+    private final double longitude;
 
     @JsonCreator
-    public Location(@JsonProperty("lat") double lat, @JsonProperty("lng") double lng){
-        this.lat = lat;
-        this.lng = lng;
+    public Location(@JsonProperty("latitude") double latitude, @JsonProperty("longitude") double longitude){
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 }

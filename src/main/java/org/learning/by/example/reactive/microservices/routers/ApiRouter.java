@@ -13,8 +13,11 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 class ApiRouter {
     private static final String API_PATH = "/api";
     private static final String HELLO_PATH = "/hello";
+    private static final String LOCATION_PATH = "/location";
     private static final String NAME_ARG = "/{name}";
+    private static final String ADDRESS_ARG = "/{address}";
     private static final String HELLO_WITH_NAME_PATH = HELLO_PATH + NAME_ARG;
+    private static final String LOCATION_WITH_ADDRESS_PATH = LOCATION_PATH + ADDRESS_ARG;
 
     static RouterFunction<?> doRoute(final ApiHandler apiHandler, final ErrorHandler errorHandler) {
         return
@@ -23,6 +26,7 @@ class ApiRouter {
                     route(GET(HELLO_PATH), apiHandler::defaultHello)
                     .andRoute(POST(HELLO_PATH), apiHandler::postHello)
                     .andRoute(GET(HELLO_WITH_NAME_PATH), apiHandler::getHello)
+                    .andRoute(GET(LOCATION_WITH_ADDRESS_PATH), apiHandler::getLocation)
                 ).andOther(route(RequestPredicates.all(), errorHandler::notFound))
             );
     }

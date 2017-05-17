@@ -43,11 +43,11 @@ class LocationServiceImplTests extends BasicRestConsumerTest{
     private static final String JSON_EMPTY = "/json/LocationResult_EMPTY.json";
     private static final String JSON_WRONG_STATUS = "/json/LocationResult_WRONG_STATUS.json";
 
-    private static Mono<LocationResult> LOCATION_OK = getLocationResultFromJsonPath(JSON_OK);
-    private static Mono<LocationResult> LOCATION_NOT_FOUND = getLocationResultFromJsonPath(JSON_NOT_FOUND);
-    private static Mono<LocationResult> LOCATION_EMPTY = getLocationResultFromJsonPath(JSON_EMPTY);
-    private static Mono<LocationResult> LOCATION_WRONG_STATUS = getLocationResultFromJsonPath(JSON_WRONG_STATUS);
-    private static Mono<LocationResult> LOCATION_EXCEPTION = Mono.error(new GetLocationException(BAD_EXCEPTION));
+    private static final Mono<LocationResult> LOCATION_OK = getLocationResultFromJsonPath(JSON_OK);
+    private static final Mono<LocationResult> LOCATION_NOT_FOUND = getLocationResultFromJsonPath(JSON_NOT_FOUND);
+    private static final Mono<LocationResult> LOCATION_EMPTY = getLocationResultFromJsonPath(JSON_EMPTY);
+    private static final Mono<LocationResult> LOCATION_WRONG_STATUS = getLocationResultFromJsonPath(JSON_WRONG_STATUS);
+    private static final Mono<LocationResult> LOCATION_EXCEPTION = Mono.error(new GetLocationException(BAD_EXCEPTION));
 
     @Test
     void getBeamTest() {
@@ -71,8 +71,8 @@ class LocationServiceImplTests extends BasicRestConsumerTest{
         Location location = GOOGLE_ADDRESS_MONO.transform(locationService::fromAddress).block();
 
         assertThat(location, is(notNullValue()));
-        assertThat(location.getLat(), is(GOOGLE_LAT));
-        assertThat(location.getLng(), is(GOOGLE_LNG));
+        assertThat(location.getLatitude(), is(GOOGLE_LAT));
+        assertThat(location.getLongitude(), is(GOOGLE_LNG));
 
         verify(locationService, times(1)).fromAddress(any());
         verify(locationService, times(1)).buildUrl(any());

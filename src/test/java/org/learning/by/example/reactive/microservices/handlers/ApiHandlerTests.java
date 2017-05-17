@@ -4,10 +4,11 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.learning.by.example.reactive.microservices.model.HelloRequest;
-import org.learning.by.example.reactive.microservices.model.HelloResponse;
-import org.learning.by.example.reactive.microservices.model.Quote;
+import org.learning.by.example.reactive.microservices.exceptions.LocationNotFoundException;
+import org.learning.by.example.reactive.microservices.model.*;
+import org.learning.by.example.reactive.microservices.services.LocationService;
 import org.learning.by.example.reactive.microservices.services.QuoteService;
+import org.learning.by.example.reactive.microservices.test.BasicRestConsumerTest;
 import org.learning.by.example.reactive.microservices.test.HandlersHelper;
 import org.learning.by.example.reactive.microservices.test.categories.UnitTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,20 +20,29 @@ import reactor.core.publisher.Mono;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @UnitTest
 @DisplayName("ApiHandler Unit Tests")
-class ApiHandlerTests {
+class ApiHandlerTests extends BasicRestConsumerTest {
     private static final String MOCK_QUOTE_CONTENT = "content";
     private static final String DEFAULT_NAME = "world";
     private static final String NAME_VARIABLE = "name";
+    private static final String ADDRESS_VARIABLE = "address";
+    private static final String GOOGLE_ADDRESS = "1600 Amphitheatre Parkway, Mountain View, CA";
+    private static final double GOOGLE_LAT = 37.4224082;
+    private static final double GOOGLE_LNG = -122.0856086;
+    private static final String NOT_FOUND = "not found";
 
     @Autowired
     private ApiHandler apiHandler;
 
     @SpyBean
     private QuoteService quoteService;
+
+    @SpyBean
+    private LocationService locationService;
 
     @BeforeEach
     void setup() {
@@ -115,4 +125,39 @@ class ApiHandlerTests {
 
         apiHandler.postHello(serverRequest).subscribe(this::checkResponse);
     }
+
+    private static final Mono<Location> GOOGLE_LOCATION = Mono.just(new Location(GOOGLE_LAT, GOOGLE_LNG));
+    private static final Mono<Location> LOCATION_NOT_FOUND = Mono.error(new LocationNotFoundException(NOT_FOUND));
+
+    @Test
+    void getLocationTest() {
+        ServerRequest serverRequest = mock(ServerRequest.class);
+        when(serverRequest.pathVariable(ADDRESS_VARIABLE)).thenReturn(GOOGLE_ADDRESS);
+
+        doReturn(GOOGLE_LOCATION).when(locationService).fromAddress(any());
+
+        ServerResponse serverResponse = apiHandler.getLocation(serverRequest).block();
+
+        Location location = HandlersHelper.extractEntity(serverResponse, Location.class);
+        assertThat(location.getLatitude(), is(GOOGLE_LAT));
+        assertThat(location.getLongitude(), is(GOOGLE_LNG));
+
+        reset(locationService);
+    }
+
+    @Test
+    void getLocationNotFoundTest() {
+        ServerRequest serverRequest = mock(ServerRequest.class);
+        when(serverRequest.pathVariable(ADDRESS_VARIABLE)).thenReturn(GOOGLE_ADDRESS);
+
+        doReturn(LOCATION_NOT_FOUND).when(locationService).fromAddress(any());
+
+        ServerResponse serverResponse = apiHandler.getLocation(serverRequest).block();
+
+        ErrorResponse error = HandlersHelper.extractEntity(serverResponse, ErrorResponse.class);
+        assertThat(error.getError(), is(NOT_FOUND));
+
+        reset(locationService);
+    }
+
 }
