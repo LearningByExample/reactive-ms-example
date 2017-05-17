@@ -6,7 +6,7 @@ import org.jsoup.nodes.Element;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.learning.by.example.reactive.microservices.test.BasicTest;
+import org.learning.by.example.reactive.microservices.test.BasicIntegrationTest;
 import org.learning.by.example.reactive.microservices.test.categories.IntegrationTest;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -16,7 +16,7 @@ import static org.hamcrest.core.IsNot.not;
 
 @IntegrationTest
 @DisplayName(" StaticRouter Integration Tests")
-class StaticRouterTests extends BasicTest {
+class StaticRouterTests extends BasicIntegrationTest {
 
     private static final String STATIC_PATH = "/index.html";
     private static final String DEFAULT_TITLE = "Swagger UI";
