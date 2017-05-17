@@ -9,7 +9,7 @@ import org.learning.by.example.reactive.microservices.handlers.ErrorHandler;
 import org.learning.by.example.reactive.microservices.model.*;
 import org.learning.by.example.reactive.microservices.services.HelloService;
 import org.learning.by.example.reactive.microservices.services.QuoteService;
-import org.learning.by.example.reactive.microservices.test.BasicTest;
+import org.learning.by.example.reactive.microservices.test.BasicIntegrationTest;
 import org.learning.by.example.reactive.microservices.test.categories.IntegrationTest;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ import static org.mockito.Mockito.reset;
 
 @IntegrationTest
 @DisplayName("ApiRouter Integration Tests")
-class ApiRouterTests extends BasicTest {
+class ApiRouterTests extends BasicIntegrationTest {
 
     private static final String DEFAULT_VALUE = "world";
     private static final String CUSTOM_VALUE = "reactive";

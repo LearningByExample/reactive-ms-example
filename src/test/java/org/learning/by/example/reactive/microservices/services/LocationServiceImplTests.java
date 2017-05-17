@@ -2,52 +2,52 @@ package org.learning.by.example.reactive.microservices.services;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.learning.by.example.reactive.microservices.exceptions.GetLocationException;
 import org.learning.by.example.reactive.microservices.exceptions.LocationNotFoundException;
 import org.learning.by.example.reactive.microservices.model.Location;
 import org.learning.by.example.reactive.microservices.model.LocationResult;
+import org.learning.by.example.reactive.microservices.test.BasicRestConsumerTest;
 import org.learning.by.example.reactive.microservices.test.categories.UnitTest;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 import reactor.core.publisher.Mono;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.instanceOf;
+import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.core.Is.is;
-import static org.hamcrest.core.IsNull.nullValue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
 
 @UnitTest
 @DisplayName("LocationServiceImpl Unit Tests")
-class LocationServiceImplTests {
-
-    /*String[] types = {"a"};
-LocationResult.Result.Address_component address_component = new LocationResult.Result.Address_component("a","a", types);
-LocationResult.Result.Address_component[] address_components = {address_component};
-LocationResult.Result.Geometry.Bounds.Northeast northeast = new LocationResult.Result.Geometry.Bounds.Northeast(100,100);
-LocationResult.Result.Geometry.Bounds.Southwest southwest = new LocationResult.Result.Geometry.Bounds.Southwest(100,100);
-LocationResult.Result.Geometry.Bounds bounds = new LocationResult.Result.Geometry.Bounds(northeast,southwest);
-LocationResult.Result.Geometry.Location location = new LocationResult.Result.Geometry.Location(100,100);
-LocationResult.Result.Geometry.Viewport.Northeast northeastV = new LocationResult.Result.Geometry.Viewport.Northeast(100,100);
-LocationResult.Result.Geometry.Viewport.Southwest southwestV = new LocationResult.Result.Geometry.Viewport.Southwest(100,100);
-LocationResult.Result.Geometry.Viewport viewport = new LocationResult.Result.Geometry.Viewport(northeastV,southwestV);
-LocationResult.Result.Geometry geometry = new LocationResult.Result.Geometry(bounds,location,"a",viewport);
-LocationResult.Result result = new LocationResult.Result(address_components,"a", geometry, "a", types);
-LocationResult.Result[] results = {result};
-LocationResult locationResult = new LocationResult(results, "OK");
-
-return Mono.just(locationResult);*/
+class LocationServiceImplTests extends BasicRestConsumerTest{
 
     private static final String GOOGLE_ADDRESS = "1600 Amphitheatre Parkway, Mountain View, CA";
-    private static final String BAD_ADDRESS = "bad address";
     private static final Mono<String> GOOGLE_ADDRESS_MONO = Mono.just(GOOGLE_ADDRESS);
-    private static final Mono<String> BAD_ADDRESS_MONO = Mono.just(BAD_ADDRESS);
-    private static final String OK_STATUS = "OK";
-    private static final String ZERO_RESULTS = "ZERO_RESULTS";
+    private static final String BAD_EXCEPTION = "bad exception";
     private static final double GOOGLE_LAT = 37.4224082;
     private static final double GOOGLE_LNG = -122.0856086;
+    private static final String OK_STATUS = "OK";
 
-    @Autowired
+    @SpyBean(LocationService.class)
     private LocationServiceImpl locationService;
+
+    static private Mono<LocationResult> getLocationResultFromJsonPath(final String jsonPath) {
+        return getMonoFromJsonPath(jsonPath, LocationResult.class);
+    }
+
+    private static final String JSON_OK = "/json/LocationResult_OK.json";
+    private static final String JSON_NOT_FOUND = "/json/LocationResult_NOT_FOUND.json";
+    private static final String JSON_EMPTY = "/json/LocationResult_EMPTY.json";
+    private static final String JSON_WRONG_STATUS = "/json/LocationResult_WRONG_STATUS.json";
+
+    private static Mono<LocationResult> LOCATION_OK = getLocationResultFromJsonPath(JSON_OK);
+    private static Mono<LocationResult> LOCATION_NOT_FOUND = getLocationResultFromJsonPath(JSON_NOT_FOUND);
+    private static Mono<LocationResult> LOCATION_EMPTY = getLocationResultFromJsonPath(JSON_EMPTY);
+    private static Mono<LocationResult> LOCATION_WRONG_STATUS = getLocationResultFromJsonPath(JSON_WRONG_STATUS);
+    private static Mono<LocationResult> LOCATION_EXCEPTION = Mono.error(new GetLocationException(BAD_EXCEPTION));
 
     @Test
     void getBeamTest() {
@@ -55,38 +55,110 @@ return Mono.just(locationResult);*/
     }
 
     @Test
-    void requestTest(){
-        LocationResult location = GOOGLE_ADDRESS_MONO.transform(locationService::request).block();
+    void getMockingWebClientTest() {
+        locationService.webClient = mockWebClient(locationService.webClient, LOCATION_OK);
 
-        assertThat(location, is(notNullValue()));
+        LocationResult location = GOOGLE_ADDRESS_MONO.transform(locationService::get).block();
         assertThat(location.getStatus(), is(OK_STATUS));
-    }
 
-    @Test
-    void requestNotFoundTest(){
-        LocationResult location = BAD_ADDRESS_MONO.transform(locationService::request).block();
-
-        assertThat(location, is(notNullValue()));
-        assertThat(location.getStatus(), is(ZERO_RESULTS));
+        reset(locationService.webClient);
     }
 
     @Test
     void fromAddressTest() {
+        doReturn(LOCATION_OK).when(locationService).get(any());
+
         Location location = GOOGLE_ADDRESS_MONO.transform(locationService::fromAddress).block();
 
         assertThat(location, is(notNullValue()));
         assertThat(location.getLat(), is(GOOGLE_LAT));
         assertThat(location.getLng(), is(GOOGLE_LNG));
+
+        verify(locationService, times(1)).fromAddress(any());
+        verify(locationService, times(1)).buildUrl(any());
+        verify(locationService, times(1)).get(any());
+        verify(locationService, times(1)).geometryLocation(any());
+
+        reset(locationService);
     }
 
     @Test
     void fromAddressNotFoundTest() {
-        Location location = BAD_ADDRESS_MONO.transform(locationService::fromAddress)
-            .onErrorResume(throwable -> {
-                assertThat(throwable, instanceOf(LocationNotFoundException.class));
-                return Mono.empty();
-            }).block();
+        doReturn(LOCATION_NOT_FOUND).when(locationService).get(any());
+
+        Location location = GOOGLE_ADDRESS_MONO.transform(locationService::fromAddress)
+                .onErrorResume(throwable -> {
+                    assertThat(throwable, instanceOf(LocationNotFoundException.class));
+                    return Mono.empty();
+                }).block();
 
         assertThat(location, is(nullValue()));
+
+        verify(locationService, times(1)).fromAddress(any());
+        verify(locationService, times(1)).buildUrl(any());
+        verify(locationService, times(1)).get(any());
+        verify(locationService, times(1)).geometryLocation(any());
+
+        reset(locationService);
+    }
+
+    @Test
+    void fromAddressExceptionTest() {
+        doReturn(LOCATION_EXCEPTION).when(locationService).get(any());
+
+        Location location = GOOGLE_ADDRESS_MONO.transform(locationService::fromAddress)
+                .onErrorResume(throwable -> {
+                    assertThat(throwable, instanceOf(GetLocationException.class));
+                    return Mono.empty();
+                }).block();
+
+        assertThat(location, is(nullValue()));
+
+        verify(locationService, times(1)).fromAddress(any());
+        verify(locationService, times(1)).buildUrl(any());
+        verify(locationService, times(1)).get(any());
+        verify(locationService, times(1)).geometryLocation(any());
+
+        reset(locationService);
+    }
+
+    @Test
+    void fromAddressEmptyTest() {
+        doReturn(LOCATION_EMPTY).when(locationService).get(any());
+
+        Location location = GOOGLE_ADDRESS_MONO.transform(locationService::fromAddress)
+                .onErrorResume(throwable -> {
+                    assertThat(throwable, instanceOf(GetLocationException.class));
+                    return Mono.empty();
+                }).block();
+
+        assertThat(location, is(nullValue()));
+
+        verify(locationService, times(1)).fromAddress(any());
+        verify(locationService, times(1)).buildUrl(any());
+        verify(locationService, times(1)).get(any());
+        verify(locationService, times(1)).geometryLocation(any());
+
+        reset(locationService);
+    }
+
+    @Test
+    void fromAddressWrongStatusTest() {
+        doReturn(LOCATION_WRONG_STATUS).when(locationService).get(any());
+
+        Location location = GOOGLE_ADDRESS_MONO.transform(locationService::fromAddress)
+                .onErrorResume(throwable -> {
+                    assertThat(throwable, instanceOf(GetLocationException.class));
+                    return Mono.empty();
+                }).block();
+
+        assertThat(location, is(nullValue()));
+
+        verify(locationService, times(1)).fromAddress(any());
+        verify(locationService, times(1)).buildUrl(any());
+        verify(locationService, times(1)).get(any());
+        verify(locationService, times(1)).geometryLocation(any());
+
+        reset(locationService);
     }
 }

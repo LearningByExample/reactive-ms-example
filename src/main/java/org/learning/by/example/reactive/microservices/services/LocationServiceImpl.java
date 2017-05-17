@@ -13,9 +13,10 @@ public class LocationServiceImpl implements LocationService {
     private static final String OK_STATUS = "OK";
     private static final String ZERO_RESULTS = "ZERO_RESULTS";
     private static final String ERROR_GETTING_LOCATION = "error getting location";
+    private static final String ERROR_LOCATION_WAS_NULL = "error location was null";
     private static final String LOCATION_NOT_FOUND = "location not found";
     private static final String ADDRESS_PARAMETER = "?address=";
-    private final WebClient webClient;
+    WebClient webClient;
     private final String endPoint;
 
     public LocationServiceImpl(final String endPoint) {
@@ -23,36 +24,45 @@ public class LocationServiceImpl implements LocationService {
         this.webClient = WebClient.create();
     }
 
-    Mono<LocationResult> request(final Mono<String> addressMono) {
-        return addressMono.flatMap(address ->
-            webClient
+    @Override
+    public Mono<Location> fromAddress(Mono<String> addressMono) {
+        return addressMono
+                .transform(this::buildUrl)
+                .transform(this::get)
+                .onErrorResume(throwable -> Mono.error(new GetLocationException(ERROR_GETTING_LOCATION, throwable)))
+                .transform(this::geometryLocation);
+    }
+
+    Mono<String> buildUrl(final Mono<String> addressMono) {
+        return addressMono.flatMap(address -> Mono.just(endPoint.concat(ADDRESS_PARAMETER).concat(address)));
+    }
+
+    Mono<LocationResult> get(final Mono<String> monoUrl) {
+        return monoUrl.flatMap(url -> webClient
                 .get()
-                .uri(endPoint.concat(ADDRESS_PARAMETER).concat(address))
+                .uri(url)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
-                .flatMap(clientResponse -> clientResponse.bodyToMono(LocationResult.class))
-        );
+                .flatMap(clientResponse -> clientResponse.bodyToMono(LocationResult.class)));
     }
 
-    @Override
-    public Mono<Location> fromAddress(Mono<String> address) {
-        return address.transform(this::request)
-            .onErrorResume(throwable -> Mono.error(new GetLocationException(ERROR_GETTING_LOCATION, throwable)) )
-            .transform(this::geometryLocation);
-    }
-
-    private Mono<Location> geometryLocation(Mono<LocationResult> location){
+    Mono<Location> geometryLocation(Mono<LocationResult> location) {
         return location.flatMap(locationResult -> {
-            switch (locationResult.getStatus()) {
-                case OK_STATUS:
-                    return Mono.just(
-                            new Location(locationResult.getResults()[0].getGeometry().getLocation().getLat(),
-                                    locationResult.getResults()[0].getGeometry().getLocation().getLng()));
-                case ZERO_RESULTS:
-                    return Mono.error(new LocationNotFoundException(LOCATION_NOT_FOUND));
-                default:
-                    return Mono.error(new GetLocationException(ERROR_GETTING_LOCATION));
-            }}
+                    if (locationResult.getStatus() != null) {
+                        switch (locationResult.getStatus()) {
+                            case OK_STATUS:
+                                return Mono.just(
+                                        new Location(locationResult.getResults()[0].getGeometry().getLocation().getLat(),
+                                                locationResult.getResults()[0].getGeometry().getLocation().getLng()));
+                            case ZERO_RESULTS:
+                                return Mono.error(new LocationNotFoundException(LOCATION_NOT_FOUND));
+                            default:
+                                return Mono.error(new GetLocationException(ERROR_GETTING_LOCATION));
+                        }
+                    }else {
+                        return Mono.error(new GetLocationException(ERROR_LOCATION_WAS_NULL));
+                    }
+                }
         );
     }
 }

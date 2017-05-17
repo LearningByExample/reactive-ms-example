@@ -5,7 +5,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.learning.by.example.reactive.microservices.model.HelloRequest;
 import org.learning.by.example.reactive.microservices.model.HelloResponse;
-import org.learning.by.example.reactive.microservices.test.BasicTest;
+import org.learning.by.example.reactive.microservices.test.BasicIntegrationTest;
 import org.learning.by.example.reactive.microservices.test.categories.SystemTest;
 import org.springframework.boot.web.server.LocalServerPort;
 
@@ -15,7 +15,7 @@ import static org.hamcrest.Matchers.*;
 
 @SystemTest
 @DisplayName("ReactiveMsApplication System Tests")
-class ReactiveMsApplicationTest extends BasicTest {
+class ReactiveMsApplicationTest extends BasicIntegrationTest {
 
     private static final String DEFAULT_VALUE = "world";
     private static final String CUSTOM_VALUE = "reactive";
