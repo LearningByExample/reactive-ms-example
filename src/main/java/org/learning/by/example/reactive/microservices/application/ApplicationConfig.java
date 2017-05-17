@@ -36,6 +36,12 @@ public class ApplicationConfig {
     }
 
     @Bean
+    SunriseSunsetService sunriseSunsetService(@Value("${SunriseSunsetServiceImpl.endPoint}")
+                                              final String endPoint) {
+        return new SunriseSunsetServiceImpl(endPoint);
+    }
+
+    @Bean
     ErrorHandler errorHandler() {
         return new ErrorHandler();
     }
