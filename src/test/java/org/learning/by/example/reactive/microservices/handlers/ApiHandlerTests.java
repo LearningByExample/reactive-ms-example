@@ -8,7 +8,6 @@ import org.learning.by.example.reactive.microservices.exceptions.LocationNotFoun
 import org.learning.by.example.reactive.microservices.model.*;
 import org.learning.by.example.reactive.microservices.services.LocationService;
 import org.learning.by.example.reactive.microservices.services.QuoteService;
-import org.learning.by.example.reactive.microservices.test.BasicRestConsumerTest;
 import org.learning.by.example.reactive.microservices.test.HandlersHelper;
 import org.learning.by.example.reactive.microservices.test.categories.UnitTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +24,7 @@ import static org.mockito.Mockito.*;
 
 @UnitTest
 @DisplayName("ApiHandler Unit Tests")
-class ApiHandlerTests extends BasicRestConsumerTest {
+class ApiHandlerTests {
     private static final String MOCK_QUOTE_CONTENT = "content";
     private static final String DEFAULT_NAME = "world";
     private static final String NAME_VARIABLE = "name";

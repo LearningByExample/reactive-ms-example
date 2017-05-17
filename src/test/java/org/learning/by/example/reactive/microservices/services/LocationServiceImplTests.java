@@ -6,7 +6,6 @@ import org.learning.by.example.reactive.microservices.exceptions.GetLocationExce
 import org.learning.by.example.reactive.microservices.exceptions.LocationNotFoundException;
 import org.learning.by.example.reactive.microservices.model.Location;
 import org.learning.by.example.reactive.microservices.model.LocationResult;
-import org.learning.by.example.reactive.microservices.test.BasicRestConsumerTest;
 import org.learning.by.example.reactive.microservices.test.categories.UnitTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import reactor.core.publisher.Mono;
@@ -16,13 +15,15 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.instanceOf;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.core.Is.is;
+import static org.learning.by.example.reactive.microservices.test.RestServiceHelper.getMonoFromJsonPath;
+import static org.learning.by.example.reactive.microservices.test.RestServiceHelper.mockWebClient;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 
 @UnitTest
 @DisplayName("LocationServiceImpl Unit Tests")
-class LocationServiceImplTests extends BasicRestConsumerTest{
+class LocationServiceImplTests {
 
     private static final String GOOGLE_ADDRESS = "1600 Amphitheatre Parkway, Mountain View, CA";
     private static final Mono<String> GOOGLE_ADDRESS_MONO = Mono.just(GOOGLE_ADDRESS);
