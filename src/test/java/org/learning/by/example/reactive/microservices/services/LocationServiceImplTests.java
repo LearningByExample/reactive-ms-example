@@ -71,8 +71,8 @@ class LocationServiceImplTests extends BasicRestConsumerTest{
         Location location = GOOGLE_ADDRESS_MONO.transform(locationService::fromAddress).block();
 
         assertThat(location, is(notNullValue()));
-        assertThat(location.getLat(), is(GOOGLE_LAT));
-        assertThat(location.getLng(), is(GOOGLE_LNG));
+        assertThat(location.getLatitude(), is(GOOGLE_LAT));
+        assertThat(location.getLongitude(), is(GOOGLE_LNG));
 
         verify(locationService, times(1)).fromAddress(any());
         verify(locationService, times(1)).buildUrl(any());
