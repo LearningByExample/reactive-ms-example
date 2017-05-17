@@ -1,0 +1,42 @@
+package org.learning.by.example.reactive.microservices.model;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+public final class SunriseSunsetResult {
+    public final Results results;
+    public final String status;
+
+    @JsonCreator
+    public SunriseSunsetResult(@JsonProperty("results") Results results, @JsonProperty("status") String status){
+        this.results = results;
+        this.status = status;
+    }
+
+    public static final class Results {
+        public final String sunrise;
+        public final String sunset;
+        public final String solar_noon;
+        public final String day_length;
+        public final String civil_twilight_begin;
+        public final String civil_twilight_end;
+        public final String nautical_twilight_begin;
+        public final String nautical_twilight_end;
+        public final String astronomical_twilight_begin;
+        public final String astronomical_twilight_end;
+
+        @JsonCreator
+        public Results(@JsonProperty("sunrise") String sunrise, @JsonProperty("sunset") String sunset, @JsonProperty("solar_noon") String solar_noon, @JsonProperty("day_length") String day_length, @JsonProperty("civil_twilight_begin") String civil_twilight_begin, @JsonProperty("civil_twilight_end") String civil_twilight_end, @JsonProperty("nautical_twilight_begin") String nautical_twilight_begin, @JsonProperty("nautical_twilight_end") String nautical_twilight_end, @JsonProperty("astronomical_twilight_begin") String astronomical_twilight_begin, @JsonProperty("astronomical_twilight_end") String astronomical_twilight_end){
+            this.sunrise = sunrise;
+            this.sunset = sunset;
+            this.solar_noon = solar_noon;
+            this.day_length = day_length;
+            this.civil_twilight_begin = civil_twilight_begin;
+            this.civil_twilight_end = civil_twilight_end;
+            this.nautical_twilight_begin = nautical_twilight_begin;
+            this.nautical_twilight_end = nautical_twilight_end;
+            this.astronomical_twilight_begin = astronomical_twilight_begin;
+            this.astronomical_twilight_end = astronomical_twilight_end;
+        }
+    }
+}
