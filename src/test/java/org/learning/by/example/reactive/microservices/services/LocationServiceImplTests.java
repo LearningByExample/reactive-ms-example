@@ -35,20 +35,17 @@ class LocationServiceImplTests {
     @SpyBean(LocationService.class)
     private LocationServiceImpl locationService;
 
-    static private Mono<LocationResult> getLocationResultFromJsonPath(final String jsonPath) {
-        return getMonoFromJsonPath(jsonPath, LocationResult.class);
-    }
-
     private static final String JSON_OK = "/json/LocationResult_OK.json";
     private static final String JSON_NOT_FOUND = "/json/LocationResult_NOT_FOUND.json";
     private static final String JSON_EMPTY = "/json/LocationResult_EMPTY.json";
     private static final String JSON_WRONG_STATUS = "/json/LocationResult_WRONG_STATUS.json";
 
-    private static final Mono<LocationResult> LOCATION_OK = getLocationResultFromJsonPath(JSON_OK);
-    private static final Mono<LocationResult> LOCATION_NOT_FOUND = getLocationResultFromJsonPath(JSON_NOT_FOUND);
-    private static final Mono<LocationResult> LOCATION_EMPTY = getLocationResultFromJsonPath(JSON_EMPTY);
-    private static final Mono<LocationResult> LOCATION_WRONG_STATUS = getLocationResultFromJsonPath(JSON_WRONG_STATUS);
+    private static final Mono<LocationResult> LOCATION_OK = getMonoFromJsonPath(JSON_OK, LocationResult.class);
+    private static final Mono<LocationResult> LOCATION_NOT_FOUND = getMonoFromJsonPath(JSON_NOT_FOUND, LocationResult.class);
+    private static final Mono<LocationResult> LOCATION_EMPTY = getMonoFromJsonPath(JSON_EMPTY, LocationResult.class);
+    private static final Mono<LocationResult> LOCATION_WRONG_STATUS = getMonoFromJsonPath(JSON_WRONG_STATUS, LocationResult.class);
     private static final Mono<LocationResult> LOCATION_EXCEPTION = Mono.error(new GetLocationException(BAD_EXCEPTION));
+    private static final Mono<LocationResult> BIG_EXCEPTION = Mono.error(new RuntimeException(BAD_EXCEPTION));
 
     @Test
     void getBeamTest() {
@@ -106,6 +103,26 @@ class LocationServiceImplTests {
     @Test
     void fromAddressExceptionTest() {
         doReturn(LOCATION_EXCEPTION).when(locationService).get(any());
+
+        Location location = GOOGLE_ADDRESS_MONO.transform(locationService::fromAddress)
+                .onErrorResume(throwable -> {
+                    assertThat(throwable, instanceOf(GetLocationException.class));
+                    return Mono.empty();
+                }).block();
+
+        assertThat(location, is(nullValue()));
+
+        verify(locationService, times(1)).fromAddress(any());
+        verify(locationService, times(1)).buildUrl(any());
+        verify(locationService, times(1)).get(any());
+        verify(locationService, times(1)).geometryLocation(any());
+
+        reset(locationService);
+    }
+
+    @Test
+    void fromAddressBigExceptionTest() {
+        doReturn(BIG_EXCEPTION).when(locationService).get(any());
 
         Location location = GOOGLE_ADDRESS_MONO.transform(locationService::fromAddress)
                 .onErrorResume(throwable -> {
