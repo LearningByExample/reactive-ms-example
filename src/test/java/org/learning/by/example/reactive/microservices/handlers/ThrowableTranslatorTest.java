@@ -9,7 +9,7 @@ import org.learning.by.example.reactive.microservices.exceptions.GetQuoteExcepti
 import org.learning.by.example.reactive.microservices.exceptions.InvalidParametersException;
 import org.learning.by.example.reactive.microservices.exceptions.LocationNotFoundException;
 import org.learning.by.example.reactive.microservices.exceptions.PathNotFoundException;
-import org.learning.by.example.reactive.microservices.test.categories.UnitTest;
+import org.learning.by.example.reactive.microservices.test.tags.UnitTest;
 import org.springframework.http.HttpStatus;
 import reactor.core.publisher.Mono;
 

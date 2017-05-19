@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.learning.by.example.reactive.microservices.model.HelloRequest;
 import org.learning.by.example.reactive.microservices.model.HelloResponse;
 import org.learning.by.example.reactive.microservices.test.BasicIntegrationTest;
-import org.learning.by.example.reactive.microservices.test.categories.SystemTest;
+import org.learning.by.example.reactive.microservices.test.tags.SystemTest;
 import org.springframework.boot.web.server.LocalServerPort;
 
 import static org.hamcrest.MatcherAssert.assertThat;

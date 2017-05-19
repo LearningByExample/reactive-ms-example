@@ -15,7 +15,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
-public class BasicRestConsumerTest {
+public class RestServiceHelper {
     private static <T> Mono<T> getMonoFromJson(final String json, final Class<T> type) {
         final ObjectMapper objectMapper = new ObjectMapper();
         try {
@@ -25,9 +25,9 @@ public class BasicRestConsumerTest {
         }
     }
 
-    protected static <T> Mono<T> getMonoFromJsonPath(final String jsonPath, final Class<T> type) {
+    public static <T> Mono<T> getMonoFromJsonPath(final String jsonPath, final Class<T> type) {
         try {
-            final URL url = BasicRestConsumerTest.class.getResource(jsonPath);
+            final URL url = RestServiceHelper.class.getResource(jsonPath);
             final Path resPath = java.nio.file.Paths.get(url.toURI());
             final String json = new String(java.nio.file.Files.readAllBytes(resPath), "UTF8");
             return getMonoFromJson(json, type);
@@ -36,7 +36,7 @@ public class BasicRestConsumerTest {
         }
     }
 
-    protected static WebClient mockWebClient(final WebClient originalClient, final Mono<?> mono){
+    public static WebClient mockWebClient(final WebClient originalClient, final Mono<?> mono){
         WebClient client = spy(originalClient);
 
         WebClient.UriSpec uriSpec = mock(WebClient.UriSpec.class);

@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.learning.by.example.reactive.microservices.model.Quote;
 import org.learning.by.example.reactive.microservices.services.QuoteService;
 import org.learning.by.example.reactive.microservices.test.BasicIntegrationTest;
-import org.learning.by.example.reactive.microservices.test.categories.IntegrationTest;
+import org.learning.by.example.reactive.microservices.test.tags.IntegrationTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.web.reactive.function.server.RouterFunction;

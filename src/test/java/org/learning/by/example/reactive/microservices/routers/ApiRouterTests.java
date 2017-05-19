@@ -12,7 +12,7 @@ import org.learning.by.example.reactive.microservices.services.HelloService;
 import org.learning.by.example.reactive.microservices.services.LocationService;
 import org.learning.by.example.reactive.microservices.services.QuoteService;
 import org.learning.by.example.reactive.microservices.test.BasicIntegrationTest;
-import org.learning.by.example.reactive.microservices.test.categories.IntegrationTest;
+import org.learning.by.example.reactive.microservices.test.tags.IntegrationTest;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.SpyBean;

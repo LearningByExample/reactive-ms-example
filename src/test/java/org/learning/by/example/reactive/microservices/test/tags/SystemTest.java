@@ -1,4 +1,4 @@
-package org.learning.by.example.reactive.microservices.test.categories;
+package org.learning.by.example.reactive.microservices.test.tags;
 
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.extension.ExtendWith;
