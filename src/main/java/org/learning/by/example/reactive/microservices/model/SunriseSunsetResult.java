@@ -4,8 +4,8 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public final class SunriseSunsetResult {
-    public final Results results;
-    public final String status;
+    private final Results results;
+    private final String status;
 
     @JsonCreator
     public SunriseSunsetResult(@JsonProperty("results") Results results, @JsonProperty("status") String status){
@@ -13,17 +13,33 @@ public final class SunriseSunsetResult {
         this.status = status;
     }
 
+    public Results getResults() {
+        return results;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
     public static final class Results {
-        public final String sunrise;
-        public final String sunset;
-        public final String solar_noon;
-        public final String day_length;
-        public final String civil_twilight_begin;
-        public final String civil_twilight_end;
-        public final String nautical_twilight_begin;
-        public final String nautical_twilight_end;
-        public final String astronomical_twilight_begin;
-        public final String astronomical_twilight_end;
+        public String getSunrise() {
+            return sunrise;
+        }
+
+        public String getSunset() {
+            return sunset;
+        }
+
+        final String sunrise;
+        final String sunset;
+        final String solar_noon;
+        final String day_length;
+        final String civil_twilight_begin;
+        final String civil_twilight_end;
+        final String nautical_twilight_begin;
+        final String nautical_twilight_end;
+        final String astronomical_twilight_begin;
+        final String astronomical_twilight_end;
 
         @JsonCreator
         public Results(@JsonProperty("sunrise") String sunrise, @JsonProperty("sunset") String sunset, @JsonProperty("solar_noon") String solar_noon, @JsonProperty("day_length") String day_length, @JsonProperty("civil_twilight_begin") String civil_twilight_begin, @JsonProperty("civil_twilight_end") String civil_twilight_end, @JsonProperty("nautical_twilight_begin") String nautical_twilight_begin, @JsonProperty("nautical_twilight_end") String nautical_twilight_end, @JsonProperty("astronomical_twilight_begin") String astronomical_twilight_begin, @JsonProperty("astronomical_twilight_end") String astronomical_twilight_end){

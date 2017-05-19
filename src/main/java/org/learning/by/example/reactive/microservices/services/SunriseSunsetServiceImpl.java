@@ -13,8 +13,8 @@ public class SunriseSunsetServiceImpl implements SunriseSunsetService{
     private static final String BEGIN_PARAMETERS="?";
     private static final String NEXT_PARAMETER="&";
     private static final String EQUALS="=";
-    private static final String LATITUDE_PARAMETER="lat";
-    private static final String LONGITUDE_PARAMETER="lng";
+    private static final String LATITUDE_PARAMETER="lat"+EQUALS;
+    private static final String LONGITUDE_PARAMETER="lng"+EQUALS;
 
     WebClient webClient;
     private final String endPoint;
@@ -34,11 +34,10 @@ public class SunriseSunsetServiceImpl implements SunriseSunsetService{
     }
 
     Mono<String> buildUrl(final Mono<Location> locationMono) {
-        return locationMono.flatMap(location -> Mono.just(endPoint
-                .concat(BEGIN_PARAMETERS)
-                .concat(LATITUDE_PARAMETER).concat(EQUALS).concat(Double.toString(location.getLatitude()))
+        return locationMono.flatMap(location -> Mono.just(endPoint.concat(BEGIN_PARAMETERS)
+                .concat(LATITUDE_PARAMETER).concat(Double.toString(location.getLatitude()))
                 .concat(NEXT_PARAMETER)
-                .concat(LONGITUDE_PARAMETER).concat(EQUALS).concat(Double.toString(location.getLongitude()))
+                .concat(LONGITUDE_PARAMETER).concat(Double.toString(location.getLongitude()))
         ));
     }
 
@@ -53,6 +52,7 @@ public class SunriseSunsetServiceImpl implements SunriseSunsetService{
 
     Mono<SunriseSunset> createResult(final Mono<SunriseSunsetResult> sunriseSunsetResultMono){
         return sunriseSunsetResultMono.flatMap(sunriseSunsetResult ->
-                Mono.just(new SunriseSunset(sunriseSunsetResult.results.sunrise, sunriseSunsetResult.results.sunset)));
+                Mono.just(new SunriseSunset(sunriseSunsetResult.getResults().getSunrise(),
+                        sunriseSunsetResult.getResults().getSunset())));
     }
 }
