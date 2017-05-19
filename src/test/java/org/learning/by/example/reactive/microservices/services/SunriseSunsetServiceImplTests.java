@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.learning.by.example.reactive.microservices.model.Location;
 import org.learning.by.example.reactive.microservices.model.SunriseSunset;
 import org.learning.by.example.reactive.microservices.model.SunriseSunsetResult;
-import org.learning.by.example.reactive.microservices.test.categories.UnitTest;
+import org.learning.by.example.reactive.microservices.test.tags.UnitTest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import reactor.core.publisher.Mono;

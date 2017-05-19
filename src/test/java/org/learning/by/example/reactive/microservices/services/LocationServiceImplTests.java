@@ -6,7 +6,7 @@ import org.learning.by.example.reactive.microservices.exceptions.GetLocationExce
 import org.learning.by.example.reactive.microservices.exceptions.LocationNotFoundException;
 import org.learning.by.example.reactive.microservices.model.Location;
 import org.learning.by.example.reactive.microservices.model.LocationResult;
-import org.learning.by.example.reactive.microservices.test.categories.UnitTest;
+import org.learning.by.example.reactive.microservices.test.tags.UnitTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import reactor.core.publisher.Mono;
 

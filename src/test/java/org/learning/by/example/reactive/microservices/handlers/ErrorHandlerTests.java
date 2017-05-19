@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.learning.by.example.reactive.microservices.exceptions.PathNotFoundException;
 import org.learning.by.example.reactive.microservices.model.ErrorResponse;
 import org.learning.by.example.reactive.microservices.test.HandlersHelper;
-import org.learning.by.example.reactive.microservices.test.categories.UnitTest;
+import org.learning.by.example.reactive.microservices.test.tags.UnitTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.reactive.function.server.ServerResponse;

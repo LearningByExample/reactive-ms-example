@@ -7,7 +7,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.learning.by.example.reactive.microservices.test.BasicIntegrationTest;
-import org.learning.by.example.reactive.microservices.test.categories.IntegrationTest;
+import org.learning.by.example.reactive.microservices.test.tags.IntegrationTest;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
