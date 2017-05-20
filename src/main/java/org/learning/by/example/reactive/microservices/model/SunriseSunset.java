@@ -16,7 +16,7 @@ public class SunriseSunset {
     private final String sunset;
 
     @JsonCreator
-    public SunriseSunset(@JsonProperty("sunrise") final String sunrise, @JsonProperty("sunrise") final String sunset) {
+    public SunriseSunset(@JsonProperty("sunrise") final String sunrise, @JsonProperty("sunset") final String sunset) {
         this.sunrise = sunrise;
         this.sunset = sunset;
     }

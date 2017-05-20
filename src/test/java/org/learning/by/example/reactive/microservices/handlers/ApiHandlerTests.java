@@ -4,10 +4,13 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.learning.by.example.reactive.microservices.exceptions.GetLocationException;
+import org.learning.by.example.reactive.microservices.exceptions.GetSunriseSunsetException;
 import org.learning.by.example.reactive.microservices.exceptions.LocationNotFoundException;
 import org.learning.by.example.reactive.microservices.model.*;
 import org.learning.by.example.reactive.microservices.services.LocationService;
 import org.learning.by.example.reactive.microservices.services.QuoteService;
+import org.learning.by.example.reactive.microservices.services.SunriseSunsetService;
 import org.learning.by.example.reactive.microservices.test.HandlersHelper;
 import org.learning.by.example.reactive.microservices.test.tags.UnitTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,9 +33,20 @@ class ApiHandlerTests {
     private static final String NAME_VARIABLE = "name";
     private static final String ADDRESS_VARIABLE = "address";
     private static final String GOOGLE_ADDRESS = "1600 Amphitheatre Parkway, Mountain View, CA";
+    private static final String SUNRISE_TIME = "12:55:17 PM";
+    private static final String SUNSET_TIME = "3:14:28 AM";
     private static final double GOOGLE_LAT = 37.4224082;
     private static final double GOOGLE_LNG = -122.0856086;
     private static final String NOT_FOUND = "not found";
+    private static final String CANT_GET_LOCATION = "cant get location";
+    private static final String CANT_GET_SUNRISE_SUNSET = "can't get sunrise sunset";
+
+    private static final Mono<Location> GOOGLE_LOCATION = Mono.just(new Location(GOOGLE_LAT, GOOGLE_LNG));
+    private static final Mono<SunriseSunset> SUNRISE_SUNSET = Mono.just(new SunriseSunset(SUNRISE_TIME, SUNSET_TIME));
+    private static final Mono<Location> LOCATION_NOT_FOUND = Mono.error(new LocationNotFoundException(NOT_FOUND));
+    private static final Mono<Location> LOCATION_EXCEPTION = Mono.error(new GetLocationException(CANT_GET_LOCATION));
+    private static final Mono<Location> SUNRISE_SUNSET_ERROR = Mono.error(new GetSunriseSunsetException(CANT_GET_SUNRISE_SUNSET));
+
 
     @Autowired
     private ApiHandler apiHandler;
@@ -42,6 +56,9 @@ class ApiHandlerTests {
 
     @SpyBean
     private LocationService locationService;
+
+    @SpyBean
+    private SunriseSunsetService sunriseSunsetService;
 
     @BeforeEach
     void setup() {
@@ -125,38 +142,108 @@ class ApiHandlerTests {
         apiHandler.postHello(serverRequest).subscribe(this::checkResponse);
     }
 
-    private static final Mono<Location> GOOGLE_LOCATION = Mono.just(new Location(GOOGLE_LAT, GOOGLE_LNG));
-    private static final Mono<Location> LOCATION_NOT_FOUND = Mono.error(new LocationNotFoundException(NOT_FOUND));
+    @Test
+    void combineTest(){
+        GOOGLE_LOCATION.and(SUNRISE_SUNSET, LocationResponse::new)
+                .subscribe(this::verifyLocationResponse);
+    }
+
+    void verifyLocationResponse(LocationResponse locationResponse){
+
+        assertThat(locationResponse.getGeographicCoordinates().getLatitude(), is(GOOGLE_LAT));
+        assertThat(locationResponse.getGeographicCoordinates().getLongitude(), is(GOOGLE_LNG));
+
+        assertThat(locationResponse.getSunriseSunset().getSunrise(), is(SUNRISE_TIME));
+        assertThat(locationResponse.getSunriseSunset().getSunset(), is(SUNSET_TIME));
+    }
 
     @Test
-    void getLocationTest() {
+    void responseTest(){
+        GOOGLE_LOCATION.and(SUNRISE_SUNSET, LocationResponse::new)
+                .transform(apiHandler::response).subscribe(this::verifyServerResponse);
+    }
+
+    void verifyServerResponse(ServerResponse serverResponse){
+
+        assertThat(serverResponse.statusCode(), is(HttpStatus.OK));
+
+        LocationResponse location = HandlersHelper.extractEntity(serverResponse, LocationResponse.class);
+
+        verifyLocationResponse(location);
+    }
+
+    @Test
+    void fromLocationTest() {
         ServerRequest serverRequest = mock(ServerRequest.class);
         when(serverRequest.pathVariable(ADDRESS_VARIABLE)).thenReturn(GOOGLE_ADDRESS);
 
         doReturn(GOOGLE_LOCATION).when(locationService).fromAddress(any());
+        doReturn(SUNRISE_SUNSET).when(sunriseSunsetService).fromLocation(any());
 
-        ServerResponse serverResponse = apiHandler.getLocation(serverRequest).block();
-
-        Location location = HandlersHelper.extractEntity(serverResponse, Location.class);
-        assertThat(location.getLatitude(), is(GOOGLE_LAT));
-        assertThat(location.getLongitude(), is(GOOGLE_LNG));
+        apiHandler.getLocation(serverRequest).subscribe(this::verifyServerResponse);
 
         reset(locationService);
+        reset(sunriseSunsetService);
     }
 
     @Test
-    void getLocationNotFoundTest() {
+    void fromLocationNotFoundTest() {
         ServerRequest serverRequest = mock(ServerRequest.class);
         when(serverRequest.pathVariable(ADDRESS_VARIABLE)).thenReturn(GOOGLE_ADDRESS);
 
         doReturn(LOCATION_NOT_FOUND).when(locationService).fromAddress(any());
+        doReturn(SUNRISE_SUNSET).when(sunriseSunsetService).fromLocation(any());
 
         ServerResponse serverResponse = apiHandler.getLocation(serverRequest).block();
 
+        assertThat(serverResponse.statusCode(), is(HttpStatus.NOT_FOUND));
+
         ErrorResponse error = HandlersHelper.extractEntity(serverResponse, ErrorResponse.class);
+
         assertThat(error.getError(), is(NOT_FOUND));
 
         reset(locationService);
+        reset(sunriseSunsetService);
+    }
+
+    @Test
+    void fromLocationErrorSunriseSunsetTest() {
+        ServerRequest serverRequest = mock(ServerRequest.class);
+        when(serverRequest.pathVariable(ADDRESS_VARIABLE)).thenReturn(GOOGLE_ADDRESS);
+
+        doReturn(GOOGLE_LOCATION).when(locationService).fromAddress(any());
+        doReturn(SUNRISE_SUNSET_ERROR).when(sunriseSunsetService).fromLocation(any());
+
+        ServerResponse serverResponse = apiHandler.getLocation(serverRequest).block();
+
+        assertThat(serverResponse.statusCode(), is(HttpStatus.INTERNAL_SERVER_ERROR));
+
+        ErrorResponse error = HandlersHelper.extractEntity(serverResponse, ErrorResponse.class);
+
+        assertThat(error.getError(), is(CANT_GET_SUNRISE_SUNSET));
+
+        reset(locationService);
+        reset(sunriseSunsetService);
+    }
+
+    @Test
+    void fromLocationBothServiceErrorTest() {
+        ServerRequest serverRequest = mock(ServerRequest.class);
+        when(serverRequest.pathVariable(ADDRESS_VARIABLE)).thenReturn(GOOGLE_ADDRESS);
+
+        doReturn(LOCATION_EXCEPTION).when(locationService).fromAddress(any());
+        doReturn(SUNRISE_SUNSET_ERROR).when(sunriseSunsetService).fromLocation(any());
+
+        ServerResponse serverResponse = apiHandler.getLocation(serverRequest).block();
+
+        assertThat(serverResponse.statusCode(), is(HttpStatus.INTERNAL_SERVER_ERROR));
+
+        ErrorResponse error = HandlersHelper.extractEntity(serverResponse, ErrorResponse.class);
+
+        assertThat(error.getError(), is(CANT_GET_LOCATION));
+
+        reset(locationService);
+        reset(sunriseSunsetService);
     }
 
 }
