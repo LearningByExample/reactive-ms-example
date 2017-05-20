@@ -9,8 +9,8 @@ public class LocationResponse {
     private final SunriseSunset sunriseSunset;
 
     @JsonCreator
-    public LocationResponse(@JsonProperty final Location geographicCoordinates,
-                            @JsonProperty final SunriseSunset sunriseSunset){
+    public LocationResponse(@JsonProperty("geographicCoordinates") final Location geographicCoordinates,
+                            @JsonProperty("sunriseSunset") final SunriseSunset sunriseSunset){
         this.geographicCoordinates = geographicCoordinates;
         this.sunriseSunset = sunriseSunset;
     }
