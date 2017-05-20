@@ -81,7 +81,7 @@ public class ApiHandler {
     private Mono<SunriseSunset> sunriseSunset(Location location){
         return Mono.just(location).transform(sunriseSunsetService::fromLocation);
     }
-    private Mono<ServerResponse> response(Mono<LocationResponse> locationResponseMono) {
+    Mono<ServerResponse> response(Mono<LocationResponse> locationResponseMono) {
         return locationResponseMono.flatMap(locationResponse ->
                 ServerResponse.ok().body(Mono.just(locationResponse), LocationResponse.class));
     }

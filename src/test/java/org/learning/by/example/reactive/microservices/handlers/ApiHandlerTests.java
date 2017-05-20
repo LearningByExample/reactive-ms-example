@@ -143,31 +143,51 @@ class ApiHandlerTests {
     }
 
     @Test
-    void getLocationTest() {
+    void combineTest(){
+        GOOGLE_LOCATION.and(SUNRISE_SUNSET, LocationResponse::new)
+                .subscribe(this::verifyLocationResponse);
+    }
+
+    void verifyLocationResponse(LocationResponse locationResponse){
+
+        assertThat(locationResponse.getGeographicCoordinates().getLatitude(), is(GOOGLE_LAT));
+        assertThat(locationResponse.getGeographicCoordinates().getLongitude(), is(GOOGLE_LNG));
+
+        assertThat(locationResponse.getSunriseSunset().getSunrise(), is(SUNRISE_TIME));
+        assertThat(locationResponse.getSunriseSunset().getSunset(), is(SUNSET_TIME));
+    }
+
+    @Test
+    void responseTest(){
+        GOOGLE_LOCATION.and(SUNRISE_SUNSET, LocationResponse::new)
+                .transform(apiHandler::response).subscribe(this::verifyServerResponse);
+    }
+
+    void verifyServerResponse(ServerResponse serverResponse){
+
+        assertThat(serverResponse.statusCode(), is(HttpStatus.OK));
+
+        LocationResponse location = HandlersHelper.extractEntity(serverResponse, LocationResponse.class);
+
+        verifyLocationResponse(location);
+    }
+
+    @Test
+    void fromLocationTest() {
         ServerRequest serverRequest = mock(ServerRequest.class);
         when(serverRequest.pathVariable(ADDRESS_VARIABLE)).thenReturn(GOOGLE_ADDRESS);
 
         doReturn(GOOGLE_LOCATION).when(locationService).fromAddress(any());
         doReturn(SUNRISE_SUNSET).when(sunriseSunsetService).fromLocation(any());
 
-        ServerResponse serverResponse = apiHandler.getLocation(serverRequest).block();
-
-        assertThat(serverResponse.statusCode(), is(HttpStatus.OK));
-
-        LocationResponse location = HandlersHelper.extractEntity(serverResponse, LocationResponse.class);
-
-        assertThat(location.getGeographicCoordinates().getLatitude(), is(GOOGLE_LAT));
-        assertThat(location.getGeographicCoordinates().getLongitude(), is(GOOGLE_LNG));
-
-        assertThat(location.getSunriseSunset().getSunrise(), is(SUNRISE_TIME));
-        assertThat(location.getSunriseSunset().getSunset(), is(SUNSET_TIME));
+        apiHandler.getLocation(serverRequest).subscribe(this::verifyServerResponse);
 
         reset(locationService);
         reset(sunriseSunsetService);
     }
 
     @Test
-    void getLocationNotFoundTest() {
+    void fromLocationNotFoundTest() {
         ServerRequest serverRequest = mock(ServerRequest.class);
         when(serverRequest.pathVariable(ADDRESS_VARIABLE)).thenReturn(GOOGLE_ADDRESS);
 
@@ -187,7 +207,7 @@ class ApiHandlerTests {
     }
 
     @Test
-    void getErrorSunriseSunsetServiceTest() {
+    void fromLocationErrorSunriseSunsetTest() {
         ServerRequest serverRequest = mock(ServerRequest.class);
         when(serverRequest.pathVariable(ADDRESS_VARIABLE)).thenReturn(GOOGLE_ADDRESS);
 
@@ -207,7 +227,7 @@ class ApiHandlerTests {
     }
 
     @Test
-    void bothServiceErrorTest() {
+    void fromLocationBothServiceErrorTest() {
         ServerRequest serverRequest = mock(ServerRequest.class);
         when(serverRequest.pathVariable(ADDRESS_VARIABLE)).thenReturn(GOOGLE_ADDRESS);
 
