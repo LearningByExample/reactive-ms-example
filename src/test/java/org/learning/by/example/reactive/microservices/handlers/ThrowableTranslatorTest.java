@@ -76,7 +76,7 @@ class ThrowableTranslatorTest {
 
     @Test
     void translateGetGetLocationExceptionTest() throws Exception {
-        assertThat(GetLocationException.class, translateTo(HttpStatus.INTERNAL_SERVER_ERROR));
+        assertThat(GetGeoLocationException.class, translateTo(HttpStatus.INTERNAL_SERVER_ERROR));
     }
 
     @Test

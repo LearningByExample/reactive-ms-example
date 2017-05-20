@@ -26,14 +26,14 @@ public class ApplicationConfig {
 
     @Bean
     ApiHandler apiHandler(final HelloService helloService, final QuoteService quoteService,
-                          final LocationService locationService, final SunriseSunsetService sunriseSunsetService,
+                          final GeoLocationService geoLocationService, final SunriseSunsetService sunriseSunsetService,
                           final ErrorHandler errorHandler) {
-        return new ApiHandler(helloService, quoteService, locationService, sunriseSunsetService ,errorHandler);
+        return new ApiHandler(helloService, quoteService, geoLocationService, sunriseSunsetService ,errorHandler);
     }
 
     @Bean
-    LocationService locationService(@Value("${LocationServiceImpl.endPoint}") final String endPoint){
-        return new LocationServiceImpl(endPoint);
+    GeoLocationService locationService(@Value("${GeoLocationServiceImpl.endPoint}") final String endPoint){
+        return new GeoLocationServiceImpl(endPoint);
     }
 
     @Bean

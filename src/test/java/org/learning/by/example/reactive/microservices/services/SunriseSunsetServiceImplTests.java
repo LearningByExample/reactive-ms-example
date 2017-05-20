@@ -3,7 +3,7 @@ package org.learning.by.example.reactive.microservices.services;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.learning.by.example.reactive.microservices.exceptions.GetSunriseSunsetException;
-import org.learning.by.example.reactive.microservices.model.Location;
+import org.learning.by.example.reactive.microservices.model.GeographicCoordinates;
 import org.learning.by.example.reactive.microservices.model.SunriseSunset;
 import org.learning.by.example.reactive.microservices.model.SunriseSunsetResult;
 import org.learning.by.example.reactive.microservices.test.tags.UnitTest;
@@ -31,8 +31,8 @@ class SunriseSunsetServiceImplTests {
     private static final String SUNSET_TIME = "3:14:28 AM";
     private static final double GOOGLE_LAT = 37.4224082;
     private static final double GOOGLE_LNG = -122.0856086;
-    private static final Location GOOGLE_LOCATION = new Location(GOOGLE_LAT, GOOGLE_LNG);
-    private static final Mono<Location> GOOGLE_LOCATION_MONO = Mono.just(GOOGLE_LOCATION);
+    private static final GeographicCoordinates GOOGLE_LOCATION = new GeographicCoordinates(GOOGLE_LAT, GOOGLE_LNG);
+    private static final Mono<GeographicCoordinates> GOOGLE_LOCATION_MONO = Mono.just(GOOGLE_LOCATION);
     private static final String GOOGLE_LOCATION_IN_PARAMS = "?lat="+Double.toString(GOOGLE_LAT)+"&lng="+Double.toString(GOOGLE_LNG);
 
     private static final String JSON_OK = "/json/SunriseSunsetResult_OK.json";
@@ -77,13 +77,13 @@ class SunriseSunsetServiceImplTests {
 
         doReturn(SUNRISE_SUNSET_OK).when(sunriseSunsetService).get(any());
 
-        SunriseSunset result = GOOGLE_LOCATION_MONO.transform(sunriseSunsetService::fromLocation).block();
+        SunriseSunset result = GOOGLE_LOCATION_MONO.transform(sunriseSunsetService::fromGeographicCoordinates).block();
 
         assertThat(result, is(notNullValue()));
         assertThat(result.getSunrise(), is(SUNRISE_TIME));
         assertThat(result.getSunset(), is(SUNSET_TIME));
 
-        verify(sunriseSunsetService, times(1)).fromLocation(any());
+        verify(sunriseSunsetService, times(1)).fromGeographicCoordinates(any());
         verify(sunriseSunsetService, times(1)).buildUrl(any());
         verify(sunriseSunsetService, times(1)).get(any());
         verify(sunriseSunsetService, times(1)).createResult(any());
@@ -96,7 +96,7 @@ class SunriseSunsetServiceImplTests {
 
         doReturn(SUNRISE_SUNSET_KO).when(sunriseSunsetService).get(any());
 
-        SunriseSunset result = GOOGLE_LOCATION_MONO.transform(sunriseSunsetService::fromLocation)
+        SunriseSunset result = GOOGLE_LOCATION_MONO.transform(sunriseSunsetService::fromGeographicCoordinates)
                 .onErrorResume(throwable -> {
                     assertThat(throwable, instanceOf(GetSunriseSunsetException.class));
                     return Mono.empty();
@@ -104,7 +104,7 @@ class SunriseSunsetServiceImplTests {
 
         assertThat(result, is(nullValue()));
 
-        verify(sunriseSunsetService, times(1)).fromLocation(any());
+        verify(sunriseSunsetService, times(1)).fromGeographicCoordinates(any());
         verify(sunriseSunsetService, times(1)).buildUrl(any());
         verify(sunriseSunsetService, times(1)).get(any());
         verify(sunriseSunsetService, times(1)).createResult(any());
@@ -117,7 +117,7 @@ class SunriseSunsetServiceImplTests {
 
         doReturn(LOCATION_EXCEPTION).when(sunriseSunsetService).get(any());
 
-        SunriseSunset result = GOOGLE_LOCATION_MONO.transform(sunriseSunsetService::fromLocation)
+        SunriseSunset result = GOOGLE_LOCATION_MONO.transform(sunriseSunsetService::fromGeographicCoordinates)
                 .onErrorResume(throwable -> {
                     assertThat(throwable, instanceOf(GetSunriseSunsetException.class));
                     return Mono.empty();
@@ -125,7 +125,7 @@ class SunriseSunsetServiceImplTests {
 
         assertThat(result, is(nullValue()));
 
-        verify(sunriseSunsetService, times(1)).fromLocation(any());
+        verify(sunriseSunsetService, times(1)).fromGeographicCoordinates(any());
         verify(sunriseSunsetService, times(1)).buildUrl(any());
         verify(sunriseSunsetService, times(1)).get(any());
         verify(sunriseSunsetService, times(1)).createResult(any());
@@ -138,7 +138,7 @@ class SunriseSunsetServiceImplTests {
 
         doReturn(BIG_EXCEPTION).when(sunriseSunsetService).get(any());
 
-        SunriseSunset result = GOOGLE_LOCATION_MONO.transform(sunriseSunsetService::fromLocation)
+        SunriseSunset result = GOOGLE_LOCATION_MONO.transform(sunriseSunsetService::fromGeographicCoordinates)
                 .onErrorResume(throwable -> {
                     assertThat(throwable, instanceOf(GetSunriseSunsetException.class));
                     return Mono.empty();
@@ -146,7 +146,7 @@ class SunriseSunsetServiceImplTests {
 
         assertThat(result, is(nullValue()));
 
-        verify(sunriseSunsetService, times(1)).fromLocation(any());
+        verify(sunriseSunsetService, times(1)).fromGeographicCoordinates(any());
         verify(sunriseSunsetService, times(1)).buildUrl(any());
         verify(sunriseSunsetService, times(1)).get(any());
         verify(sunriseSunsetService, times(1)).createResult(any());
@@ -160,7 +160,7 @@ class SunriseSunsetServiceImplTests {
 
         doReturn(SUNRISE_SUNSET_EMPTY).when(sunriseSunsetService).get(any());
 
-        SunriseSunset result = GOOGLE_LOCATION_MONO.transform(sunriseSunsetService::fromLocation)
+        SunriseSunset result = GOOGLE_LOCATION_MONO.transform(sunriseSunsetService::fromGeographicCoordinates)
                 .onErrorResume(throwable -> {
                     assertThat(throwable, instanceOf(GetSunriseSunsetException.class));
                     return Mono.empty();
@@ -168,7 +168,7 @@ class SunriseSunsetServiceImplTests {
 
         assertThat(result, is(nullValue()));
 
-        verify(sunriseSunsetService, times(1)).fromLocation(any());
+        verify(sunriseSunsetService, times(1)).fromGeographicCoordinates(any());
         verify(sunriseSunsetService, times(1)).buildUrl(any());
         verify(sunriseSunsetService, times(1)).get(any());
         verify(sunriseSunsetService, times(1)).createResult(any());

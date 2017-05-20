@@ -1,7 +1,7 @@
 package org.learning.by.example.reactive.microservices.services;
 
 import org.learning.by.example.reactive.microservices.exceptions.GetSunriseSunsetException;
-import org.learning.by.example.reactive.microservices.model.Location;
+import org.learning.by.example.reactive.microservices.model.GeographicCoordinates;
 import org.learning.by.example.reactive.microservices.model.SunriseSunset;
 import org.learning.by.example.reactive.microservices.model.SunriseSunsetResult;
 import org.springframework.http.MediaType;
@@ -28,7 +28,7 @@ public class SunriseSunsetServiceImpl implements SunriseSunsetService {
     }
 
     @Override
-    public Mono<SunriseSunset> fromLocation(Mono<Location> location) {
+    public Mono<SunriseSunset> fromGeographicCoordinates(Mono<GeographicCoordinates> location) {
         return location
                 .transform(this::buildUrl)
                 .transform(this::get)
@@ -36,11 +36,11 @@ public class SunriseSunsetServiceImpl implements SunriseSunsetService {
                 .transform(this::createResult);
     }
 
-    Mono<String> buildUrl(final Mono<Location> locationMono) {
-        return locationMono.flatMap(location -> Mono.just(endPoint.concat(BEGIN_PARAMETERS)
-                .concat(LATITUDE_PARAMETER).concat(Double.toString(location.getLatitude()))
+    Mono<String> buildUrl(final Mono<GeographicCoordinates> geographicCoordinatesMono) {
+        return geographicCoordinatesMono.flatMap(geographicCoordinates -> Mono.just(endPoint.concat(BEGIN_PARAMETERS)
+                .concat(LATITUDE_PARAMETER).concat(Double.toString(geographicCoordinates.getLatitude()))
                 .concat(NEXT_PARAMETER)
-                .concat(LONGITUDE_PARAMETER).concat(Double.toString(location.getLongitude()))
+                .concat(LONGITUDE_PARAMETER).concat(Double.toString(geographicCoordinates.getLongitude()))
         ));
     }
 

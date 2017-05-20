@@ -4,11 +4,11 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.learning.by.example.reactive.microservices.exceptions.GetLocationException;
+import org.learning.by.example.reactive.microservices.exceptions.GetGeoLocationException;
 import org.learning.by.example.reactive.microservices.exceptions.GetSunriseSunsetException;
 import org.learning.by.example.reactive.microservices.exceptions.LocationNotFoundException;
 import org.learning.by.example.reactive.microservices.model.*;
-import org.learning.by.example.reactive.microservices.services.LocationService;
+import org.learning.by.example.reactive.microservices.services.GeoLocationService;
 import org.learning.by.example.reactive.microservices.services.QuoteService;
 import org.learning.by.example.reactive.microservices.services.SunriseSunsetService;
 import org.learning.by.example.reactive.microservices.test.HandlersHelper;
@@ -41,11 +41,11 @@ class ApiHandlerTests {
     private static final String CANT_GET_LOCATION = "cant get location";
     private static final String CANT_GET_SUNRISE_SUNSET = "can't get sunrise sunset";
 
-    private static final Mono<Location> GOOGLE_LOCATION = Mono.just(new Location(GOOGLE_LAT, GOOGLE_LNG));
+    private static final Mono<GeographicCoordinates> GOOGLE_LOCATION = Mono.just(new GeographicCoordinates(GOOGLE_LAT, GOOGLE_LNG));
     private static final Mono<SunriseSunset> SUNRISE_SUNSET = Mono.just(new SunriseSunset(SUNRISE_TIME, SUNSET_TIME));
-    private static final Mono<Location> LOCATION_NOT_FOUND = Mono.error(new LocationNotFoundException(NOT_FOUND));
-    private static final Mono<Location> LOCATION_EXCEPTION = Mono.error(new GetLocationException(CANT_GET_LOCATION));
-    private static final Mono<Location> SUNRISE_SUNSET_ERROR = Mono.error(new GetSunriseSunsetException(CANT_GET_SUNRISE_SUNSET));
+    private static final Mono<GeographicCoordinates> LOCATION_NOT_FOUND = Mono.error(new LocationNotFoundException(NOT_FOUND));
+    private static final Mono<GeographicCoordinates> LOCATION_EXCEPTION = Mono.error(new GetGeoLocationException(CANT_GET_LOCATION));
+    private static final Mono<GeographicCoordinates> SUNRISE_SUNSET_ERROR = Mono.error(new GetSunriseSunsetException(CANT_GET_SUNRISE_SUNSET));
 
 
     @Autowired
@@ -55,7 +55,7 @@ class ApiHandlerTests {
     private QuoteService quoteService;
 
     @SpyBean
-    private LocationService locationService;
+    private GeoLocationService geoLocationService;
 
     @SpyBean
     private SunriseSunsetService sunriseSunsetService;
@@ -173,26 +173,26 @@ class ApiHandlerTests {
     }
 
     @Test
-    void fromLocationTest() {
+    void fromGeographicCoordinatesTest() {
         ServerRequest serverRequest = mock(ServerRequest.class);
         when(serverRequest.pathVariable(ADDRESS_VARIABLE)).thenReturn(GOOGLE_ADDRESS);
 
-        doReturn(GOOGLE_LOCATION).when(locationService).fromAddress(any());
-        doReturn(SUNRISE_SUNSET).when(sunriseSunsetService).fromLocation(any());
+        doReturn(GOOGLE_LOCATION).when(geoLocationService).fromAddress(any());
+        doReturn(SUNRISE_SUNSET).when(sunriseSunsetService).fromGeographicCoordinates(any());
 
         apiHandler.getLocation(serverRequest).subscribe(this::verifyServerResponse);
 
-        reset(locationService);
+        reset(geoLocationService);
         reset(sunriseSunsetService);
     }
 
     @Test
-    void fromLocationNotFoundTest() {
+    void fromGeographicCoordinatesNotFoundTest() {
         ServerRequest serverRequest = mock(ServerRequest.class);
         when(serverRequest.pathVariable(ADDRESS_VARIABLE)).thenReturn(GOOGLE_ADDRESS);
 
-        doReturn(LOCATION_NOT_FOUND).when(locationService).fromAddress(any());
-        doReturn(SUNRISE_SUNSET).when(sunriseSunsetService).fromLocation(any());
+        doReturn(LOCATION_NOT_FOUND).when(geoLocationService).fromAddress(any());
+        doReturn(SUNRISE_SUNSET).when(sunriseSunsetService).fromGeographicCoordinates(any());
 
         ServerResponse serverResponse = apiHandler.getLocation(serverRequest).block();
 
@@ -202,17 +202,17 @@ class ApiHandlerTests {
 
         assertThat(error.getError(), is(NOT_FOUND));
 
-        reset(locationService);
+        reset(geoLocationService);
         reset(sunriseSunsetService);
     }
 
     @Test
-    void fromLocationErrorSunriseSunsetTest() {
+    void fromGeographicCoordinatesErrorSunriseSunsetTest() {
         ServerRequest serverRequest = mock(ServerRequest.class);
         when(serverRequest.pathVariable(ADDRESS_VARIABLE)).thenReturn(GOOGLE_ADDRESS);
 
-        doReturn(GOOGLE_LOCATION).when(locationService).fromAddress(any());
-        doReturn(SUNRISE_SUNSET_ERROR).when(sunriseSunsetService).fromLocation(any());
+        doReturn(GOOGLE_LOCATION).when(geoLocationService).fromAddress(any());
+        doReturn(SUNRISE_SUNSET_ERROR).when(sunriseSunsetService).fromGeographicCoordinates(any());
 
         ServerResponse serverResponse = apiHandler.getLocation(serverRequest).block();
 
@@ -222,17 +222,17 @@ class ApiHandlerTests {
 
         assertThat(error.getError(), is(CANT_GET_SUNRISE_SUNSET));
 
-        reset(locationService);
+        reset(geoLocationService);
         reset(sunriseSunsetService);
     }
 
     @Test
-    void fromLocationBothServiceErrorTest() {
+    void fromGeographicCoordinatesBothServiceErrorTest() {
         ServerRequest serverRequest = mock(ServerRequest.class);
         when(serverRequest.pathVariable(ADDRESS_VARIABLE)).thenReturn(GOOGLE_ADDRESS);
 
-        doReturn(LOCATION_EXCEPTION).when(locationService).fromAddress(any());
-        doReturn(SUNRISE_SUNSET_ERROR).when(sunriseSunsetService).fromLocation(any());
+        doReturn(LOCATION_EXCEPTION).when(geoLocationService).fromAddress(any());
+        doReturn(SUNRISE_SUNSET_ERROR).when(sunriseSunsetService).fromGeographicCoordinates(any());
 
         ServerResponse serverResponse = apiHandler.getLocation(serverRequest).block();
 
@@ -242,7 +242,7 @@ class ApiHandlerTests {
 
         assertThat(error.getError(), is(CANT_GET_LOCATION));
 
-        reset(locationService);
+        reset(geoLocationService);
         reset(sunriseSunsetService);
     }
 
