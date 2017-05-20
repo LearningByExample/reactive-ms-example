@@ -3,9 +3,9 @@ package org.learning.by.example.reactive.microservices.services;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.learning.by.example.reactive.microservices.exceptions.GetGeoLocationException;
-import org.learning.by.example.reactive.microservices.exceptions.LocationNotFoundException;
+import org.learning.by.example.reactive.microservices.exceptions.GeoLocationNotFoundException;
 import org.learning.by.example.reactive.microservices.model.GeographicCoordinates;
-import org.learning.by.example.reactive.microservices.model.GeocodeResult;
+import org.learning.by.example.reactive.microservices.model.GeoLocationResponse;
 import org.learning.by.example.reactive.microservices.test.tags.UnitTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import reactor.core.publisher.Mono;
@@ -35,17 +35,17 @@ class GeoLocationServiceImplTests {
     @SpyBean(GeoLocationService.class)
     private GeoLocationServiceImpl locationService;
 
-    private static final String JSON_OK = "/json/GeocodeResult_OK.json";
-    private static final String JSON_NOT_FOUND = "/json/GeocodeResult_NOT_FOUND.json";
-    private static final String JSON_EMPTY = "/json/GeocodeResult_EMPTY.json";
-    private static final String JSON_WRONG_STATUS = "/json/GeocodeResult_WRONG_STATUS.json";
+    private static final String JSON_OK = "/json/GeoLocationResponse_OK.json";
+    private static final String JSON_NOT_FOUND = "/json/GeoLocationResponse_NOT_FOUND.json";
+    private static final String JSON_EMPTY = "/json/GeoLocationResponse_EMPTY.json";
+    private static final String JSON_WRONG_STATUS = "/json/GeoLocationResponse_WRONG_STATUS.json";
 
-    private static final Mono<GeocodeResult> LOCATION_OK = getMonoFromJsonPath(JSON_OK, GeocodeResult.class);
-    private static final Mono<GeocodeResult> LOCATION_NOT_FOUND = getMonoFromJsonPath(JSON_NOT_FOUND, GeocodeResult.class);
-    private static final Mono<GeocodeResult> LOCATION_EMPTY = getMonoFromJsonPath(JSON_EMPTY, GeocodeResult.class);
-    private static final Mono<GeocodeResult> LOCATION_WRONG_STATUS = getMonoFromJsonPath(JSON_WRONG_STATUS, GeocodeResult.class);
-    private static final Mono<GeocodeResult> LOCATION_EXCEPTION = Mono.error(new GetGeoLocationException(BAD_EXCEPTION));
-    private static final Mono<GeocodeResult> BIG_EXCEPTION = Mono.error(new RuntimeException(BAD_EXCEPTION));
+    private static final Mono<GeoLocationResponse> LOCATION_OK = getMonoFromJsonPath(JSON_OK, GeoLocationResponse.class);
+    private static final Mono<GeoLocationResponse> LOCATION_NOT_FOUND = getMonoFromJsonPath(JSON_NOT_FOUND, GeoLocationResponse.class);
+    private static final Mono<GeoLocationResponse> LOCATION_EMPTY = getMonoFromJsonPath(JSON_EMPTY, GeoLocationResponse.class);
+    private static final Mono<GeoLocationResponse> LOCATION_WRONG_STATUS = getMonoFromJsonPath(JSON_WRONG_STATUS, GeoLocationResponse.class);
+    private static final Mono<GeoLocationResponse> LOCATION_EXCEPTION = Mono.error(new GetGeoLocationException(BAD_EXCEPTION));
+    private static final Mono<GeoLocationResponse> BIG_EXCEPTION = Mono.error(new RuntimeException(BAD_EXCEPTION));
 
     @Test
     void getBeamTest() {
@@ -56,7 +56,7 @@ class GeoLocationServiceImplTests {
     void getMockingWebClientTest() {
         locationService.webClient = mockWebClient(locationService.webClient, LOCATION_OK);
 
-        GeocodeResult location = GOOGLE_ADDRESS_MONO.transform(locationService::get).block();
+        GeoLocationResponse location = GOOGLE_ADDRESS_MONO.transform(locationService::get).block();
         assertThat(location.getStatus(), is(OK_STATUS));
 
         reset(locationService.webClient);
@@ -86,7 +86,7 @@ class GeoLocationServiceImplTests {
 
         GeographicCoordinates geographicCoordinates = GOOGLE_ADDRESS_MONO.transform(locationService::fromAddress)
                 .onErrorResume(throwable -> {
-                    assertThat(throwable, instanceOf(LocationNotFoundException.class));
+                    assertThat(throwable, instanceOf(GeoLocationNotFoundException.class));
                     return Mono.empty();
                 }).block();
 

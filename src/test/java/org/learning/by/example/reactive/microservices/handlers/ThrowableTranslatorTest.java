@@ -71,7 +71,7 @@ class ThrowableTranslatorTest {
 
     @Test
     void translateLocationNotFoundExceptionTest() throws Exception {
-        assertThat(LocationNotFoundException.class, translateTo(HttpStatus.NOT_FOUND));
+        assertThat(GeoLocationNotFoundException.class, translateTo(HttpStatus.NOT_FOUND));
     }
 
     @Test

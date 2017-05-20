@@ -6,7 +6,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.learning.by.example.reactive.microservices.exceptions.GetGeoLocationException;
 import org.learning.by.example.reactive.microservices.exceptions.GetSunriseSunsetException;
-import org.learning.by.example.reactive.microservices.exceptions.LocationNotFoundException;
+import org.learning.by.example.reactive.microservices.exceptions.GeoLocationNotFoundException;
 import org.learning.by.example.reactive.microservices.model.*;
 import org.learning.by.example.reactive.microservices.services.GeoLocationService;
 import org.learning.by.example.reactive.microservices.services.QuoteService;
@@ -43,7 +43,7 @@ class ApiHandlerTests {
 
     private static final Mono<GeographicCoordinates> GOOGLE_LOCATION = Mono.just(new GeographicCoordinates(GOOGLE_LAT, GOOGLE_LNG));
     private static final Mono<SunriseSunset> SUNRISE_SUNSET = Mono.just(new SunriseSunset(SUNRISE_TIME, SUNSET_TIME));
-    private static final Mono<GeographicCoordinates> LOCATION_NOT_FOUND = Mono.error(new LocationNotFoundException(NOT_FOUND));
+    private static final Mono<GeographicCoordinates> LOCATION_NOT_FOUND = Mono.error(new GeoLocationNotFoundException(NOT_FOUND));
     private static final Mono<GeographicCoordinates> LOCATION_EXCEPTION = Mono.error(new GetGeoLocationException(CANT_GET_LOCATION));
     private static final Mono<GeographicCoordinates> SUNRISE_SUNSET_ERROR = Mono.error(new GetSunriseSunsetException(CANT_GET_SUNRISE_SUNSET));
 
@@ -167,9 +167,9 @@ class ApiHandlerTests {
 
         assertThat(serverResponse.statusCode(), is(HttpStatus.OK));
 
-        LocationResponse location = HandlersHelper.extractEntity(serverResponse, LocationResponse.class);
+        LocationResponse locationResponse = HandlersHelper.extractEntity(serverResponse, LocationResponse.class);
 
-        verifyLocationResponse(location);
+        verifyLocationResponse(locationResponse);
     }
 
     @Test

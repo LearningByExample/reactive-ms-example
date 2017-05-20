@@ -4,7 +4,7 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.learning.by.example.reactive.microservices.exceptions.LocationNotFoundException;
+import org.learning.by.example.reactive.microservices.exceptions.GeoLocationNotFoundException;
 import org.learning.by.example.reactive.microservices.handlers.ApiHandler;
 import org.learning.by.example.reactive.microservices.handlers.ErrorHandler;
 import org.learning.by.example.reactive.microservices.model.*;
@@ -51,7 +51,7 @@ class ApiRouterTests extends BasicIntegrationTest {
     private static final String SUNSET_TIME = "3:14:28 AM";
 
     private static final Mono<GeographicCoordinates> GOOGLE_LOCATION = Mono.just(new GeographicCoordinates(GOOGLE_LAT, GOOGLE_LNG));
-    private static final Mono<GeographicCoordinates> LOCATION_NOT_FOUND = Mono.error(new LocationNotFoundException(NOT_FOUND));
+    private static final Mono<GeographicCoordinates> LOCATION_NOT_FOUND = Mono.error(new GeoLocationNotFoundException(NOT_FOUND));
     private static final Mono<GeographicCoordinates> GENERIC_ERROR = Mono.error(new RuntimeException(BIG_ERROR));
     private static final Mono<SunriseSunset> SUNRISE_SUNSET = Mono.just(new SunriseSunset(SUNRISE_TIME, SUNSET_TIME));
 

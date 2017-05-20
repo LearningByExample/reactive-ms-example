@@ -3,12 +3,12 @@ package org.learning.by.example.reactive.microservices.model;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public final class GeocodeResult {
+public final class GeoLocationResponse {
     private final Result results[];
     private final String status;
 
     @JsonCreator
-    public GeocodeResult(@JsonProperty("results") Result[] results, @JsonProperty("status") String status){
+    public GeoLocationResponse(@JsonProperty("results") Result[] results, @JsonProperty("status") String status){
         this.results = results;
         this.status = status;
     }

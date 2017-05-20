@@ -1,9 +1,9 @@
 package org.learning.by.example.reactive.microservices.services;
 
 import org.learning.by.example.reactive.microservices.exceptions.GetGeoLocationException;
-import org.learning.by.example.reactive.microservices.exceptions.LocationNotFoundException;
+import org.learning.by.example.reactive.microservices.exceptions.GeoLocationNotFoundException;
 import org.learning.by.example.reactive.microservices.model.GeographicCoordinates;
-import org.learning.by.example.reactive.microservices.model.GeocodeResult;
+import org.learning.by.example.reactive.microservices.model.GeoLocationResponse;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -37,25 +37,25 @@ public class GeoLocationServiceImpl implements GeoLocationService {
         return addressMono.flatMap(address -> Mono.just(endPoint.concat(ADDRESS_PARAMETER).concat(address)));
     }
 
-    Mono<GeocodeResult> get(final Mono<String> monoUrl) {
-        return monoUrl.flatMap(url -> webClient
+    Mono<GeoLocationResponse> get(final Mono<String> urlMono) {
+        return urlMono.flatMap(url -> webClient
                 .get()
                 .uri(url)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
-                .flatMap(clientResponse -> clientResponse.bodyToMono(GeocodeResult.class)));
+                .flatMap(clientResponse -> clientResponse.bodyToMono(GeoLocationResponse.class)));
     }
 
-    Mono<GeographicCoordinates> geometryLocation(final Mono<GeocodeResult> geocodeResultMono) {
-        return geocodeResultMono.flatMap(geocodeResult -> {
-                    if (geocodeResult.getStatus() != null) {
-                        switch (geocodeResult.getStatus()) {
+    Mono<GeographicCoordinates> geometryLocation(final Mono<GeoLocationResponse> geoLocationResponseMono) {
+        return geoLocationResponseMono.flatMap(geoLocationResponse -> {
+                    if (geoLocationResponse.getStatus() != null) {
+                        switch (geoLocationResponse.getStatus()) {
                             case OK_STATUS:
                                 return Mono.just(
-                                        new GeographicCoordinates(geocodeResult.getResults()[0].getGeometry().getLocation().getLat(),
-                                                geocodeResult.getResults()[0].getGeometry().getLocation().getLng()));
+                                        new GeographicCoordinates(geoLocationResponse.getResults()[0].getGeometry().getLocation().getLat(),
+                                                geoLocationResponse.getResults()[0].getGeometry().getLocation().getLng()));
                             case ZERO_RESULTS:
-                                return Mono.error(new LocationNotFoundException(ADDRESS_NOT_FOUND));
+                                return Mono.error(new GeoLocationNotFoundException(ADDRESS_NOT_FOUND));
                             default:
                                 return Mono.error(new GetGeoLocationException(ERROR_GETTING_LOCATION));
                         }

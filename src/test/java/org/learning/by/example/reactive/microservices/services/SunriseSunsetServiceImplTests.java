@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.learning.by.example.reactive.microservices.exceptions.GetSunriseSunsetException;
 import org.learning.by.example.reactive.microservices.model.GeographicCoordinates;
 import org.learning.by.example.reactive.microservices.model.SunriseSunset;
-import org.learning.by.example.reactive.microservices.model.SunriseSunsetResult;
+import org.learning.by.example.reactive.microservices.model.GeoTimesResponse;
 import org.learning.by.example.reactive.microservices.test.tags.UnitTest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.mock.mockito.SpyBean;
@@ -35,14 +35,14 @@ class SunriseSunsetServiceImplTests {
     private static final Mono<GeographicCoordinates> GOOGLE_LOCATION_MONO = Mono.just(GOOGLE_LOCATION);
     private static final String GOOGLE_LOCATION_IN_PARAMS = "?lat="+Double.toString(GOOGLE_LAT)+"&lng="+Double.toString(GOOGLE_LNG);
 
-    private static final String JSON_OK = "/json/SunriseSunsetResult_OK.json";
-    private static final String JSON_KO = "/json/SunriseSunsetResult_KO.json";
-    private static final String JSON_EMPTY = "/json/SunriseSunsetResult_EMPTY.json";
-    private static final Mono<SunriseSunsetResult> SUNRISE_SUNSET_OK = getMonoFromJsonPath(JSON_OK, SunriseSunsetResult.class);
-    private static final Mono<SunriseSunsetResult> SUNRISE_SUNSET_KO = getMonoFromJsonPath(JSON_KO, SunriseSunsetResult.class);
-    private static final Mono<SunriseSunsetResult> SUNRISE_SUNSET_EMPTY = getMonoFromJsonPath(JSON_EMPTY, SunriseSunsetResult.class);
-    private static final Mono<SunriseSunsetResult> LOCATION_EXCEPTION = Mono.error(new GetSunriseSunsetException(BAD_EXCEPTION));
-    private static final Mono<SunriseSunsetResult> BIG_EXCEPTION = Mono.error(new RuntimeException(BAD_EXCEPTION));
+    private static final String JSON_OK = "/json/GeoTimesResponse_OK.json";
+    private static final String JSON_KO = "/json/GeoTimesResponse_KO.json";
+    private static final String JSON_EMPTY = "/json/GeoTimesResponse_EMPTY.json";
+    private static final Mono<GeoTimesResponse> SUNRISE_SUNSET_OK = getMonoFromJsonPath(JSON_OK, GeoTimesResponse.class);
+    private static final Mono<GeoTimesResponse> SUNRISE_SUNSET_KO = getMonoFromJsonPath(JSON_KO, GeoTimesResponse.class);
+    private static final Mono<GeoTimesResponse> SUNRISE_SUNSET_EMPTY = getMonoFromJsonPath(JSON_EMPTY, GeoTimesResponse.class);
+    private static final Mono<GeoTimesResponse> LOCATION_EXCEPTION = Mono.error(new GetSunriseSunsetException(BAD_EXCEPTION));
+    private static final Mono<GeoTimesResponse> BIG_EXCEPTION = Mono.error(new RuntimeException(BAD_EXCEPTION));
 
 
     @Value("${SunriseSunsetServiceImpl.endPoint}")
@@ -61,7 +61,7 @@ class SunriseSunsetServiceImplTests {
     void getMockingWebClientTest() {
         sunriseSunsetService.webClient = mockWebClient(sunriseSunsetService.webClient, SUNRISE_SUNSET_OK);
 
-        SunriseSunsetResult result = Mono.just(endPoint.concat(GOOGLE_LOCATION_IN_PARAMS))
+        GeoTimesResponse result = Mono.just(endPoint.concat(GOOGLE_LOCATION_IN_PARAMS))
                 .transform(sunriseSunsetService::get).block();
 
         assertThat(result, is(notNullValue()));

@@ -5,5 +5,5 @@ import org.learning.by.example.reactive.microservices.model.SunriseSunset;
 import reactor.core.publisher.Mono;
 
 public interface SunriseSunsetService {
-    Mono<SunriseSunset> fromGeographicCoordinates(Mono<GeographicCoordinates> location);
+    Mono<SunriseSunset> fromGeographicCoordinates(Mono<GeographicCoordinates> geographicCoordinatesMono);
 }

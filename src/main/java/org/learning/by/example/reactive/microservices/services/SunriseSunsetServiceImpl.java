@@ -3,7 +3,7 @@ package org.learning.by.example.reactive.microservices.services;
 import org.learning.by.example.reactive.microservices.exceptions.GetSunriseSunsetException;
 import org.learning.by.example.reactive.microservices.model.GeographicCoordinates;
 import org.learning.by.example.reactive.microservices.model.SunriseSunset;
-import org.learning.by.example.reactive.microservices.model.SunriseSunsetResult;
+import org.learning.by.example.reactive.microservices.model.GeoTimesResponse;
 import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -44,20 +44,20 @@ public class SunriseSunsetServiceImpl implements SunriseSunsetService {
         ));
     }
 
-    Mono<SunriseSunsetResult> get(final Mono<String> monoUrl) {
+    Mono<GeoTimesResponse> get(final Mono<String> monoUrl) {
         return monoUrl.flatMap(url -> webClient
                 .get()
                 .uri(url)
                 .accept(MediaType.APPLICATION_JSON)
                 .exchange()
-                .flatMap(clientResponse -> clientResponse.bodyToMono(SunriseSunsetResult.class)));
+                .flatMap(clientResponse -> clientResponse.bodyToMono(GeoTimesResponse.class)));
     }
 
-    Mono<SunriseSunset> createResult(final Mono<SunriseSunsetResult> sunriseSunsetResultMono) {
-        return sunriseSunsetResultMono.flatMap(sunriseSunsetResult -> {
-            if ((sunriseSunsetResult.getStatus() != null) && (sunriseSunsetResult.getStatus().equals(STATUS_OK))) {
-                return Mono.just(new SunriseSunset(sunriseSunsetResult.getResults().getSunrise(),
-                        sunriseSunsetResult.getResults().getSunset()));
+    Mono<SunriseSunset> createResult(final Mono<GeoTimesResponse> geoTimesResponseMono) {
+        return geoTimesResponseMono.flatMap(geoTimesResponse -> {
+            if ((geoTimesResponse.getStatus() != null) && (geoTimesResponse.getStatus().equals(STATUS_OK))) {
+                return Mono.just(new SunriseSunset(geoTimesResponse.getResults().getSunrise(),
+                        geoTimesResponse.getResults().getSunset()));
             } else {
                 return Mono.error(new GetSunriseSunsetException(SUNRISE_RESULT_NOT_OK));
             }
