@@ -11,6 +11,7 @@ import org.learning.by.example.reactive.microservices.model.*;
 import org.learning.by.example.reactive.microservices.services.HelloService;
 import org.learning.by.example.reactive.microservices.services.LocationService;
 import org.learning.by.example.reactive.microservices.services.QuoteService;
+import org.learning.by.example.reactive.microservices.services.SunriseSunsetService;
 import org.learning.by.example.reactive.microservices.test.BasicIntegrationTest;
 import org.learning.by.example.reactive.microservices.test.tags.IntegrationTest;
 import org.mockito.Mockito;
@@ -46,10 +47,13 @@ class ApiRouterTests extends BasicIntegrationTest {
     private static final double GOOGLE_LNG = -122.0856086;
     private static final String NOT_FOUND = "not found";
     private static final String BIG_ERROR = "big error";
+    private static final String SUNRISE_TIME = "12:55:17 PM";
+    private static final String SUNSET_TIME = "3:14:28 AM";
 
     private static final Mono<Location> GOOGLE_LOCATION = Mono.just(new Location(GOOGLE_LAT, GOOGLE_LNG));
     private static final Mono<Location> LOCATION_NOT_FOUND = Mono.error(new LocationNotFoundException(NOT_FOUND));
     private static final Mono<Location> GENERIC_ERROR = Mono.error(new RuntimeException(BIG_ERROR));
+    private static final Mono<SunriseSunset> SUNRISE_SUNSET = Mono.just(new SunriseSunset(SUNRISE_TIME, SUNSET_TIME));
 
     @Autowired
     private ApiHandler apiHandler;
@@ -65,6 +69,9 @@ class ApiRouterTests extends BasicIntegrationTest {
 
     @SpyBean
     private LocationService locationService;
+
+    @SpyBean
+    private SunriseSunsetService sunriseSunsetService;
 
     @BeforeEach
     void setup() {
@@ -185,21 +192,24 @@ class ApiRouterTests extends BasicIntegrationTest {
     void getLocationTest(){
 
         doReturn(GOOGLE_LOCATION).when(locationService).fromAddress(any());
+        doReturn(SUNRISE_SUNSET).when(sunriseSunsetService).fromLocation(any());
 
-        final Location location = get(
+        final LocationResponse location = get(
                 builder -> builder.path(LOCATION_PATH).path("/").path(ADDRESS_ARG).build(GOOGLE_ADDRESS),
-                Location.class);
+                LocationResponse.class);
 
-        assertThat(location.getLatitude(), is(GOOGLE_LAT));
-        assertThat(location.getLongitude(), is(GOOGLE_LNG));
+        assertThat(location.getGeographicCoordinates().getLatitude(), is(GOOGLE_LAT));
+        assertThat(location.getGeographicCoordinates().getLongitude(), is(GOOGLE_LNG));
 
         reset(locationService);
+        reset(sunriseSunsetService);
     }
 
     @Test
     void getLocationNotFoundTest(){
 
         doReturn(LOCATION_NOT_FOUND).when(locationService).fromAddress(any());
+        doReturn(SUNRISE_SUNSET).when(sunriseSunsetService).fromLocation(any());
 
         final ErrorResponse errorResponse = get(
                 builder -> builder.path(LOCATION_PATH).path("/").path(ADDRESS_ARG).build(GOOGLE_ADDRESS),
@@ -209,12 +219,14 @@ class ApiRouterTests extends BasicIntegrationTest {
         assertThat(errorResponse.getError(), is(NOT_FOUND));
 
         reset(locationService);
+        reset(sunriseSunsetService);
     }
 
     @Test
     void getLocationExceptionTest(){
 
         doReturn(GENERIC_ERROR).when(locationService).fromAddress(any());
+        doReturn(SUNRISE_SUNSET).when(sunriseSunsetService).fromLocation(any());
 
         final ErrorResponse errorResponse = get(
                 builder -> builder.path(LOCATION_PATH).path("/").path(ADDRESS_ARG).build(GOOGLE_ADDRESS),
@@ -224,6 +236,41 @@ class ApiRouterTests extends BasicIntegrationTest {
         assertThat(errorResponse.getError(), is(BIG_ERROR));
 
         reset(locationService);
+        reset(sunriseSunsetService);
+    }
+
+    @Test
+    void getLocationSunriseSunsetExceptionTest(){
+
+        doReturn(GOOGLE_LOCATION).when(locationService).fromAddress(any());
+        doReturn(GENERIC_ERROR).when(sunriseSunsetService).fromLocation(any());
+
+        final ErrorResponse errorResponse = get(
+                builder -> builder.path(LOCATION_PATH).path("/").path(ADDRESS_ARG).build(GOOGLE_ADDRESS),
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                ErrorResponse.class);
+
+        assertThat(errorResponse.getError(), is(BIG_ERROR));
+
+        reset(locationService);
+        reset(sunriseSunsetService);
+    }
+
+    @Test
+    void getLocationBothServiceExceptionTest(){
+
+        doReturn(GENERIC_ERROR).when(locationService).fromAddress(any());
+        doReturn(GENERIC_ERROR).when(sunriseSunsetService).fromLocation(any());
+
+        final ErrorResponse errorResponse = get(
+                builder -> builder.path(LOCATION_PATH).path("/").path(ADDRESS_ARG).build(GOOGLE_ADDRESS),
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                ErrorResponse.class);
+
+        assertThat(errorResponse.getError(), is(BIG_ERROR));
+
+        reset(locationService);
+        reset(sunriseSunsetService);
     }
 
 }

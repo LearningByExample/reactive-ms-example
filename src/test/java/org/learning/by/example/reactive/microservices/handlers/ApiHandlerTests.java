@@ -41,6 +41,13 @@ class ApiHandlerTests {
     private static final String CANT_GET_LOCATION = "cant get location";
     private static final String CANT_GET_SUNRISE_SUNSET = "can't get sunrise sunset";
 
+    private static final Mono<Location> GOOGLE_LOCATION = Mono.just(new Location(GOOGLE_LAT, GOOGLE_LNG));
+    private static final Mono<SunriseSunset> SUNRISE_SUNSET = Mono.just(new SunriseSunset(SUNRISE_TIME, SUNSET_TIME));
+    private static final Mono<Location> LOCATION_NOT_FOUND = Mono.error(new LocationNotFoundException(NOT_FOUND));
+    private static final Mono<Location> LOCATION_EXCEPTION = Mono.error(new GetLocationException(CANT_GET_LOCATION));
+    private static final Mono<Location> SUNRISE_SUNSET_ERROR = Mono.error(new GetSunriseSunsetException(CANT_GET_SUNRISE_SUNSET));
+
+
     @Autowired
     private ApiHandler apiHandler;
 
@@ -134,12 +141,6 @@ class ApiHandlerTests {
 
         apiHandler.postHello(serverRequest).subscribe(this::checkResponse);
     }
-
-    private static final Mono<Location> GOOGLE_LOCATION = Mono.just(new Location(GOOGLE_LAT, GOOGLE_LNG));
-    private static final Mono<SunriseSunset> SUNRISE_SUNSET = Mono.just(new SunriseSunset(SUNRISE_TIME, SUNSET_TIME));
-    private static final Mono<Location> LOCATION_NOT_FOUND = Mono.error(new LocationNotFoundException(NOT_FOUND));
-    private static final Mono<Location> LOCATION_EXCEPTION = Mono.error(new GetLocationException(CANT_GET_LOCATION));
-    private static final Mono<Location> SUNRISE_SUNSET_ERROR = Mono.error(new GetSunriseSunsetException(CANT_GET_SUNRISE_SUNSET));
 
     @Test
     void getLocationTest() {
