@@ -26,8 +26,9 @@ public class ApplicationConfig {
 
     @Bean
     ApiHandler apiHandler(final HelloService helloService, final QuoteService quoteService,
-                          final LocationService locationService, final ErrorHandler errorHandler) {
-        return new ApiHandler(helloService, quoteService, locationService, errorHandler);
+                          final LocationService locationService, final SunriseSunsetService sunriseSunsetService,
+                          final ErrorHandler errorHandler) {
+        return new ApiHandler(helloService, quoteService, locationService, sunriseSunsetService ,errorHandler);
     }
 
     @Bean

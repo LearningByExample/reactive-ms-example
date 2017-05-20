@@ -1,12 +1,10 @@
 package org.learning.by.example.reactive.microservices.handlers;
 
-import org.learning.by.example.reactive.microservices.model.HelloRequest;
-import org.learning.by.example.reactive.microservices.model.HelloResponse;
-import org.learning.by.example.reactive.microservices.model.Location;
-import org.learning.by.example.reactive.microservices.model.Quote;
+import org.learning.by.example.reactive.microservices.model.*;
 import org.learning.by.example.reactive.microservices.services.HelloService;
 import org.learning.by.example.reactive.microservices.services.LocationService;
 import org.learning.by.example.reactive.microservices.services.QuoteService;
+import org.learning.by.example.reactive.microservices.services.SunriseSunsetService;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
@@ -20,15 +18,18 @@ public class ApiHandler {
     private final HelloService helloService;
     private final QuoteService quoteService;
     private final LocationService locationService;
+    private final SunriseSunsetService sunriseSunsetService;
 
     private static final Mono<String> DEFAULT_NAME = Mono.just("world");
 
     public ApiHandler(final HelloService helloService, final QuoteService quoteService,
-                      final LocationService locationService, final ErrorHandler errorHandler) {
+                      final LocationService locationService, final SunriseSunsetService sunriseSunsetService,
+                      final ErrorHandler errorHandler) {
         this.errorHandler = errorHandler;
         this.helloService = helloService;
         this.quoteService = quoteService;
         this.locationService = locationService;
+        this.sunriseSunsetService = sunriseSunsetService;
     }
 
     public Mono<ServerResponse> defaultHello(final ServerRequest request) {
@@ -72,7 +73,16 @@ public class ApiHandler {
     public Mono<ServerResponse> getLocation(final ServerRequest request){
         return Mono.just(request.pathVariable(ADDRESS))
                 .transform(locationService::fromAddress)
-                .flatMap(location -> ServerResponse.ok().body(Mono.just(location), Location.class))
+                .and(this::sunriseSunset, LocationResponse::new)
+                .transform(this::response)
                 .onErrorResume(errorHandler::throwableError);
+    }
+
+    private Mono<SunriseSunset> sunriseSunset(Location location){
+        return Mono.just(location).transform(sunriseSunsetService::fromLocation);
+    }
+    private Mono<ServerResponse> response(Mono<LocationResponse> locationResponseMono) {
+        return locationResponseMono.flatMap(locationResponse ->
+                ServerResponse.ok().body(Mono.just(locationResponse), LocationResponse.class));
     }
 }
