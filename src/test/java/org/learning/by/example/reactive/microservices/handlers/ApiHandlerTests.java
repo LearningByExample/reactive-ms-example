@@ -1,15 +1,12 @@
 package org.learning.by.example.reactive.microservices.handlers;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.learning.by.example.reactive.microservices.exceptions.GeoLocationNotFoundException;
 import org.learning.by.example.reactive.microservices.exceptions.GetGeoLocationException;
 import org.learning.by.example.reactive.microservices.exceptions.GetSunriseSunsetException;
-import org.learning.by.example.reactive.microservices.exceptions.GeoLocationNotFoundException;
 import org.learning.by.example.reactive.microservices.model.*;
 import org.learning.by.example.reactive.microservices.services.GeoLocationService;
-import org.learning.by.example.reactive.microservices.services.QuoteService;
 import org.learning.by.example.reactive.microservices.services.SunriseSunsetService;
 import org.learning.by.example.reactive.microservices.test.HandlersHelper;
 import org.learning.by.example.reactive.microservices.test.tags.UnitTest;
@@ -28,9 +25,6 @@ import static org.mockito.Mockito.*;
 @UnitTest
 @DisplayName("ApiHandler Unit Tests")
 class ApiHandlerTests {
-    private static final String MOCK_QUOTE_CONTENT = "content";
-    private static final String DEFAULT_NAME = "world";
-    private static final String NAME_VARIABLE = "name";
     private static final String ADDRESS_VARIABLE = "address";
     private static final String GOOGLE_ADDRESS = "1600 Amphitheatre Parkway, Mountain View, CA";
     private static final String SUNRISE_TIME = "12:55:17 PM";
@@ -52,95 +46,10 @@ class ApiHandlerTests {
     private ApiHandler apiHandler;
 
     @SpyBean
-    private QuoteService quoteService;
-
-    @SpyBean
     private GeoLocationService geoLocationService;
 
     @SpyBean
     private SunriseSunsetService sunriseSunsetService;
-
-    @BeforeEach
-    void setup() {
-        doReturn(createMockedQuoteMono(MOCK_QUOTE_CONTENT)).when(quoteService).get();
-    }
-
-    private Mono<Quote> createMockedQuoteMono(final String content) {
-        return Mono.just(createQuote(content));
-    }
-
-    private Quote createQuote(final String content) {
-        Quote quote = new Quote();
-        quote.setContent(content);
-        return quote;
-    }
-
-    @AfterEach
-    void tearDown() {
-        reset(quoteService);
-    }
-
-    @Test
-    void combineGreetingAndQuoteTest() {
-
-        HelloResponse helloResponse = apiHandler.combineGreetingAndQuote(DEFAULT_NAME, createQuote(MOCK_QUOTE_CONTENT));
-
-        assertThat(helloResponse.getGreetings(), is(DEFAULT_NAME));
-        assertThat(helloResponse.getQuote(), is(MOCK_QUOTE_CONTENT));
-    }
-
-    @Test
-    void createHelloResponseTest() {
-        Mono.just(DEFAULT_NAME).transform(apiHandler::createHelloResponse)
-                .subscribe(helloResponse -> {
-                    assertThat(helloResponse.getQuote(), is(MOCK_QUOTE_CONTENT));
-                    assertThat(helloResponse.getGreetings(), is(DEFAULT_NAME));
-                });
-
-    }
-
-    @Test
-    void convertToServerResponseTest() {
-        Mono.just(DEFAULT_NAME).transform(apiHandler::createHelloResponse)
-                .transform(apiHandler::convertToServerResponse)
-                .subscribe(this::checkResponse);
-    }
-
-    private void checkResponse(final ServerResponse serverResponse) {
-        assertThat(serverResponse.statusCode(), is(HttpStatus.OK));
-
-        HelloResponse helloResponse = HandlersHelper.extractEntity(serverResponse, HelloResponse.class);
-        assertThat(helloResponse.getQuote(), is(MOCK_QUOTE_CONTENT));
-        assertThat(helloResponse.getGreetings(), is(DEFAULT_NAME));
-    }
-
-    @Test
-    void getServerResponseTest() {
-        Mono.just(DEFAULT_NAME).transform(apiHandler::getServerResponse)
-                .subscribe(this::checkResponse);
-    }
-
-    @Test
-    void defaultHelloTest() {
-        ServerRequest serverRequest = mock(ServerRequest.class);
-        apiHandler.defaultHello(serverRequest).subscribe(this::checkResponse);
-    }
-
-    @Test
-    void getHelloTest() {
-        ServerRequest serverRequest = mock(ServerRequest.class);
-        when(serverRequest.pathVariable(NAME_VARIABLE)).thenReturn(DEFAULT_NAME);
-
-        apiHandler.getHello(serverRequest).subscribe(this::checkResponse);
-    }
-
-    @Test
-    void postHelloTest() {
-        ServerRequest serverRequest = mock(ServerRequest.class);
-        when(serverRequest.bodyToMono(HelloRequest.class)).thenReturn(Mono.just(new HelloRequest(DEFAULT_NAME)));
-
-        apiHandler.postHello(serverRequest).subscribe(this::checkResponse);
-    }
 
     @Test
     void combineTest(){

@@ -2,6 +2,7 @@ package org.learning.by.example.reactive.microservices.services;
 
 import org.learning.by.example.reactive.microservices.exceptions.GetGeoLocationException;
 import org.learning.by.example.reactive.microservices.exceptions.GeoLocationNotFoundException;
+import org.learning.by.example.reactive.microservices.exceptions.InvalidParametersException;
 import org.learning.by.example.reactive.microservices.model.GeographicCoordinates;
 import org.learning.by.example.reactive.microservices.model.GeoLocationResponse;
 import org.springframework.http.MediaType;
@@ -16,6 +17,7 @@ public class GeoLocationServiceImpl implements GeoLocationService {
     private static final String ERROR_LOCATION_WAS_NULL = "error location was null";
     private static final String ADDRESS_NOT_FOUND = "address not found";
     private static final String ADDRESS_PARAMETER = "?address=";
+    private static final String MISSING_ADDRESS = "missing address";
     WebClient webClient;
     private final String endPoint;
 
@@ -34,7 +36,12 @@ public class GeoLocationServiceImpl implements GeoLocationService {
     }
 
     Mono<String> buildUrl(final Mono<String> addressMono) {
-        return addressMono.flatMap(address -> Mono.just(endPoint.concat(ADDRESS_PARAMETER).concat(address)));
+        return addressMono.flatMap(address -> {
+            if(address.equals("")){
+                return Mono.error(new InvalidParametersException(MISSING_ADDRESS));
+            }
+            return Mono.just(endPoint.concat(ADDRESS_PARAMETER).concat(address));
+        });
     }
 
     Mono<GeoLocationResponse> get(final Mono<String> urlMono) {

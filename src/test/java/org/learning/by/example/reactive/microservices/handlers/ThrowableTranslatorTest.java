@@ -55,11 +55,6 @@ class ThrowableTranslatorTest {
     }
 
     @Test
-    void translateGetQuoteExceptionTest() throws Exception {
-        assertThat(GetQuoteException.class, translateTo(HttpStatus.INTERNAL_SERVER_ERROR));
-    }
-
-    @Test
     void translateInvalidParametersExceptionTest() throws Exception {
         assertThat(InvalidParametersException.class, translateTo(HttpStatus.BAD_REQUEST));
     }
