@@ -81,14 +81,13 @@ Both will produce something like:
     - [/services](/src/main/java/org/learning/by/example/reactive/microservices/services) : Services for the business logic needed by handlers.
     - [/exceptions](/src/main/java/org/learning/by/example/reactive/microservices/exceptions) : Businesses exceptions.
     - [/model](/src/main/java/org/learning/by/example/reactive/microservices/model) : POJOs.
-- test/java:
-    - /application : Application system tests.
-    - /routers : Integration tests for routes.
-    - /handlers : Unit tests for handlers.
-    - /services : Unit tests for services.
-    - /categories : Tests categories.
-    - /model : POJOs used by the test.
-    - /test : Helpers and base classes for testing.
+- [test/java](/src/test/java)
+    - [/application](/src/test/java/org/learning/by/example/reactive/microservices/application) : Application system and unit tests.
+    - [/routers](/src/test/java/org/learning/by/example/reactive/microservices/routers) : Integration tests for routes.
+    - [/handlers](/src/test/java/org/learning/by/example/reactive/microservices/handlers) : Unit tests for handlers.
+    - [/services](/src/test/java/org/learning/by/example/reactive/microservices/services) : Unit tests for services.
+    - [/model](/src/test/java/org/learning/by/example/reactive/microservices/model) : POJOs used by the test.
+    - [/test](/src/test/java/org/learning/by/example/reactive/microservices/test) : Helpers and base classes for testing.
 
 ## References
 
