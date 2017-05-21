@@ -27,8 +27,8 @@ class SunriseSunsetServiceImplTests {
 
     private static final String STATUS_OK = "OK";
     private static final String BAD_EXCEPTION = "bad exception";
-    private static final String SUNRISE_TIME = "12:55:17 PM";
-    private static final String SUNSET_TIME = "3:14:28 AM";
+    private static final String SUNRISE_TIME = "2017-05-21T12:53:56+00:00";
+    private static final String SUNSET_TIME = "2017-05-22T03:16:05+00:00";
     private static final double GOOGLE_LAT = 37.4224082;
     private static final double GOOGLE_LNG = -122.0856086;
     private static final GeographicCoordinates GOOGLE_LOCATION = new GeographicCoordinates(GOOGLE_LAT, GOOGLE_LNG);
