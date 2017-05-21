@@ -33,7 +33,8 @@ class SunriseSunsetServiceImplTests {
     private static final double GOOGLE_LNG = -122.0856086;
     private static final GeographicCoordinates GOOGLE_LOCATION = new GeographicCoordinates(GOOGLE_LAT, GOOGLE_LNG);
     private static final Mono<GeographicCoordinates> GOOGLE_LOCATION_MONO = Mono.just(GOOGLE_LOCATION);
-    private static final String GOOGLE_LOCATION_IN_PARAMS = "?lat=" + Double.toString(GOOGLE_LAT) + "&lng=" + Double.toString(GOOGLE_LNG);
+    private static final String GOOGLE_LOCATION_IN_PARAMS = "?lat=" + Double.toString(GOOGLE_LAT) +
+            "&lng=" + Double.toString(GOOGLE_LNG)+"&date=today&formatted=0";
 
     private static final String JSON_OK = "/json/GeoTimesResponse_OK.json";
     private static final String JSON_KO = "/json/GeoTimesResponse_KO.json";

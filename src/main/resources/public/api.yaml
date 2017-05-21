@@ -74,5 +74,9 @@ definitions:
         properties:
           sunrise:
             type: "string"
+            format: "date-time"
+            description: "ISO 8601 UTC without summer time adjustment"
           sunset:
             type: "string"
+            format: "date-time"
+            description: "ISO 8601 UTC without summer time adjustment"
