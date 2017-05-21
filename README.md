@@ -5,8 +5,15 @@
 ## info
 This is an example of doing reactive MicroServices using spring 5 functional web framework and spring boot 2.
 
-This service provide and API that will greet the user with a quote.
+This service provide and API that will get the geo location and the sunrise and sunset times from an address.
 
+```Gherkin
+Scenario Get Location
+  Given I've an address
+  When I call the location service
+  Then I should get a geo location
+  And I should get the sunrise and sunset times
+```
 This example cover several topics: 
 
 - Functional programing.
@@ -34,17 +41,30 @@ $ mvnw spring-boot:run
 
 ## Sample requests
 
-- GET [http://localhost:8080/api/greetings](http://localhost:8080/greetings)
+Get from address
+```shell
+$ curl -X GET "http://localhost:8080/api/location/Trafalgar%20Square%2C%20London%2C%20England" -H  "accept: application/json"
+```
 
-- GET [http://localhost:8080/api/greetings/reactive](http://localhost:8080/greetings/reactive)
+Post from JSON
+```shell
+$ curl -X POST "http://localhost:8080/api/location" -H  "accept: application/json" -H  "content-type: application/json" -d "{  \"address\": \"Trafalgar Square, London, England\"}"
+```
 
-- POST [http://localhost:8080/api/greetings](http://localhost:8080/greetings) 
+Both will produce something like:
+```json
+{
+  "geographicCoordinates": {
+    "latitude": 51.508039,
+    "longitude": -0.128069
+  },
+  "sunriseSunset": {
+    "sunrise": "2017-05-21T03:59:08+00:00",
+    "sunset": "2017-05-21T19:55:11+00:00"
+  }
+}
+```
 
-    ```json
-    {
-        "name" : "json"        
-    }
-    ```
 ## API
 [![View in the embedded Swagger UI](https://avatars0.githubusercontent.com/u/7658037?v=3&s=20) View in the embedded Swagger UI](http://localhost:8080/index.html)
 
