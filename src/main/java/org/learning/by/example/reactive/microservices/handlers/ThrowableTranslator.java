@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import reactor.core.publisher.Mono;
 
 class ThrowableTranslator {
+
     private final HttpStatus httpStatus;
     private final String message;
 
@@ -24,12 +25,11 @@ class ThrowableTranslator {
         } else if (error instanceof GeoLocationNotFoundException) {
             return HttpStatus.NOT_FOUND;
         } else if (error instanceof GetGeoLocationException) {
-            if(error.getCause() instanceof  InvalidParametersException)
+            if (error.getCause() instanceof InvalidParametersException)
                 return HttpStatus.BAD_REQUEST;
             else
                 return HttpStatus.INTERNAL_SERVER_ERROR;
-        }
-        else {
+        } else {
             return HttpStatus.INTERNAL_SERVER_ERROR;
         }
     }

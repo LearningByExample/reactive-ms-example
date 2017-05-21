@@ -11,6 +11,7 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.n
 import static org.springframework.web.reactive.function.server.RouterFunctions.route;
 
 class ApiRouter {
+
     private static final String API_PATH = "/api";
     private static final String LOCATION_PATH = "/location";
     private static final String ADDRESS_ARG = "/{address}";
@@ -18,11 +19,11 @@ class ApiRouter {
 
     static RouterFunction<?> doRoute(final ApiHandler apiHandler, final ErrorHandler errorHandler) {
         return
-            nest(path(API_PATH),
-                nest(accept(APPLICATION_JSON),
-                    route(GET(LOCATION_WITH_ADDRESS_PATH), apiHandler::getLocation)
-                    .andRoute(POST(LOCATION_PATH), apiHandler::postLocation)
-                ).andOther(route(RequestPredicates.all(), errorHandler::notFound))
-            );
+                nest(path(API_PATH),
+                    nest(accept(APPLICATION_JSON),
+                        route(GET(LOCATION_WITH_ADDRESS_PATH), apiHandler::getLocation)
+                        .andRoute(POST(LOCATION_PATH), apiHandler::postLocation)
+                    ).andOther(route(RequestPredicates.all(), errorHandler::notFound))
+                );
     }
 }

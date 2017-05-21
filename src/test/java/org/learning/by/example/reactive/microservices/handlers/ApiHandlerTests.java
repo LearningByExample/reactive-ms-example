@@ -68,9 +68,9 @@ class ApiHandlerTests {
     }
 
     @Test
-    void responseTest() {
+    void serverResponseTest() {
         GOOGLE_LOCATION.and(SUNRISE_SUNSET, LocationResponse::new)
-                .transform(apiHandler::response).subscribe(this::verifyServerResponse);
+                .transform(apiHandler::serverResponse).subscribe(this::verifyServerResponse);
     }
 
     private void verifyServerResponse(final ServerResponse serverResponse) {
@@ -83,14 +83,14 @@ class ApiHandlerTests {
     }
 
     @Test
-    void serverResponseTest() {
+    void buildResponseTest() {
         final ServerRequest serverRequest = mock(ServerRequest.class);
         when(serverRequest.pathVariable(ADDRESS_VARIABLE)).thenReturn(GOOGLE_ADDRESS);
 
         doReturn(GOOGLE_LOCATION).when(geoLocationService).fromAddress(any());
         doReturn(SUNRISE_SUNSET).when(sunriseSunsetService).fromGeographicCoordinates(any());
 
-        Mono.just(GOOGLE_ADDRESS).transform(apiHandler::serverResponse).subscribe(this::verifyServerResponse);
+        Mono.just(GOOGLE_ADDRESS).transform(apiHandler::buildResponse).subscribe(this::verifyServerResponse);
 
         reset(geoLocationService);
         reset(sunriseSunsetService);
@@ -183,5 +183,4 @@ class ApiHandlerTests {
         reset(geoLocationService);
         reset(sunriseSunsetService);
     }
-
 }

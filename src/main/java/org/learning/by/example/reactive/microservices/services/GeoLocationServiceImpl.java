@@ -37,7 +37,7 @@ public class GeoLocationServiceImpl implements GeoLocationService {
 
     Mono<String> buildUrl(final Mono<String> addressMono) {
         return addressMono.flatMap(address -> {
-            if(address.equals("")){
+            if (address.equals("")) {
                 return Mono.error(new InvalidParametersException(MISSING_ADDRESS));
             }
             return Mono.just(endPoint.concat(ADDRESS_PARAMETER).concat(address));
@@ -66,7 +66,7 @@ public class GeoLocationServiceImpl implements GeoLocationService {
                             default:
                                 return Mono.error(new GetGeoLocationException(ERROR_GETTING_LOCATION));
                         }
-                    }else {
+                    } else {
                         return Mono.error(new GetGeoLocationException(ERROR_LOCATION_WAS_NULL));
                     }
                 }

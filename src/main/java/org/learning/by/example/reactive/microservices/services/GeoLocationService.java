@@ -4,5 +4,6 @@ import org.learning.by.example.reactive.microservices.model.GeographicCoordinate
 import reactor.core.publisher.Mono;
 
 public interface GeoLocationService {
+
     Mono<GeographicCoordinates> fromAddress(Mono<String> addressMono);
 }

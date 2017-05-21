@@ -14,21 +14,19 @@ import org.springframework.web.reactive.function.server.RouterFunction;
 @EnableWebFlux
 public class ApplicationConfig {
 
-
     @Bean
     ApiHandler apiHandler(final GeoLocationService geoLocationService, final SunriseSunsetService sunriseSunsetService,
                           final ErrorHandler errorHandler) {
-        return new ApiHandler(geoLocationService, sunriseSunsetService ,errorHandler);
+        return new ApiHandler(geoLocationService, sunriseSunsetService, errorHandler);
     }
 
     @Bean
-    GeoLocationService locationService(@Value("${GeoLocationServiceImpl.endPoint}") final String endPoint){
+    GeoLocationService locationService(@Value("${GeoLocationServiceImpl.endPoint}") final String endPoint) {
         return new GeoLocationServiceImpl(endPoint);
     }
 
     @Bean
-    SunriseSunsetService sunriseSunsetService(@Value("${SunriseSunsetServiceImpl.endPoint}")
-                                              final String endPoint) {
+    SunriseSunsetService sunriseSunsetService(@Value("${SunriseSunsetServiceImpl.endPoint}") final String endPoint) {
         return new SunriseSunsetServiceImpl(endPoint);
     }
 

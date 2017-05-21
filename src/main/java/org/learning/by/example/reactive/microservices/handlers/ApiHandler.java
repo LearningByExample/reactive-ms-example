@@ -13,6 +13,7 @@ import reactor.core.publisher.Mono;
 public class ApiHandler {
 
     private static final String ADDRESS = "address";
+    private static final String EMPTY_STRING = "";
 
     private final ErrorHandler errorHandler;
 
@@ -29,28 +30,29 @@ public class ApiHandler {
     public Mono<ServerResponse> postLocation(final ServerRequest request) {
         return request.bodyToMono(LocationRequest.class)
                 .flatMap(locationRequest -> Mono.just(locationRequest.getAddress()))
-                .onErrorResume(throwable -> Mono.just(""))
-                .transform(this::serverResponse)
+                .onErrorResume(throwable -> Mono.just(EMPTY_STRING))
+                .transform(this::buildResponse)
                 .onErrorResume(errorHandler::throwableError);
     }
 
-    public Mono<ServerResponse> getLocation(final ServerRequest request){
+    public Mono<ServerResponse> getLocation(final ServerRequest request) {
         return Mono.just(request.pathVariable(ADDRESS))
-                .transform(this::serverResponse)
+                .transform(this::buildResponse)
                 .onErrorResume(errorHandler::throwableError);
     }
 
-    Mono<ServerResponse> serverResponse(final Mono<String> address){
+    Mono<ServerResponse> buildResponse(final Mono<String> address) {
         return address
                 .transform(geoLocationService::fromAddress)
                 .and(this::sunriseSunset, LocationResponse::new)
-                .transform(this::response);
+                .transform(this::serverResponse);
     }
 
-    private Mono<SunriseSunset> sunriseSunset(GeographicCoordinates geographicCoordinates){
+    private Mono<SunriseSunset> sunriseSunset(GeographicCoordinates geographicCoordinates) {
         return Mono.just(geographicCoordinates).transform(sunriseSunsetService::fromGeographicCoordinates);
     }
-    Mono<ServerResponse> response(Mono<LocationResponse> locationResponseMono) {
+
+    Mono<ServerResponse> serverResponse(Mono<LocationResponse> locationResponseMono) {
         return locationResponseMono.flatMap(locationResponse ->
                 ServerResponse.ok().body(Mono.just(locationResponse), LocationResponse.class));
     }
