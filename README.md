@@ -8,12 +8,14 @@ This is an example of doing reactive MicroServices using spring 5 functional web
 This service provide and API that will get the geo location and the sunrise and sunset times from an address.
 
 ```Gherkin
-Scenario Get Location
+Scenario: Get Location
   Given I've an address
   When I call the location service
   Then I should get a geo location
   And I should get the sunrise and sunset times
 ```
+To implemented this example we consume a couple of REST APIs.
+
 This example cover several topics: 
 
 - Functional programing.
@@ -72,13 +74,13 @@ Both will produce something like:
 
 ## Project Structure
 
-- main/java
-    - /application : Main Spring boot application and context configuration.  
-    - /routers : Reactive routing functions.
-    - /handlers : Handlers used by the routers.
-    - /services : Services for the business logic needed by handlers.
-    - /exceptions : Businesses exceptions.
-    - /model : POJOs.
+- [main/java](/src/main/java)
+    - [/application](/src/main/java/org/learning/by/example/reactive/microservices/application) : Main Spring boot application and context configuration.  
+    - [/routers](/src/main/java/org/learning/by/example/reactive/microservices/routers) : Reactive routing functions.
+    - [/handlers](/src/main/java/org/learning/by/example/reactive/microservices/handlers) : Handlers used by the routers.
+    - [/services](/src/main/java/org/learning/by/example/reactive/microservices/services) : Services for the business logic needed by handlers.
+    - [/exceptions](/src/main/java/org/learning/by/example/reactive/microservices/exceptions) : Businesses exceptions.
+    - [/model](/src/main/java/org/learning/by/example/reactive/microservices/model) : POJOs.
 - test/java:
     - /application : Application system tests.
     - /routers : Integration tests for routes.
