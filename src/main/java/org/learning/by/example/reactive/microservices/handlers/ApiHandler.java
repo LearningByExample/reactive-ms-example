@@ -1,65 +1,59 @@
 package org.learning.by.example.reactive.microservices.handlers;
 
-import org.learning.by.example.reactive.microservices.model.HelloRequest;
-import org.learning.by.example.reactive.microservices.model.HelloResponse;
-import org.learning.by.example.reactive.microservices.model.Quote;
-import org.learning.by.example.reactive.microservices.services.HelloService;
-import org.learning.by.example.reactive.microservices.services.QuoteService;
+import org.learning.by.example.reactive.microservices.model.GeographicCoordinates;
+import org.learning.by.example.reactive.microservices.model.LocationRequest;
+import org.learning.by.example.reactive.microservices.model.LocationResponse;
+import org.learning.by.example.reactive.microservices.model.SunriseSunset;
+import org.learning.by.example.reactive.microservices.services.GeoLocationService;
+import org.learning.by.example.reactive.microservices.services.SunriseSunsetService;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 public class ApiHandler {
 
-    private static final String NAME = "name";
+    private static final String ADDRESS = "address";
+    private static final String EMPTY_STRING = "";
 
     private final ErrorHandler errorHandler;
-    private final HelloService helloService;
-    private final QuoteService quoteService;
 
-    private static final Mono<String> DEFAULT_NAME = Mono.just("world");
+    private final GeoLocationService geoLocationService;
+    private final SunriseSunsetService sunriseSunsetService;
 
-    public ApiHandler(final HelloService helloService, final QuoteService quoteService, final ErrorHandler errorHandler) {
+    public ApiHandler(final GeoLocationService geoLocationService, final SunriseSunsetService sunriseSunsetService,
+                      final ErrorHandler errorHandler) {
         this.errorHandler = errorHandler;
-        this.helloService = helloService;
-        this.quoteService = quoteService;
+        this.geoLocationService = geoLocationService;
+        this.sunriseSunsetService = sunriseSunsetService;
     }
 
-    public Mono<ServerResponse> defaultHello(final ServerRequest request) {
-        return DEFAULT_NAME
-                .transform(this::getServerResponse)
+    public Mono<ServerResponse> postLocation(final ServerRequest request) {
+        return request.bodyToMono(LocationRequest.class)
+                .flatMap(locationRequest -> Mono.just(locationRequest.getAddress()))
+                .onErrorResume(throwable -> Mono.just(EMPTY_STRING))
+                .transform(this::buildResponse)
                 .onErrorResume(errorHandler::throwableError);
     }
 
-    public Mono<ServerResponse> getHello(final ServerRequest request) {
-        return Mono.just(request.pathVariable(NAME))
-                .transform(this::getServerResponse)
+    public Mono<ServerResponse> getLocation(final ServerRequest request) {
+        return Mono.just(request.pathVariable(ADDRESS))
+                .transform(this::buildResponse)
                 .onErrorResume(errorHandler::throwableError);
     }
 
-    public Mono<ServerResponse> postHello(final ServerRequest request) {
-        return request.bodyToMono(HelloRequest.class)
-                .flatMap(helloRequest -> Mono.just(helloRequest.getName()))
-                .transform(this::getServerResponse)
-                .onErrorResume(errorHandler::throwableError);
+    Mono<ServerResponse> buildResponse(final Mono<String> address) {
+        return address
+                .transform(geoLocationService::fromAddress)
+                .and(this::sunriseSunset, LocationResponse::new)
+                .transform(this::serverResponse);
     }
 
-    Mono<ServerResponse> getServerResponse(final Mono<String> monoName) {
-        return monoName.transform(this::createHelloResponse)
-                .transform(this::convertToServerResponse);
+    private Mono<SunriseSunset> sunriseSunset(GeographicCoordinates geographicCoordinates) {
+        return Mono.just(geographicCoordinates).transform(sunriseSunsetService::fromGeographicCoordinates);
     }
 
-    Mono<HelloResponse> createHelloResponse(final Mono<String> monoName) {
-        return monoName.transform(helloService::greetings)
-                .and(Mono.defer(quoteService::get), this::combineGreetingAndQuote);
-    }
-
-    HelloResponse combineGreetingAndQuote(final String greeting, final Quote quote) {
-        return new HelloResponse(greeting, quote.getContent());
-    }
-
-    Mono<ServerResponse> convertToServerResponse(final Mono<HelloResponse> helloResponseMono) {
-        return helloResponseMono.flatMap(helloResponse ->
-                ServerResponse.ok().body(Mono.just(helloResponse), HelloResponse.class));
+    Mono<ServerResponse> serverResponse(Mono<LocationResponse> locationResponseMono) {
+        return locationResponseMono.flatMap(locationResponse ->
+                ServerResponse.ok().body(Mono.just(locationResponse), LocationResponse.class));
     }
 }

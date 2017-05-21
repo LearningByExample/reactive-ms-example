@@ -3,11 +3,12 @@ package org.learning.by.example.reactive.microservices.routers;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.learning.by.example.reactive.microservices.test.BasicTest;
-import org.learning.by.example.reactive.microservices.test.categories.IntegrationTest;
+import org.learning.by.example.reactive.microservices.test.BasicIntegrationTest;
+import org.learning.by.example.reactive.microservices.test.tags.IntegrationTest;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
@@ -16,7 +17,7 @@ import static org.hamcrest.core.IsNot.not;
 
 @IntegrationTest
 @DisplayName(" StaticRouter Integration Tests")
-class StaticRouterTests extends BasicTest {
+class StaticRouterTests extends BasicIntegrationTest {
 
     private static final String STATIC_PATH = "/index.html";
     private static final String DEFAULT_TITLE = "Swagger UI";
@@ -25,6 +26,10 @@ class StaticRouterTests extends BasicTest {
     @BeforeEach
     void setup() {
         super.bindToRouterFunction(StaticRouter.doRoute());
+    }
+
+    @BeforeAll
+    static void setupAll() {
         final StaticRouter staticRouter = new StaticRouter();
     }
 

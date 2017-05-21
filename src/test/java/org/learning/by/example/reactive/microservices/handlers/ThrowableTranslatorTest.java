@@ -5,10 +5,8 @@ import org.hamcrest.DiagnosingMatcher;
 import org.hamcrest.Factory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.learning.by.example.reactive.microservices.exceptions.GetQuoteException;
-import org.learning.by.example.reactive.microservices.exceptions.InvalidParametersException;
-import org.learning.by.example.reactive.microservices.exceptions.PathNotFoundException;
-import org.learning.by.example.reactive.microservices.test.categories.UnitTest;
+import org.learning.by.example.reactive.microservices.exceptions.*;
+import org.learning.by.example.reactive.microservices.test.tags.UnitTest;
 import org.springframework.http.HttpStatus;
 import reactor.core.publisher.Mono;
 
@@ -57,11 +55,6 @@ class ThrowableTranslatorTest {
     }
 
     @Test
-    void translateGetQuoteExceptionTest() throws Exception {
-        assertThat(GetQuoteException.class, translateTo(HttpStatus.INTERNAL_SERVER_ERROR));
-    }
-
-    @Test
     void translateInvalidParametersExceptionTest() throws Exception {
         assertThat(InvalidParametersException.class, translateTo(HttpStatus.BAD_REQUEST));
     }
@@ -69,6 +62,21 @@ class ThrowableTranslatorTest {
     @Test
     void translatePathNotFoundExceptionTest() throws Exception {
         assertThat(PathNotFoundException.class, translateTo(HttpStatus.NOT_FOUND));
+    }
+
+    @Test
+    void translateLocationNotFoundExceptionTest() throws Exception {
+        assertThat(GeoLocationNotFoundException.class, translateTo(HttpStatus.NOT_FOUND));
+    }
+
+    @Test
+    void translateGetGetLocationExceptionTest() throws Exception {
+        assertThat(GetGeoLocationException.class, translateTo(HttpStatus.INTERNAL_SERVER_ERROR));
+    }
+
+    @Test
+    void translateGetSunriseSunsetExceptionExceptionTest() throws Exception {
+        assertThat(GetSunriseSunsetException.class, translateTo(HttpStatus.INTERNAL_SERVER_ERROR));
     }
 
     @Test

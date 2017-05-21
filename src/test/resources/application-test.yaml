@@ -1,1 +1,1 @@
-logging.level.root: DEBUG
+logging.level.org.learning.by.example.reactive.microservices: DEBUG
