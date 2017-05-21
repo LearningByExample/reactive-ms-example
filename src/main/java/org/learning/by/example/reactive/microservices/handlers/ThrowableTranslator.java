@@ -1,5 +1,6 @@
 package org.learning.by.example.reactive.microservices.handlers;
 
+import org.learning.by.example.reactive.microservices.exceptions.GetGeoLocationException;
 import org.learning.by.example.reactive.microservices.exceptions.InvalidParametersException;
 import org.learning.by.example.reactive.microservices.exceptions.GeoLocationNotFoundException;
 import org.learning.by.example.reactive.microservices.exceptions.PathNotFoundException;
@@ -7,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import reactor.core.publisher.Mono;
 
 class ThrowableTranslator {
+
     private final HttpStatus httpStatus;
     private final String message;
 
@@ -22,6 +24,11 @@ class ThrowableTranslator {
             return HttpStatus.NOT_FOUND;
         } else if (error instanceof GeoLocationNotFoundException) {
             return HttpStatus.NOT_FOUND;
+        } else if (error instanceof GetGeoLocationException) {
+            if (error.getCause() instanceof InvalidParametersException)
+                return HttpStatus.BAD_REQUEST;
+            else
+                return HttpStatus.INTERNAL_SERVER_ERROR;
         } else {
             return HttpStatus.INTERNAL_SERVER_ERROR;
         }

@@ -1,20 +1,18 @@
 package org.learning.by.example.reactive.microservices.model;
 
-public class WrongRequest {
-    private String surname;
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-    public WrongRequest() {
-        this.surname = "";
-    }
-    public WrongRequest(final String surname) {
+public class WrongRequest {
+
+    private final String surname;
+
+    @JsonCreator
+    public WrongRequest(@JsonProperty("surname") final String surname) {
         this.surname = surname;
     }
 
     public String getSurname() {
         return surname;
-    }
-
-    public void setSurname(final String surname) {
-        this.surname = surname;
     }
 }

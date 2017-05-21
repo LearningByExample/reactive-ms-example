@@ -4,11 +4,12 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public final class GeoTimesResponse {
+
     private final Results results;
     private final String status;
 
     @JsonCreator
-    public GeoTimesResponse(@JsonProperty("results") Results results, @JsonProperty("status") String status){
+    public GeoTimesResponse(@JsonProperty("results") Results results, @JsonProperty("status") String status) {
         this.results = results;
         this.status = status;
     }
@@ -42,7 +43,7 @@ public final class GeoTimesResponse {
         final String astronomical_twilight_end;
 
         @JsonCreator
-        public Results(@JsonProperty("sunrise") String sunrise, @JsonProperty("sunset") String sunset, @JsonProperty("solar_noon") String solar_noon, @JsonProperty("day_length") String day_length, @JsonProperty("civil_twilight_begin") String civil_twilight_begin, @JsonProperty("civil_twilight_end") String civil_twilight_end, @JsonProperty("nautical_twilight_begin") String nautical_twilight_begin, @JsonProperty("nautical_twilight_end") String nautical_twilight_end, @JsonProperty("astronomical_twilight_begin") String astronomical_twilight_begin, @JsonProperty("astronomical_twilight_end") String astronomical_twilight_end){
+        public Results(@JsonProperty("sunrise") String sunrise, @JsonProperty("sunset") String sunset, @JsonProperty("solar_noon") String solar_noon, @JsonProperty("day_length") String day_length, @JsonProperty("civil_twilight_begin") String civil_twilight_begin, @JsonProperty("civil_twilight_end") String civil_twilight_end, @JsonProperty("nautical_twilight_begin") String nautical_twilight_begin, @JsonProperty("nautical_twilight_end") String nautical_twilight_end, @JsonProperty("astronomical_twilight_begin") String astronomical_twilight_begin, @JsonProperty("astronomical_twilight_end") String astronomical_twilight_end) {
             this.sunrise = sunrise;
             this.sunset = sunset;
             this.solar_noon = solar_noon;

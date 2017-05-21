@@ -1,22 +1,19 @@
 package org.learning.by.example.reactive.microservices.model;
 
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class ErrorResponse {
-    private String error;
 
-    public ErrorResponse() {
-        this.error = "";
-    }
+    private final String error;
 
-    public ErrorResponse(final String hello) {
-        this.error = hello;
+    @JsonCreator
+    public ErrorResponse(@JsonProperty("error") final String error) {
+        this.error = error;
     }
 
     public String getError() {
         return error;
-    }
-
-    public void setError(final String error) {
-        this.error = error;
     }
 }

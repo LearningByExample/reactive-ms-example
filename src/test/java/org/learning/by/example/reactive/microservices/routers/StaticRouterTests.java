@@ -3,6 +3,7 @@ package org.learning.by.example.reactive.microservices.routers;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -25,6 +26,10 @@ class StaticRouterTests extends BasicIntegrationTest {
     @BeforeEach
     void setup() {
         super.bindToRouterFunction(StaticRouter.doRoute());
+    }
+
+    @BeforeAll
+    static void setupAll() {
         final StaticRouter staticRouter = new StaticRouter();
     }
 

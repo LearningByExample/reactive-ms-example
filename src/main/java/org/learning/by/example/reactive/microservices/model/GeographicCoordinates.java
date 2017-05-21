@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 
 public final class GeographicCoordinates {
+
     public double getLatitude() {
         return latitude;
     }
@@ -17,7 +18,7 @@ public final class GeographicCoordinates {
     private final double longitude;
 
     @JsonCreator
-    public GeographicCoordinates(@JsonProperty("latitude") double latitude, @JsonProperty("longitude") double longitude){
+    public GeographicCoordinates(@JsonProperty("latitude") double latitude, @JsonProperty("longitude") double longitude) {
         this.latitude = latitude;
         this.longitude = longitude;
     }

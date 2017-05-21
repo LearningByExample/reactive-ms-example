@@ -33,7 +33,7 @@ class SunriseSunsetServiceImplTests {
     private static final double GOOGLE_LNG = -122.0856086;
     private static final GeographicCoordinates GOOGLE_LOCATION = new GeographicCoordinates(GOOGLE_LAT, GOOGLE_LNG);
     private static final Mono<GeographicCoordinates> GOOGLE_LOCATION_MONO = Mono.just(GOOGLE_LOCATION);
-    private static final String GOOGLE_LOCATION_IN_PARAMS = "?lat="+Double.toString(GOOGLE_LAT)+"&lng="+Double.toString(GOOGLE_LNG);
+    private static final String GOOGLE_LOCATION_IN_PARAMS = "?lat=" + Double.toString(GOOGLE_LAT) + "&lng=" + Double.toString(GOOGLE_LNG);
 
     private static final String JSON_OK = "/json/GeoTimesResponse_OK.json";
     private static final String JSON_KO = "/json/GeoTimesResponse_KO.json";
@@ -46,8 +46,7 @@ class SunriseSunsetServiceImplTests {
 
 
     @Value("${SunriseSunsetServiceImpl.endPoint}")
-    private
-    String endPoint;
+    private String endPoint;
 
     @SpyBean(SunriseSunsetService.class)
     private SunriseSunsetServiceImpl sunriseSunsetService;
@@ -61,7 +60,7 @@ class SunriseSunsetServiceImplTests {
     void getMockingWebClientTest() {
         sunriseSunsetService.webClient = mockWebClient(sunriseSunsetService.webClient, SUNRISE_SUNSET_OK);
 
-        GeoTimesResponse result = Mono.just(endPoint.concat(GOOGLE_LOCATION_IN_PARAMS))
+        final GeoTimesResponse result = Mono.just(endPoint.concat(GOOGLE_LOCATION_IN_PARAMS))
                 .transform(sunriseSunsetService::get).block();
 
         assertThat(result, is(notNullValue()));
@@ -77,7 +76,7 @@ class SunriseSunsetServiceImplTests {
 
         doReturn(SUNRISE_SUNSET_OK).when(sunriseSunsetService).get(any());
 
-        SunriseSunset result = GOOGLE_LOCATION_MONO.transform(sunriseSunsetService::fromGeographicCoordinates).block();
+        final SunriseSunset result = GOOGLE_LOCATION_MONO.transform(sunriseSunsetService::fromGeographicCoordinates).block();
 
         assertThat(result, is(notNullValue()));
         assertThat(result.getSunrise(), is(SUNRISE_TIME));
@@ -96,7 +95,7 @@ class SunriseSunsetServiceImplTests {
 
         doReturn(SUNRISE_SUNSET_KO).when(sunriseSunsetService).get(any());
 
-        SunriseSunset result = GOOGLE_LOCATION_MONO.transform(sunriseSunsetService::fromGeographicCoordinates)
+        final SunriseSunset result = GOOGLE_LOCATION_MONO.transform(sunriseSunsetService::fromGeographicCoordinates)
                 .onErrorResume(throwable -> {
                     assertThat(throwable, instanceOf(GetSunriseSunsetException.class));
                     return Mono.empty();
@@ -117,7 +116,7 @@ class SunriseSunsetServiceImplTests {
 
         doReturn(LOCATION_EXCEPTION).when(sunriseSunsetService).get(any());
 
-        SunriseSunset result = GOOGLE_LOCATION_MONO.transform(sunriseSunsetService::fromGeographicCoordinates)
+        final SunriseSunset result = GOOGLE_LOCATION_MONO.transform(sunriseSunsetService::fromGeographicCoordinates)
                 .onErrorResume(throwable -> {
                     assertThat(throwable, instanceOf(GetSunriseSunsetException.class));
                     return Mono.empty();
@@ -138,7 +137,7 @@ class SunriseSunsetServiceImplTests {
 
         doReturn(BIG_EXCEPTION).when(sunriseSunsetService).get(any());
 
-        SunriseSunset result = GOOGLE_LOCATION_MONO.transform(sunriseSunsetService::fromGeographicCoordinates)
+        final SunriseSunset result = GOOGLE_LOCATION_MONO.transform(sunriseSunsetService::fromGeographicCoordinates)
                 .onErrorResume(throwable -> {
                     assertThat(throwable, instanceOf(GetSunriseSunsetException.class));
                     return Mono.empty();
@@ -160,7 +159,7 @@ class SunriseSunsetServiceImplTests {
 
         doReturn(SUNRISE_SUNSET_EMPTY).when(sunriseSunsetService).get(any());
 
-        SunriseSunset result = GOOGLE_LOCATION_MONO.transform(sunriseSunsetService::fromGeographicCoordinates)
+        final SunriseSunset result = GOOGLE_LOCATION_MONO.transform(sunriseSunsetService::fromGeographicCoordinates)
                 .onErrorResume(throwable -> {
                     assertThat(throwable, instanceOf(GetSunriseSunsetException.class));
                     return Mono.empty();
@@ -178,7 +177,7 @@ class SunriseSunsetServiceImplTests {
 
     @Test
     void buildUrlTest() {
-        String url = GOOGLE_LOCATION_MONO.transform(sunriseSunsetService::buildUrl).block();
+        final String url = GOOGLE_LOCATION_MONO.transform(sunriseSunsetService::buildUrl).block();
 
         assertThat(url, is(notNullValue()));
         assertThat(url, is(endPoint.concat(GOOGLE_LOCATION_IN_PARAMS)));

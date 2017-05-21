@@ -1,15 +1,12 @@
 package org.learning.by.example.reactive.microservices.handlers;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.learning.by.example.reactive.microservices.exceptions.GeoLocationNotFoundException;
 import org.learning.by.example.reactive.microservices.exceptions.GetGeoLocationException;
 import org.learning.by.example.reactive.microservices.exceptions.GetSunriseSunsetException;
-import org.learning.by.example.reactive.microservices.exceptions.GeoLocationNotFoundException;
 import org.learning.by.example.reactive.microservices.model.*;
 import org.learning.by.example.reactive.microservices.services.GeoLocationService;
-import org.learning.by.example.reactive.microservices.services.QuoteService;
 import org.learning.by.example.reactive.microservices.services.SunriseSunsetService;
 import org.learning.by.example.reactive.microservices.test.HandlersHelper;
 import org.learning.by.example.reactive.microservices.test.tags.UnitTest;
@@ -28,9 +25,7 @@ import static org.mockito.Mockito.*;
 @UnitTest
 @DisplayName("ApiHandler Unit Tests")
 class ApiHandlerTests {
-    private static final String MOCK_QUOTE_CONTENT = "content";
-    private static final String DEFAULT_NAME = "world";
-    private static final String NAME_VARIABLE = "name";
+
     private static final String ADDRESS_VARIABLE = "address";
     private static final String GOOGLE_ADDRESS = "1600 Amphitheatre Parkway, Mountain View, CA";
     private static final String SUNRISE_TIME = "12:55:17 PM";
@@ -52,103 +47,18 @@ class ApiHandlerTests {
     private ApiHandler apiHandler;
 
     @SpyBean
-    private QuoteService quoteService;
-
-    @SpyBean
     private GeoLocationService geoLocationService;
 
     @SpyBean
     private SunriseSunsetService sunriseSunsetService;
 
-    @BeforeEach
-    void setup() {
-        doReturn(createMockedQuoteMono(MOCK_QUOTE_CONTENT)).when(quoteService).get();
-    }
-
-    private Mono<Quote> createMockedQuoteMono(final String content) {
-        return Mono.just(createQuote(content));
-    }
-
-    private Quote createQuote(final String content) {
-        Quote quote = new Quote();
-        quote.setContent(content);
-        return quote;
-    }
-
-    @AfterEach
-    void tearDown() {
-        reset(quoteService);
-    }
-
     @Test
-    void combineGreetingAndQuoteTest() {
-
-        HelloResponse helloResponse = apiHandler.combineGreetingAndQuote(DEFAULT_NAME, createQuote(MOCK_QUOTE_CONTENT));
-
-        assertThat(helloResponse.getGreetings(), is(DEFAULT_NAME));
-        assertThat(helloResponse.getQuote(), is(MOCK_QUOTE_CONTENT));
-    }
-
-    @Test
-    void createHelloResponseTest() {
-        Mono.just(DEFAULT_NAME).transform(apiHandler::createHelloResponse)
-                .subscribe(helloResponse -> {
-                    assertThat(helloResponse.getQuote(), is(MOCK_QUOTE_CONTENT));
-                    assertThat(helloResponse.getGreetings(), is(DEFAULT_NAME));
-                });
-
-    }
-
-    @Test
-    void convertToServerResponseTest() {
-        Mono.just(DEFAULT_NAME).transform(apiHandler::createHelloResponse)
-                .transform(apiHandler::convertToServerResponse)
-                .subscribe(this::checkResponse);
-    }
-
-    private void checkResponse(final ServerResponse serverResponse) {
-        assertThat(serverResponse.statusCode(), is(HttpStatus.OK));
-
-        HelloResponse helloResponse = HandlersHelper.extractEntity(serverResponse, HelloResponse.class);
-        assertThat(helloResponse.getQuote(), is(MOCK_QUOTE_CONTENT));
-        assertThat(helloResponse.getGreetings(), is(DEFAULT_NAME));
-    }
-
-    @Test
-    void getServerResponseTest() {
-        Mono.just(DEFAULT_NAME).transform(apiHandler::getServerResponse)
-                .subscribe(this::checkResponse);
-    }
-
-    @Test
-    void defaultHelloTest() {
-        ServerRequest serverRequest = mock(ServerRequest.class);
-        apiHandler.defaultHello(serverRequest).subscribe(this::checkResponse);
-    }
-
-    @Test
-    void getHelloTest() {
-        ServerRequest serverRequest = mock(ServerRequest.class);
-        when(serverRequest.pathVariable(NAME_VARIABLE)).thenReturn(DEFAULT_NAME);
-
-        apiHandler.getHello(serverRequest).subscribe(this::checkResponse);
-    }
-
-    @Test
-    void postHelloTest() {
-        ServerRequest serverRequest = mock(ServerRequest.class);
-        when(serverRequest.bodyToMono(HelloRequest.class)).thenReturn(Mono.just(new HelloRequest(DEFAULT_NAME)));
-
-        apiHandler.postHello(serverRequest).subscribe(this::checkResponse);
-    }
-
-    @Test
-    void combineTest(){
+    void combineTest() {
         GOOGLE_LOCATION.and(SUNRISE_SUNSET, LocationResponse::new)
                 .subscribe(this::verifyLocationResponse);
     }
 
-    void verifyLocationResponse(LocationResponse locationResponse){
+    private void verifyLocationResponse(final LocationResponse locationResponse) {
 
         assertThat(locationResponse.getGeographicCoordinates().getLatitude(), is(GOOGLE_LAT));
         assertThat(locationResponse.getGeographicCoordinates().getLongitude(), is(GOOGLE_LNG));
@@ -158,22 +68,36 @@ class ApiHandlerTests {
     }
 
     @Test
-    void responseTest(){
+    void serverResponseTest() {
         GOOGLE_LOCATION.and(SUNRISE_SUNSET, LocationResponse::new)
-                .transform(apiHandler::response).subscribe(this::verifyServerResponse);
+                .transform(apiHandler::serverResponse).subscribe(this::verifyServerResponse);
     }
 
-    void verifyServerResponse(ServerResponse serverResponse){
+    private void verifyServerResponse(final ServerResponse serverResponse) {
 
         assertThat(serverResponse.statusCode(), is(HttpStatus.OK));
 
-        LocationResponse locationResponse = HandlersHelper.extractEntity(serverResponse, LocationResponse.class);
+        final LocationResponse locationResponse = HandlersHelper.extractEntity(serverResponse, LocationResponse.class);
 
         verifyLocationResponse(locationResponse);
     }
 
     @Test
-    void fromGeographicCoordinatesTest() {
+    void buildResponseTest() {
+        final ServerRequest serverRequest = mock(ServerRequest.class);
+        when(serverRequest.pathVariable(ADDRESS_VARIABLE)).thenReturn(GOOGLE_ADDRESS);
+
+        doReturn(GOOGLE_LOCATION).when(geoLocationService).fromAddress(any());
+        doReturn(SUNRISE_SUNSET).when(sunriseSunsetService).fromGeographicCoordinates(any());
+
+        Mono.just(GOOGLE_ADDRESS).transform(apiHandler::buildResponse).subscribe(this::verifyServerResponse);
+
+        reset(geoLocationService);
+        reset(sunriseSunsetService);
+    }
+
+    @Test
+    void getLocationTest() {
         ServerRequest serverRequest = mock(ServerRequest.class);
         when(serverRequest.pathVariable(ADDRESS_VARIABLE)).thenReturn(GOOGLE_ADDRESS);
 
@@ -187,7 +111,21 @@ class ApiHandlerTests {
     }
 
     @Test
-    void fromGeographicCoordinatesNotFoundTest() {
+    void postLocationTest() {
+        ServerRequest serverRequest = mock(ServerRequest.class);
+        when(serverRequest.bodyToMono(LocationRequest.class)).thenReturn(Mono.just(new LocationRequest(GOOGLE_ADDRESS)));
+
+        doReturn(GOOGLE_LOCATION).when(geoLocationService).fromAddress(any());
+        doReturn(SUNRISE_SUNSET).when(sunriseSunsetService).fromGeographicCoordinates(any());
+
+        apiHandler.postLocation(serverRequest).subscribe(this::verifyServerResponse);
+
+        reset(geoLocationService);
+        reset(sunriseSunsetService);
+    }
+
+    @Test
+    void getLocationNotFoundTest() {
         ServerRequest serverRequest = mock(ServerRequest.class);
         when(serverRequest.pathVariable(ADDRESS_VARIABLE)).thenReturn(GOOGLE_ADDRESS);
 
@@ -207,7 +145,7 @@ class ApiHandlerTests {
     }
 
     @Test
-    void fromGeographicCoordinatesErrorSunriseSunsetTest() {
+    void getLocationErrorSunriseSunsetTest() {
         ServerRequest serverRequest = mock(ServerRequest.class);
         when(serverRequest.pathVariable(ADDRESS_VARIABLE)).thenReturn(GOOGLE_ADDRESS);
 
@@ -227,7 +165,7 @@ class ApiHandlerTests {
     }
 
     @Test
-    void fromGeographicCoordinatesBothServiceErrorTest() {
+    void getLocationBothServiceErrorTest() {
         ServerRequest serverRequest = mock(ServerRequest.class);
         when(serverRequest.pathVariable(ADDRESS_VARIABLE)).thenReturn(GOOGLE_ADDRESS);
 
@@ -245,5 +183,4 @@ class ApiHandlerTests {
         reset(geoLocationService);
         reset(sunriseSunsetService);
     }
-
 }

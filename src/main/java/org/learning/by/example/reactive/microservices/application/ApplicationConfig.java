@@ -15,30 +15,18 @@ import org.springframework.web.reactive.function.server.RouterFunction;
 public class ApplicationConfig {
 
     @Bean
-    QuoteService quoteService(@Value("${QuoteServiceImpl.endPoint}") final String endPoint){
-        return new QuoteServiceImpl(endPoint);
-    }
-
-    @Bean
-    HelloService helloService() {
-        return new HelloServiceImpl();
-    }
-
-    @Bean
-    ApiHandler apiHandler(final HelloService helloService, final QuoteService quoteService,
-                          final GeoLocationService geoLocationService, final SunriseSunsetService sunriseSunsetService,
+    ApiHandler apiHandler(final GeoLocationService geoLocationService, final SunriseSunsetService sunriseSunsetService,
                           final ErrorHandler errorHandler) {
-        return new ApiHandler(helloService, quoteService, geoLocationService, sunriseSunsetService ,errorHandler);
+        return new ApiHandler(geoLocationService, sunriseSunsetService, errorHandler);
     }
 
     @Bean
-    GeoLocationService locationService(@Value("${GeoLocationServiceImpl.endPoint}") final String endPoint){
+    GeoLocationService locationService(@Value("${GeoLocationServiceImpl.endPoint}") final String endPoint) {
         return new GeoLocationServiceImpl(endPoint);
     }
 
     @Bean
-    SunriseSunsetService sunriseSunsetService(@Value("${SunriseSunsetServiceImpl.endPoint}")
-                                              final String endPoint) {
+    SunriseSunsetService sunriseSunsetService(@Value("${SunriseSunsetServiceImpl.endPoint}") final String endPoint) {
         return new SunriseSunsetServiceImpl(endPoint);
     }
 

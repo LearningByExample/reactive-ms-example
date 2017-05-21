@@ -4,11 +4,12 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public final class GeoLocationResponse {
+
     private final Result results[];
     private final String status;
 
     @JsonCreator
-    public GeoLocationResponse(@JsonProperty("results") Result[] results, @JsonProperty("status") String status){
+    public GeoLocationResponse(@JsonProperty("results") Result[] results, @JsonProperty("status") String status) {
         this.results = results;
         this.status = status;
     }
@@ -34,7 +35,7 @@ public final class GeoLocationResponse {
         final String[] types;
 
         @JsonCreator
-        public Result(@JsonProperty("address_components") Address_component[] address_components, @JsonProperty("formatted_address") String formatted_address, @JsonProperty("geometry") Geometry geometry, @JsonProperty("place_id") String place_id, @JsonProperty("types") String[] types){
+        public Result(@JsonProperty("address_components") Address_component[] address_components, @JsonProperty("formatted_address") String formatted_address, @JsonProperty("geometry") Geometry geometry, @JsonProperty("place_id") String place_id, @JsonProperty("types") String[] types) {
             this.address_components = address_components;
             this.formatted_address = formatted_address;
             this.geometry = geometry;
@@ -48,7 +49,7 @@ public final class GeoLocationResponse {
             final String[] types;
 
             @JsonCreator
-            public Address_component(@JsonProperty("long_name") String long_name, @JsonProperty("short_name") String short_name, @JsonProperty("types") String[] types){
+            public Address_component(@JsonProperty("long_name") String long_name, @JsonProperty("short_name") String short_name, @JsonProperty("types") String[] types) {
                 this.long_name = long_name;
                 this.short_name = short_name;
                 this.types = types;
@@ -67,7 +68,7 @@ public final class GeoLocationResponse {
             final Viewport viewport;
 
             @JsonCreator
-            public Geometry(@JsonProperty("bounds") Bounds bounds, @JsonProperty("location") Location location, @JsonProperty("location_type") String location_type, @JsonProperty("viewport") Viewport viewport){
+            public Geometry(@JsonProperty("bounds") Bounds bounds, @JsonProperty("location") Location location, @JsonProperty("location_type") String location_type, @JsonProperty("viewport") Viewport viewport) {
                 this.bounds = bounds;
                 this.location = location;
                 this.location_type = location_type;
@@ -79,7 +80,7 @@ public final class GeoLocationResponse {
                 final Southwest southwest;
 
                 @JsonCreator
-                public Bounds(@JsonProperty("northeast") Northeast northeast, @JsonProperty("southwest") Southwest southwest){
+                public Bounds(@JsonProperty("northeast") Northeast northeast, @JsonProperty("southwest") Southwest southwest) {
                     this.northeast = northeast;
                     this.southwest = southwest;
                 }
@@ -89,7 +90,7 @@ public final class GeoLocationResponse {
                     final double lng;
 
                     @JsonCreator
-                    public Northeast(@JsonProperty("lat") double lat, @JsonProperty("lng") double lng){
+                    public Northeast(@JsonProperty("lat") double lat, @JsonProperty("lng") double lng) {
                         this.lat = lat;
                         this.lng = lng;
                     }
@@ -100,7 +101,7 @@ public final class GeoLocationResponse {
                     final double lng;
 
                     @JsonCreator
-                    public Southwest(@JsonProperty("lat") double lat, @JsonProperty("lng") double lng){
+                    public Southwest(@JsonProperty("lat") double lat, @JsonProperty("lng") double lng) {
                         this.lat = lat;
                         this.lng = lng;
                     }
@@ -120,7 +121,7 @@ public final class GeoLocationResponse {
                 final double lng;
 
                 @JsonCreator
-                public Location(@JsonProperty("lat") double lat, @JsonProperty("lng") double lng){
+                public Location(@JsonProperty("lat") double lat, @JsonProperty("lng") double lng) {
                     this.lat = lat;
                     this.lng = lng;
                 }
@@ -131,7 +132,7 @@ public final class GeoLocationResponse {
                 final Southwest southwest;
 
                 @JsonCreator
-                public Viewport(@JsonProperty("northeast") Northeast northeast, @JsonProperty("southwest") Southwest southwest){
+                public Viewport(@JsonProperty("northeast") Northeast northeast, @JsonProperty("southwest") Southwest southwest) {
                     this.northeast = northeast;
                     this.southwest = southwest;
                 }
@@ -141,7 +142,7 @@ public final class GeoLocationResponse {
                     final double lng;
 
                     @JsonCreator
-                    public Northeast(@JsonProperty("lat") double lat, @JsonProperty("lng") double lng){
+                    public Northeast(@JsonProperty("lat") double lat, @JsonProperty("lng") double lng) {
                         this.lat = lat;
                         this.lng = lng;
                     }
@@ -152,7 +153,7 @@ public final class GeoLocationResponse {
                     final double lng;
 
                     @JsonCreator
-                    public Southwest(@JsonProperty("lat") double lat, @JsonProperty("lng") double lng){
+                    public Southwest(@JsonProperty("lat") double lat, @JsonProperty("lng") double lng) {
                         this.lat = lat;
                         this.lng = lng;
                     }
