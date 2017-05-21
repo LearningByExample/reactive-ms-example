@@ -15,6 +15,10 @@ public class SunriseSunsetServiceImpl implements SunriseSunsetService {
     private static final String EQUALS = "=";
     private static final String LATITUDE_PARAMETER = "lat" + EQUALS;
     private static final String LONGITUDE_PARAMETER = "lng" + EQUALS;
+    private static final String DATE_PARAMETER = "date" + EQUALS;
+    private static final String TODAY_DATE = "today";
+    private static final String FORMATTED_PARAMETER = "formatted" + EQUALS;
+    private static final String NOT_FORMATTED = "0";
     private static final String ERROR_GETTING_DATA = "error getting sunrise and sunset";
     private static final String SUNRISE_RESULT_NOT_OK = "sunrise result was not OK";
     private static final String STATUS_OK = "OK";
@@ -37,10 +41,15 @@ public class SunriseSunsetServiceImpl implements SunriseSunsetService {
     }
 
     Mono<String> buildUrl(final Mono<GeographicCoordinates> geographicCoordinatesMono) {
-        return geographicCoordinatesMono.flatMap(geographicCoordinates -> Mono.just(endPoint.concat(BEGIN_PARAMETERS)
+        return geographicCoordinatesMono.flatMap(geographicCoordinates -> Mono.just(endPoint
+                .concat(BEGIN_PARAMETERS)
                 .concat(LATITUDE_PARAMETER).concat(Double.toString(geographicCoordinates.getLatitude()))
                 .concat(NEXT_PARAMETER)
                 .concat(LONGITUDE_PARAMETER).concat(Double.toString(geographicCoordinates.getLongitude()))
+                .concat(NEXT_PARAMETER)
+                .concat(DATE_PARAMETER).concat(TODAY_DATE)
+                .concat(NEXT_PARAMETER)
+                .concat(FORMATTED_PARAMETER).concat(NOT_FORMATTED)
         ));
     }
 

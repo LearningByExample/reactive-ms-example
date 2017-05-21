@@ -1,59 +1,27 @@
 swagger: "2.0"
 info:
   description: "This is the API for the Reactive Micro Service example"
-  version: "1.0.0"
-  title: "Reactive Microservices API"
+  version: "1.1.0"
+  title: "Reactive Micro Services API"
   contact:
     url: "https://github.com/LearningByExample/reactive-ms-example"
 host: "localhost:8080"
 basePath: "/api"
 tags:
-- name: "hello"
-  description: "Hello World"
+- name: "location"
+  description: "geo location services"
 schemes:
 - "http"
 paths:
-  /hello:
+  /location/{address}:
     get:
       tags:
-      - "hello"
-      summary: "default get"
-      produces:
-      - "application/json"
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            $ref: "#/definitions/HelloResult"
-    post:
-      tags:
-      - "hello"
-      summary: "post a name"
-      consumes:
-      - "application/json"
+      - "location"
+      summary: "get latitude, longitude, sunrise and sunset from an address parameter"
       produces:
       - "application/json"
       parameters:
-      - in: "body"
-        name: "body"
-        description: "Pet object that needs to be added to the store"
-        required: true
-        schema:
-          $ref: "#/definitions/HelloRequest"
-      responses:
-        200:
-          description: "successful operation"
-          schema:
-            $ref: "#/definitions/HelloResult"
-  /hello/{name}:
-    get:
-      tags:
-      - "hello"
-      summary: "get a name"
-      produces:
-      - "application/json"
-      parameters:
-      - name: "name"
+      - name: "address"
         in: "path"
         required: true
         type: "string"
@@ -61,17 +29,54 @@ paths:
         200:
           description: "successful operation"
           schema:
-            $ref: "#/definitions/HelloResult"
+            $ref: "#/definitions/LocationResponse"
+  /location:
+    post:
+      tags:
+      - "location"
+      summary: "get latitude, longitude, sunrise and sunset from an LocationRequest object"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "body"
+        description: "LocationRequest object that has an address"
+        required: true
+        schema:
+          $ref: "#/definitions/LocationRequest"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/LocationResponse"
 definitions:
-  HelloRequest:
+  LocationRequest:
     type: "object"
     properties:
-      name:
+      address:
         type: "string"
-  HelloResult:
+  LocationResponse:
     type: "object"
     properties:
-      greetings:
-        type: "string"
-      quote:
-         type: "string"
+      geographicCoordinates:
+        type: "object"
+        properties:
+          latitude:
+            type: "number"
+            format: "double"
+          longitude:
+            type: "number"
+            format: "double"
+      sunriseSunset:
+        type: "object"
+        properties:
+          sunrise:
+            type: "string"
+            format: "date-time"
+            description: "ISO 8601 UTC without summer time adjustment"
+          sunset:
+            type: "string"
+            format: "date-time"
+            description: "ISO 8601 UTC without summer time adjustment"

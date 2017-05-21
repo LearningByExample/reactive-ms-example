@@ -27,13 +27,14 @@ class SunriseSunsetServiceImplTests {
 
     private static final String STATUS_OK = "OK";
     private static final String BAD_EXCEPTION = "bad exception";
-    private static final String SUNRISE_TIME = "12:55:17 PM";
-    private static final String SUNSET_TIME = "3:14:28 AM";
+    private static final String SUNRISE_TIME = "2017-05-21T12:53:56+00:00";
+    private static final String SUNSET_TIME = "2017-05-22T03:16:05+00:00";
     private static final double GOOGLE_LAT = 37.4224082;
     private static final double GOOGLE_LNG = -122.0856086;
     private static final GeographicCoordinates GOOGLE_LOCATION = new GeographicCoordinates(GOOGLE_LAT, GOOGLE_LNG);
     private static final Mono<GeographicCoordinates> GOOGLE_LOCATION_MONO = Mono.just(GOOGLE_LOCATION);
-    private static final String GOOGLE_LOCATION_IN_PARAMS = "?lat=" + Double.toString(GOOGLE_LAT) + "&lng=" + Double.toString(GOOGLE_LNG);
+    private static final String GOOGLE_LOCATION_IN_PARAMS = "?lat=" + Double.toString(GOOGLE_LAT) +
+            "&lng=" + Double.toString(GOOGLE_LNG)+"&date=today&formatted=0";
 
     private static final String JSON_OK = "/json/GeoTimesResponse_OK.json";
     private static final String JSON_KO = "/json/GeoTimesResponse_KO.json";
