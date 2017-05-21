@@ -74,14 +74,14 @@ Both will produce something like:
 
 ## Project Structure
 
-- [main/java](/src/main/java)
+- [main/java](/src/main/java/org/learning/by/example/reactive/microservices)
     - [/application](/src/main/java/org/learning/by/example/reactive/microservices/application) : Main Spring boot application and context configuration.  
     - [/routers](/src/main/java/org/learning/by/example/reactive/microservices/routers) : Reactive routing functions.
     - [/handlers](/src/main/java/org/learning/by/example/reactive/microservices/handlers) : Handlers used by the routers.
     - [/services](/src/main/java/org/learning/by/example/reactive/microservices/services) : Services for the business logic needed by handlers.
     - [/exceptions](/src/main/java/org/learning/by/example/reactive/microservices/exceptions) : Businesses exceptions.
     - [/model](/src/main/java/org/learning/by/example/reactive/microservices/model) : POJOs.
-- [test/java](/src/test/java)
+- [test/java](/src/test/java/org/learning/by/example/reactive/microservices)
     - [/application](/src/test/java/org/learning/by/example/reactive/microservices/application) : Application system and unit tests.
     - [/routers](/src/test/java/org/learning/by/example/reactive/microservices/routers) : Integration tests for routes.
     - [/handlers](/src/test/java/org/learning/by/example/reactive/microservices/handlers) : Unit tests for handlers.
