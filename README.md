@@ -1,4 +1,4 @@
-## Reactive MicroServices Example
+## Reactive Micro Services Example
 
 [![Build Status](https://travis-ci.org/LearningByExample/reactive-ms-example.svg?branch=master)](https://travis-ci.org/LearningByExample/reactive-ms-example)
 [![Coverage Status](https://coveralls.io/repos/github/LearningByExample/reactive-ms-example/badge.svg?branch=master)](https://coveralls.io/github/LearningByExample/reactive-ms-example?branch=master)
@@ -14,7 +14,7 @@ Scenario: Get Location
   Then I should get a geo location
   And I should get the sunrise and sunset times
 ```
-To implemented this example we consume a couple of REST APIs.
+To implement this example we consume a couple of REST APIs.
 
 This example cover several topics: 
 
@@ -29,7 +29,7 @@ This example cover several topics:
 
 Includes and in depth look to testing using JUnit5:
 - Unit, Integration and System tests.
-- Mocking, including reactive functions.
+- Mocking, including reactive functions and JSON responses.
 - BDD style assertions.
 - Test tags with maven profiles.
 
@@ -66,7 +66,7 @@ Both will produce something like:
   }
 }
 ```
-
+_All date and times are ISO 8601 UTC without summer time adjustment_
 ## API
 [![View in the embedded Swagger UI](https://avatars0.githubusercontent.com/u/7658037?v=3&s=20) View in the embedded Swagger UI](http://localhost:8080/index.html)
 
@@ -95,4 +95,6 @@ Both will produce something like:
 - https://spring.io/blog/2017/02/23/spring-framework-5-0-m5-update
 - http://junit.org/junit5/docs/current/user-guide/#running-tests-build-maven
 - https://github.com/junit-team/junit5-samples
-- http://quotesondesign.com/
+- https://developers.google.com/maps/documentation/geocoding/intro
+- https://sunrise-sunset.org/api
+- https://en.wikipedia.org/wiki/ISO_8601
