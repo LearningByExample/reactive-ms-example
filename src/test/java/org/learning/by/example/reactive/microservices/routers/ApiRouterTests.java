@@ -159,6 +159,17 @@ class ApiRouterTests extends BasicIntegrationTest {
     }
 
     @Test
+    void postLocationWrongObject() {
+        final ErrorResponse response = post(
+                builder -> builder.path(LOCATION_PATH).build(),
+                HttpStatus.BAD_REQUEST,
+                new WrongRequest(JSON_VALUE),
+                ErrorResponse.class);
+
+        assertThat(response.getError(), not(isEmptyOrNullString()));
+    }
+
+    @Test
     void helloServiceErrorTest() {
 
         doReturn(Mono.error(new RuntimeException(SUPER_ERROR))).when(helloService).greetings(Mockito.any());
@@ -196,6 +207,24 @@ class ApiRouterTests extends BasicIntegrationTest {
 
         final LocationResponse location = get(
                 builder -> builder.path(LOCATION_PATH).path("/").path(ADDRESS_ARG).build(GOOGLE_ADDRESS),
+                LocationResponse.class);
+
+        assertThat(location.getGeographicCoordinates().getLatitude(), is(GOOGLE_LAT));
+        assertThat(location.getGeographicCoordinates().getLongitude(), is(GOOGLE_LNG));
+
+        reset(geoLocationService);
+        reset(sunriseSunsetService);
+    }
+
+    @Test
+    void postLocationTest(){
+
+        doReturn(GOOGLE_LOCATION).when(geoLocationService).fromAddress(any());
+        doReturn(SUNRISE_SUNSET).when(sunriseSunsetService).fromGeographicCoordinates(any());
+
+        final LocationResponse location = post(
+                builder -> builder.path(LOCATION_PATH).build(),
+                new LocationRequest(GOOGLE_ADDRESS),
                 LocationResponse.class);
 
         assertThat(location.getGeographicCoordinates().getLatitude(), is(GOOGLE_LAT));

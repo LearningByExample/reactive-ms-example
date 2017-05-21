@@ -1,5 +1,6 @@
 package org.learning.by.example.reactive.microservices.handlers;
 
+import org.learning.by.example.reactive.microservices.exceptions.InvalidParametersException;
 import org.learning.by.example.reactive.microservices.model.*;
 import org.learning.by.example.reactive.microservices.services.GeoLocationService;
 import org.learning.by.example.reactive.microservices.services.HelloService;
@@ -70,12 +71,29 @@ public class ApiHandler {
                 ServerResponse.ok().body(Mono.just(helloResponse), HelloResponse.class));
     }
 
+    public Mono<ServerResponse> postLocation(final ServerRequest request) {
+        return request.bodyToMono(LocationRequest.class)
+                .flatMap(locationRequest -> {
+                    if(locationRequest.getAddress()==null){
+                        return Mono.error(new InvalidParametersException("manco"));
+                    }
+                    return Mono.just(locationRequest.getAddress());
+                })
+                .transform(this::serverResponse)
+                .onErrorResume(errorHandler::throwableError);
+    }
+
     public Mono<ServerResponse> getLocation(final ServerRequest request){
         return Mono.just(request.pathVariable(ADDRESS))
+                .transform(this::serverResponse)
+                .onErrorResume(errorHandler::throwableError);
+    }
+
+    Mono<ServerResponse> serverResponse(final Mono<String> address){
+        return address
                 .transform(geoLocationService::fromAddress)
                 .and(this::sunriseSunset, LocationResponse::new)
-                .transform(this::response)
-                .onErrorResume(errorHandler::throwableError);
+                .transform(this::response);
     }
 
     private Mono<SunriseSunset> sunriseSunset(GeographicCoordinates geographicCoordinates){

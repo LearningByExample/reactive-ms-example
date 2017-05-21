@@ -27,6 +27,7 @@ class ApiRouter {
                     .andRoute(POST(HELLO_PATH), apiHandler::postHello)
                     .andRoute(GET(HELLO_WITH_NAME_PATH), apiHandler::getHello)
                     .andRoute(GET(LOCATION_WITH_ADDRESS_PATH), apiHandler::getLocation)
+                    .andRoute(POST(LOCATION_PATH), apiHandler::postLocation)
                 ).andOther(route(RequestPredicates.all(), errorHandler::notFound))
             );
     }

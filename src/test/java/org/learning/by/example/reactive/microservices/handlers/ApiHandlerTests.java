@@ -148,7 +148,7 @@ class ApiHandlerTests {
                 .subscribe(this::verifyLocationResponse);
     }
 
-    void verifyLocationResponse(LocationResponse locationResponse){
+    private void verifyLocationResponse(LocationResponse locationResponse){
 
         assertThat(locationResponse.getGeographicCoordinates().getLatitude(), is(GOOGLE_LAT));
         assertThat(locationResponse.getGeographicCoordinates().getLongitude(), is(GOOGLE_LNG));
@@ -163,7 +163,7 @@ class ApiHandlerTests {
                 .transform(apiHandler::response).subscribe(this::verifyServerResponse);
     }
 
-    void verifyServerResponse(ServerResponse serverResponse){
+    private void verifyServerResponse(ServerResponse serverResponse){
 
         assertThat(serverResponse.statusCode(), is(HttpStatus.OK));
 
@@ -173,7 +173,22 @@ class ApiHandlerTests {
     }
 
     @Test
-    void fromGeographicCoordinatesTest() {
+    void serverResponseTest() {
+        ServerRequest serverRequest = mock(ServerRequest.class);
+        when(serverRequest.pathVariable(ADDRESS_VARIABLE)).thenReturn(GOOGLE_ADDRESS);
+
+        doReturn(GOOGLE_LOCATION).when(geoLocationService).fromAddress(any());
+        doReturn(SUNRISE_SUNSET).when(sunriseSunsetService).fromGeographicCoordinates(any());
+
+        Mono.just(GOOGLE_ADDRESS).transform(apiHandler::serverResponse)
+                .subscribe(this::verifyServerResponse);
+
+        reset(geoLocationService);
+        reset(sunriseSunsetService);
+    }    
+
+    @Test
+    void getLocationTest() {
         ServerRequest serverRequest = mock(ServerRequest.class);
         when(serverRequest.pathVariable(ADDRESS_VARIABLE)).thenReturn(GOOGLE_ADDRESS);
 
@@ -187,7 +202,21 @@ class ApiHandlerTests {
     }
 
     @Test
-    void fromGeographicCoordinatesNotFoundTest() {
+    void postLocationTest() {
+        ServerRequest serverRequest = mock(ServerRequest.class);
+        when(serverRequest.bodyToMono(LocationRequest.class)).thenReturn(Mono.just(new LocationRequest(GOOGLE_ADDRESS)));
+
+        doReturn(GOOGLE_LOCATION).when(geoLocationService).fromAddress(any());
+        doReturn(SUNRISE_SUNSET).when(sunriseSunsetService).fromGeographicCoordinates(any());
+
+        apiHandler.postLocation(serverRequest).subscribe(this::verifyServerResponse);
+
+        reset(geoLocationService);
+        reset(sunriseSunsetService);
+    }
+
+    @Test
+    void getLocationNotFoundTest() {
         ServerRequest serverRequest = mock(ServerRequest.class);
         when(serverRequest.pathVariable(ADDRESS_VARIABLE)).thenReturn(GOOGLE_ADDRESS);
 
@@ -207,7 +236,7 @@ class ApiHandlerTests {
     }
 
     @Test
-    void fromGeographicCoordinatesErrorSunriseSunsetTest() {
+    void getLocationErrorSunriseSunsetTest() {
         ServerRequest serverRequest = mock(ServerRequest.class);
         when(serverRequest.pathVariable(ADDRESS_VARIABLE)).thenReturn(GOOGLE_ADDRESS);
 
@@ -227,7 +256,7 @@ class ApiHandlerTests {
     }
 
     @Test
-    void fromGeographicCoordinatesBothServiceErrorTest() {
+    void getLocationBothServiceErrorTest() {
         ServerRequest serverRequest = mock(ServerRequest.class);
         when(serverRequest.pathVariable(ADDRESS_VARIABLE)).thenReturn(GOOGLE_ADDRESS);
 
