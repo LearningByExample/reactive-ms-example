@@ -51,7 +51,7 @@ class MainRouterTests extends BasicIntegrationTest {
     }
 
     @BeforeAll
-    static void setupAll(){
+    static void setupAll() {
         final MainRouter mainRouter = new MainRouter();
     }
 

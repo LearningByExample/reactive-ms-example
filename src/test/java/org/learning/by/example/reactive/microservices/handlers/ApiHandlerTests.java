@@ -25,6 +25,7 @@ import static org.mockito.Mockito.*;
 @UnitTest
 @DisplayName("ApiHandler Unit Tests")
 class ApiHandlerTests {
+
     private static final String ADDRESS_VARIABLE = "address";
     private static final String GOOGLE_ADDRESS = "1600 Amphitheatre Parkway, Mountain View, CA";
     private static final String SUNRISE_TIME = "12:55:17 PM";
@@ -52,12 +53,12 @@ class ApiHandlerTests {
     private SunriseSunsetService sunriseSunsetService;
 
     @Test
-    void combineTest(){
+    void combineTest() {
         GOOGLE_LOCATION.and(SUNRISE_SUNSET, LocationResponse::new)
                 .subscribe(this::verifyLocationResponse);
     }
 
-    private void verifyLocationResponse(LocationResponse locationResponse){
+    private void verifyLocationResponse(final LocationResponse locationResponse) {
 
         assertThat(locationResponse.getGeographicCoordinates().getLatitude(), is(GOOGLE_LAT));
         assertThat(locationResponse.getGeographicCoordinates().getLongitude(), is(GOOGLE_LNG));
@@ -67,34 +68,33 @@ class ApiHandlerTests {
     }
 
     @Test
-    void responseTest(){
+    void responseTest() {
         GOOGLE_LOCATION.and(SUNRISE_SUNSET, LocationResponse::new)
                 .transform(apiHandler::response).subscribe(this::verifyServerResponse);
     }
 
-    private void verifyServerResponse(ServerResponse serverResponse){
+    private void verifyServerResponse(final ServerResponse serverResponse) {
 
         assertThat(serverResponse.statusCode(), is(HttpStatus.OK));
 
-        LocationResponse locationResponse = HandlersHelper.extractEntity(serverResponse, LocationResponse.class);
+        final LocationResponse locationResponse = HandlersHelper.extractEntity(serverResponse, LocationResponse.class);
 
         verifyLocationResponse(locationResponse);
     }
 
     @Test
     void serverResponseTest() {
-        ServerRequest serverRequest = mock(ServerRequest.class);
+        final ServerRequest serverRequest = mock(ServerRequest.class);
         when(serverRequest.pathVariable(ADDRESS_VARIABLE)).thenReturn(GOOGLE_ADDRESS);
 
         doReturn(GOOGLE_LOCATION).when(geoLocationService).fromAddress(any());
         doReturn(SUNRISE_SUNSET).when(sunriseSunsetService).fromGeographicCoordinates(any());
 
-        Mono.just(GOOGLE_ADDRESS).transform(apiHandler::serverResponse)
-                .subscribe(this::verifyServerResponse);
+        Mono.just(GOOGLE_ADDRESS).transform(apiHandler::serverResponse).subscribe(this::verifyServerResponse);
 
         reset(geoLocationService);
         reset(sunriseSunsetService);
-    }    
+    }
 
     @Test
     void getLocationTest() {

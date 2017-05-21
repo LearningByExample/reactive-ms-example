@@ -64,7 +64,7 @@ class ApiRouterTests extends BasicIntegrationTest {
     }
 
     @BeforeAll
-    static void setupAll(){
+    static void setupAll() {
         final ApiRouter apiRouter = new ApiRouter();
     }
 
@@ -112,7 +112,7 @@ class ApiRouterTests extends BasicIntegrationTest {
     }
 
     @Test
-    void getLocationTest(){
+    void getLocationTest() {
 
         doReturn(GOOGLE_LOCATION).when(geoLocationService).fromAddress(any());
         doReturn(SUNRISE_SUNSET).when(sunriseSunsetService).fromGeographicCoordinates(any());
@@ -129,7 +129,7 @@ class ApiRouterTests extends BasicIntegrationTest {
     }
 
     @Test
-    void postLocationTest(){
+    void postLocationTest() {
 
         doReturn(GOOGLE_LOCATION).when(geoLocationService).fromAddress(any());
         doReturn(SUNRISE_SUNSET).when(sunriseSunsetService).fromGeographicCoordinates(any());
@@ -147,7 +147,7 @@ class ApiRouterTests extends BasicIntegrationTest {
     }
 
     @Test
-    void getLocationNotFoundTest(){
+    void getLocationNotFoundTest() {
 
         doReturn(LOCATION_NOT_FOUND).when(geoLocationService).fromAddress(any());
         doReturn(SUNRISE_SUNSET).when(sunriseSunsetService).fromGeographicCoordinates(any());
@@ -164,7 +164,7 @@ class ApiRouterTests extends BasicIntegrationTest {
     }
 
     @Test
-    void getLocationExceptionTest(){
+    void getLocationExceptionTest() {
 
         doReturn(GENERIC_ERROR).when(geoLocationService).fromAddress(any());
         doReturn(SUNRISE_SUNSET).when(sunriseSunsetService).fromGeographicCoordinates(any());
@@ -181,7 +181,7 @@ class ApiRouterTests extends BasicIntegrationTest {
     }
 
     @Test
-    void getLocationSunriseSunsetExceptionTest(){
+    void getLocationSunriseSunsetExceptionTest() {
 
         doReturn(GOOGLE_LOCATION).when(geoLocationService).fromAddress(any());
         doReturn(GENERIC_ERROR).when(sunriseSunsetService).fromGeographicCoordinates(any());
@@ -198,7 +198,7 @@ class ApiRouterTests extends BasicIntegrationTest {
     }
 
     @Test
-    void getLocationBothServiceExceptionTest(){
+    void getLocationBothServiceExceptionTest() {
 
         doReturn(GENERIC_ERROR).when(geoLocationService).fromAddress(any());
         doReturn(GENERIC_ERROR).when(sunriseSunsetService).fromGeographicCoordinates(any());
@@ -213,5 +213,4 @@ class ApiRouterTests extends BasicIntegrationTest {
         reset(geoLocationService);
         reset(sunriseSunsetService);
     }
-
 }

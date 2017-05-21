@@ -20,6 +20,7 @@ import static org.hamcrest.Matchers.is;
 @UnitTest
 @DisplayName("ErrorHandler Unit Tests")
 class ErrorHandlerTests {
+
     private static final String NOT_FOUND = "not found";
 
     @Autowired

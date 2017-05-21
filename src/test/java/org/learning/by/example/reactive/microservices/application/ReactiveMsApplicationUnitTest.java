@@ -9,8 +9,8 @@ import org.learning.by.example.reactive.microservices.test.tags.UnitTest;
 class ReactiveMsApplicationUnitTest {
 
     @Test
-    void ReactiveMsApplication(){
-        String[] args = {};
+    void ReactiveMsApplication() {
+        final String[] args = {};
         ReactiveMsApplication.main(args);
     }
 }

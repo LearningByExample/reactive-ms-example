@@ -21,7 +21,6 @@ class ReactiveMsApplicationTest extends BasicIntegrationTest {
     private static final String ADDRESS_ARG = "{address}";
     private static final String GOOGLE_ADDRESS = "1600 Amphitheatre Parkway, Mountain View, CA";
 
-
     @LocalServerPort
     private int port;
 

@@ -28,7 +28,7 @@ import static org.mockito.Mockito.*;
 class GeoLocationServiceImplTests {
 
     private static final String GOOGLE_ADDRESS = "1600 Amphitheatre Parkway, Mountain View, CA";
-    private static final String GOOGLE_ADDRESS_IN_PARAMS = "?address="+GOOGLE_ADDRESS;
+    private static final String GOOGLE_ADDRESS_IN_PARAMS = "?address=" + GOOGLE_ADDRESS;
     private static final Mono<String> GOOGLE_ADDRESS_MONO = Mono.just(GOOGLE_ADDRESS);
     private static final String BAD_EXCEPTION = "bad exception";
     private static final double GOOGLE_LAT = 37.4224082;
@@ -51,8 +51,7 @@ class GeoLocationServiceImplTests {
     private static final Mono<GeoLocationResponse> BIG_EXCEPTION = Mono.error(new RuntimeException(BAD_EXCEPTION));
 
     @Value("${GeoLocationServiceImpl.endPoint}")
-    private
-    String endPoint;
+    private String endPoint;
 
     @Test
     void getBeamTest() {
@@ -63,7 +62,7 @@ class GeoLocationServiceImplTests {
     void getMockingWebClientTest() {
         locationService.webClient = mockWebClient(locationService.webClient, LOCATION_OK);
 
-        GeoLocationResponse location = GOOGLE_ADDRESS_MONO.transform(locationService::get).block();
+        final GeoLocationResponse location = GOOGLE_ADDRESS_MONO.transform(locationService::get).block();
         assertThat(location.getStatus(), is(OK_STATUS));
 
         reset(locationService.webClient);
@@ -73,7 +72,7 @@ class GeoLocationServiceImplTests {
     void fromAddressTest() {
         doReturn(LOCATION_OK).when(locationService).get(any());
 
-        GeographicCoordinates geographicCoordinates = GOOGLE_ADDRESS_MONO.transform(locationService::fromAddress).block();
+        final GeographicCoordinates geographicCoordinates = GOOGLE_ADDRESS_MONO.transform(locationService::fromAddress).block();
 
         assertThat(geographicCoordinates, is(notNullValue()));
         assertThat(geographicCoordinates.getLatitude(), is(GOOGLE_LAT));
@@ -91,7 +90,7 @@ class GeoLocationServiceImplTests {
     void fromAddressNotFoundTest() {
         doReturn(LOCATION_NOT_FOUND).when(locationService).get(any());
 
-        GeographicCoordinates geographicCoordinates = GOOGLE_ADDRESS_MONO.transform(locationService::fromAddress)
+        final GeographicCoordinates geographicCoordinates = GOOGLE_ADDRESS_MONO.transform(locationService::fromAddress)
                 .onErrorResume(throwable -> {
                     assertThat(throwable, instanceOf(GeoLocationNotFoundException.class));
                     return Mono.empty();
@@ -111,7 +110,7 @@ class GeoLocationServiceImplTests {
     void fromAddressExceptionTest() {
         doReturn(LOCATION_EXCEPTION).when(locationService).get(any());
 
-        GeographicCoordinates geographicCoordinates = GOOGLE_ADDRESS_MONO.transform(locationService::fromAddress)
+        final GeographicCoordinates geographicCoordinates = GOOGLE_ADDRESS_MONO.transform(locationService::fromAddress)
                 .onErrorResume(throwable -> {
                     assertThat(throwable, instanceOf(GetGeoLocationException.class));
                     return Mono.empty();
@@ -131,7 +130,7 @@ class GeoLocationServiceImplTests {
     void fromAddressBigExceptionTest() {
         doReturn(BIG_EXCEPTION).when(locationService).get(any());
 
-        GeographicCoordinates geographicCoordinates = GOOGLE_ADDRESS_MONO.transform(locationService::fromAddress)
+        final GeographicCoordinates geographicCoordinates = GOOGLE_ADDRESS_MONO.transform(locationService::fromAddress)
                 .onErrorResume(throwable -> {
                     assertThat(throwable, instanceOf(GetGeoLocationException.class));
                     return Mono.empty();
@@ -151,7 +150,7 @@ class GeoLocationServiceImplTests {
     void fromAddressEmptyTest() {
         doReturn(LOCATION_EMPTY).when(locationService).get(any());
 
-        GeographicCoordinates geographicCoordinates = GOOGLE_ADDRESS_MONO.transform(locationService::fromAddress)
+        final GeographicCoordinates geographicCoordinates = GOOGLE_ADDRESS_MONO.transform(locationService::fromAddress)
                 .onErrorResume(throwable -> {
                     assertThat(throwable, instanceOf(GetGeoLocationException.class));
                     return Mono.empty();
@@ -171,7 +170,7 @@ class GeoLocationServiceImplTests {
     void fromAddressWrongStatusTest() {
         doReturn(LOCATION_WRONG_STATUS).when(locationService).get(any());
 
-        GeographicCoordinates geographicCoordinates = GOOGLE_ADDRESS_MONO.transform(locationService::fromAddress)
+        final GeographicCoordinates geographicCoordinates = GOOGLE_ADDRESS_MONO.transform(locationService::fromAddress)
                 .onErrorResume(throwable -> {
                     assertThat(throwable, instanceOf(GetGeoLocationException.class));
                     return Mono.empty();
@@ -189,7 +188,7 @@ class GeoLocationServiceImplTests {
 
     @Test
     void buildUrlTest() {
-        String url = GOOGLE_ADDRESS_MONO.transform(locationService::buildUrl).block();
+        final String url = GOOGLE_ADDRESS_MONO.transform(locationService::buildUrl).block();
 
         assertThat(url, is(notNullValue()));
         assertThat(url, is(endPoint.concat(GOOGLE_ADDRESS_IN_PARAMS)));
@@ -197,7 +196,7 @@ class GeoLocationServiceImplTests {
 
     @Test
     void buildUrlEmptyAddressTest() {
-        String url = Mono.just("").transform(locationService::buildUrl)
+        final String url = Mono.just("").transform(locationService::buildUrl)
                 .onErrorResume(throwable -> {
                     assertThat(throwable, instanceOf(InvalidParametersException.class));
                     return Mono.empty();
