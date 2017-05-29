@@ -20,7 +20,7 @@ public class SunriseSunsetServiceImpl implements SunriseSunsetService {
     private static final String FORMATTED_PARAMETER = "formatted" + EQUALS;
     private static final String NOT_FORMATTED = "0";
     private static final String ERROR_GETTING_DATA = "error getting sunrise and sunset";
-    private static final String SUNRISE_RESULT_NOT_OK = "sunrise result was not OK";
+    private static final String SUNRISE_RESULT_NOT_OK = "sunrise and sunrise result was not OK";
     private static final String STATUS_OK = "OK";
 
     WebClient webClient;
