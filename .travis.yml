@@ -1,8 +1,10 @@
 language: java
+sudo: false
 jdk:
   - oraclejdk8
 before_install:
  - chmod +x mvnw
+script: "./mvnw cobertura:cobertura"
 after_success:
   - bash <(curl -s https://codecov.io/bash)
 branches:
