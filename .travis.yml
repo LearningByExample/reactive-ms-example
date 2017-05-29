@@ -9,3 +9,7 @@ branches:
   only:
   - master
   - develop
+cache:
+  directories:
+  - .autoconf
+  - $HOME/.m2
