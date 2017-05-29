@@ -1,7 +1,8 @@
 ## Reactive Micro Services Example
 
 [![Build Status](https://travis-ci.org/LearningByExample/reactive-ms-example.svg?branch=master)](https://travis-ci.org/LearningByExample/reactive-ms-example)
-[![Coverage Status](https://coveralls.io/repos/github/LearningByExample/reactive-ms-example/badge.svg?branch=master)](https://coveralls.io/github/LearningByExample/reactive-ms-example?branch=master)
+[![codecov](https://codecov.io/gh/LearningByExample/reactive-ms-example/branch/master/graph/badge.svg)](https://codecov.io/gh/LearningByExample/reactive-ms-example)
+
 ## info
 This is an example of doing reactive MicroServices using spring 5 functional web framework and spring boot 2.
 

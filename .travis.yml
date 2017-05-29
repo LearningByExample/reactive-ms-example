@@ -1,11 +1,16 @@
 language: java
+sudo: false
 jdk:
   - oraclejdk8
 before_install:
  - chmod +x mvnw
 after_success:
-  - mvn clean cobertura:cobertura coveralls:report
+  - bash <(curl -s https://codecov.io/bash)
 branches:
   only:
   - master
   - develop
+cache:
+  directories:
+  - .autoconf
+  - $HOME/.m2

@@ -29,7 +29,7 @@ public class ApiHandler {
 
     public Mono<ServerResponse> postLocation(final ServerRequest request) {
         return request.bodyToMono(LocationRequest.class)
-                .flatMap(locationRequest -> Mono.just(locationRequest.getAddress()))
+                .map(LocationRequest::getAddress)
                 .onErrorResume(throwable -> Mono.just(EMPTY_STRING))
                 .transform(this::buildResponse)
                 .onErrorResume(errorHandler::throwableError);
