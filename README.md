@@ -6,6 +6,8 @@
 ## info
 This is an example of doing reactive MicroServices using spring 5 functional web framework and spring boot 2.
 
+There is a [Kotlin fork](https://github.com/LearningByExample/reactive-ms-example) of this service.
+
 This service provide and API that will get the geo location and the sunrise and sunset times from an address.
 
 ```Gherkin
