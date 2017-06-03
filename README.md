@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/LearningByExample/reactive-ms-example.svg?branch=master)](https://travis-ci.org/LearningByExample/reactive-ms-example)
 [![codecov](https://codecov.io/gh/LearningByExample/reactive-ms-example/branch/master/graph/badge.svg)](https://codecov.io/gh/LearningByExample/reactive-ms-example)
+[![codebeat badge](https://codebeat.co/badges/9f473a67-ab5a-4205-82fe-976e9bbb01e6)](https://codebeat.co/projects/github-com-learningbyexample-reactive-ms-example-master)
 
 ## info
 This is an example of doing reactive MicroServices using spring 5 functional web framework and spring boot 2.
