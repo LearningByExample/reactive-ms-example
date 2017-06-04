@@ -12,7 +12,7 @@ public class ErrorHandler {
 
     private static final String NOT_FOUND = "not found";
     private static final String ERROR_RAISED = "error raised";
-    private static Logger logger = LoggerFactory.getLogger(ErrorHandler.class);
+    private static final Logger logger = LoggerFactory.getLogger(ErrorHandler.class);
 
     public Mono<ServerResponse> notFound(final ServerRequest request) {
         return Mono.just(new PathNotFoundException(NOT_FOUND)).transform(this::getResponse);

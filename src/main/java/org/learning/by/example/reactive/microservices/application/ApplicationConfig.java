@@ -12,7 +12,7 @@ import org.springframework.web.reactive.function.server.RouterFunction;
 
 @Configuration
 @EnableWebFlux
-public class ApplicationConfig {
+class ApplicationConfig {
 
     @Bean
     ApiHandler apiHandler(final GeoLocationService geoLocationService, final SunriseSunsetService sunriseSunsetService,

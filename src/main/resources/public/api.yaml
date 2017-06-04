@@ -1,7 +1,7 @@
 swagger: "2.0"
 info:
   description: "This is the API for the Reactive Micro Service example"
-  version: "1.1.0"
+  version: "1.0.0"
   title: "Reactive Micro Services API"
   contact:
     url: "https://github.com/LearningByExample/reactive-ms-example"
