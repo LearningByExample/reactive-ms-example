@@ -52,9 +52,13 @@ class ApiHandlerTests {
     @SpyBean
     private SunriseSunsetService sunriseSunsetService;
 
+    private Mono<SunriseSunset> getData(final GeographicCoordinates ignore) {
+        return SUNRISE_SUNSET;
+    }
+
     @Test
     void combineTest() {
-        GOOGLE_LOCATION.and(SUNRISE_SUNSET, LocationResponse::new)
+        GOOGLE_LOCATION.zipWhen(this::getData, LocationResponse::new)
                 .subscribe(this::verifyLocationResponse);
     }
 
@@ -69,7 +73,7 @@ class ApiHandlerTests {
 
     @Test
     void serverResponseTest() {
-        GOOGLE_LOCATION.and(SUNRISE_SUNSET, LocationResponse::new)
+        GOOGLE_LOCATION.zipWhen(this::getData, LocationResponse::new)
                 .transform(apiHandler::serverResponse).subscribe(this::verifyServerResponse);
     }
 
