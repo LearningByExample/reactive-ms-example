@@ -22,8 +22,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @UnitTest
-@DisplayName("SunriseSunsetServiceImplTests Unit Tests")
-class SunriseSunsetServiceImplTests {
+@DisplayName("SunriseSunsetServiceImpl Unit Tests")
+class SunriseSunsetServiceImplTest {
 
     private static final String STATUS_OK = "OK";
     private static final String BAD_EXCEPTION = "bad exception";

@@ -25,7 +25,7 @@ import static org.mockito.Mockito.*;
 
 @UnitTest
 @DisplayName("GeoLocationServiceImpl Unit Tests")
-class GeoLocationServiceImplTests {
+class GeoLocationServiceImplTest {
 
     private static final String GOOGLE_ADDRESS = "1600 Amphitheatre Parkway, Mountain View, CA";
     private static final String GOOGLE_ADDRESS_IN_PARAMS = "?address=" + GOOGLE_ADDRESS;
