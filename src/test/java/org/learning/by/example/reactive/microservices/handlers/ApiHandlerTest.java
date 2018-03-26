@@ -24,7 +24,7 @@ import static org.mockito.Mockito.*;
 
 @UnitTest
 @DisplayName("ApiHandler Unit Tests")
-class ApiHandlerTests {
+class ApiHandlerTest {
 
     private static final String ADDRESS_VARIABLE = "address";
     private static final String GOOGLE_ADDRESS = "1600 Amphitheatre Parkway, Mountain View, CA";

@@ -39,7 +39,7 @@ public class RestServiceHelper {
     public static WebClient mockWebClient(final WebClient originalClient, final Mono<?> mono){
         WebClient client = spy(originalClient);
 
-        WebClient.UriSpec uriSpec = mock(WebClient.UriSpec.class);
+        WebClient.RequestHeadersUriSpec uriSpec = mock(WebClient.RequestHeadersUriSpec.class);
         doReturn(uriSpec).when(client).get();
 
         WebClient.RequestHeadersSpec<?> headerSpec = mock(WebClient.RequestHeadersSpec.class);
@@ -47,7 +47,7 @@ public class RestServiceHelper {
         doReturn(headerSpec).when(headerSpec).accept(any());
 
         ClientResponse clientResponse = mock(ClientResponse.class);
-        doReturn(mono).when(clientResponse).bodyToMono(Mockito.any());
+        doReturn(mono).when(clientResponse).bodyToMono((Class<?>) Mockito.any());
         doReturn(Mono.just(clientResponse)).when(headerSpec).exchange();
 
         return client;

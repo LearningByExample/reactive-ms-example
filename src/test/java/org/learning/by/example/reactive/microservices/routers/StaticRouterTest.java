@@ -17,7 +17,7 @@ import static org.hamcrest.core.IsNot.not;
 
 @IntegrationTest
 @DisplayName(" StaticRouter Integration Tests")
-class StaticRouterTests extends BasicIntegrationTest {
+class StaticRouterTest extends BasicIntegrationTest {
 
     private static final String STATIC_PATH = "/index.html";
     private static final String DEFAULT_TITLE = "Swagger UI";

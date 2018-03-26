@@ -19,7 +19,7 @@ import static org.hamcrest.Matchers.is;
 
 @UnitTest
 @DisplayName("ErrorHandler Unit Tests")
-class ErrorHandlerTests {
+class ErrorHandlerTest {
 
     private static final String NOT_FOUND = "not found";
 

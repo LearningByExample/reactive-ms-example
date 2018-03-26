@@ -27,7 +27,7 @@ import static org.mockito.Mockito.reset;
 
 @IntegrationTest
 @DisplayName("ApiRouter Integration Tests")
-class ApiRouterTests extends BasicIntegrationTest {
+class ApiRouterTest extends BasicIntegrationTest {
 
     private static final String LOCATION_PATH = "/api/location";
     private static final String ADDRESS_ARG = "{address}";

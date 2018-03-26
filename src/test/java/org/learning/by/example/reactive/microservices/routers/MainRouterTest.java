@@ -21,7 +21,7 @@ import static org.mockito.Mockito.reset;
 
 @IntegrationTest
 @DisplayName("MainRouter Integration Tests")
-class MainRouterTests extends BasicIntegrationTest {
+class MainRouterTest extends BasicIntegrationTest {
 
     private static final String STATIC_ROUTE = "/index.html";
     private static final String LOCATION_PATH = "/api/location";
